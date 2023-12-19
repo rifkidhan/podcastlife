@@ -1,0 +1,189 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		--picton-blue-50: 239 249 255;
+		--picton-blue-100: 222 242 255;
+		--picton-blue-200: 182 231 255;
+		--picton-blue-300: 117 213 255;
+		--picton-blue-400: 44 193 255;
+		--picton-blue-500: 0 170 249;
+		--picton-blue-600: 0 135 212;
+		--picton-blue-700: 0 107 171;
+		--picton-blue-800: 0 90 141;
+		--picton-blue-900: 6 75 116;
+		--picton-blue-950: 4 48 77;
+
+		--hollywood-cerise-50: 255 240 250;
+		--hollywood-cerise-100: 255 228 246;
+		--hollywood-cerise-200: 255 200 240;
+		--hollywood-cerise-300: 255 156 225;
+		--hollywood-cerise-400: 255 94 202;
+		--hollywood-cerise-500: 255 47 178;
+		--hollywood-cerise-600: 246 10 143;
+		--hollywood-cerise-700: 215 0 115;
+		--hollywood-cerise-800: 177 3 94;
+		--hollywood-cerise-900: 147 8 81;
+		--hollywood-cerise-950: 91 0 45;
+
+		--golden-fizz-50: 250 254 232;
+		--golden-fizz-100: 243 254 195;
+		--golden-fizz-200: 238 255 137;
+		--golden-fizz-300: 235 255 69;
+		--golden-fizz-400: 237 252 24;
+		--golden-fizz-500: 231 236 6;
+		--golden-fizz-600: 204 193 2;
+		--golden-fizz-700: 162 140 6;
+		--golden-fizz-800: 134 109 13;
+		--golden-fizz-900: 114 89 17;
+		--golden-fizz-950: 67 49 5;
+
+		--cinnabar-50: 255 241 241;
+		--cinnabar-100: 255 224 224;
+		--cinnabar-200: 255 198 198;
+		--cinnabar-300: 255 158 158;
+		--cinnabar-400: 255 102 103;
+		--cinnabar-500: 253 54 55;
+		--cinnabar-600: 235 27 28;
+		--cinnabar-700: 198 15 16;
+		--cinnabar-800: 163 17 18;
+		--cinnabar-900: 135 21 22;
+		--cinnabar-950: 74 5 5;
+
+		--apple-50: 240 253 241;
+		--apple-100: 221 251 225;
+		--apple-200: 188 246 197;
+		--apple-300: 136 237 153;
+		--apple-400: 77 219 102;
+		--apple-500: 37 194 65;
+		--apple-600: 27 175 53;
+		--apple-700: 23 126 42;
+		--apple-800: 24 99 38;
+		--apple-900: 21 82 33;
+		--apple-950: 6 45 14;
+
+		--white: 245 245 246;
+		--black: 19 19 20;
+
+		/* accent color */
+
+		--accent-50: 245 245 246;
+		--accent-100: 230 230 231;
+		--accent-200: 207 208 210;
+		--accent-300: 174 175 178;
+		--accent-400: 133 134 139;
+		--accent-500: 106 107 112;
+		--accent-600: 90 91 96;
+		--accent-700: 77 77 81;
+		--accent-800: 67 67 71;
+		--accent-900: 59 59 62;
+		--accent-950: 19 19 20;
+	}
+
+	.dark {
+		--accent-50: 19 19 20;
+		--accent-100: 59 59 62;
+		--accent-200: 67 67 71;
+		--accent-300: 77 77 81;
+		--accent-400: 90 91 96;
+		--accent-500: 106 107 112;
+		--accent-600: 133 134 139;
+		--accent-700: 174 175 178;
+		--accent-800: 207 208 210;
+		--accent-900: 230 230 231;
+		--accent-950: 245 245 246;
+
+		color-scheme: dark;
+	}
+
+	html,
+	body {
+		@apply box-border h-full touch-manipulation overscroll-x-none bg-accent-5 font-sans
+		font-medium text-accent-95 antialiased selection:bg-chartreuse dark:selection:text-black;
+
+		scrollbar-color: var(--red-2) transparent;
+	}
+	body {
+		@apply relative m-0 min-h-full text-sm md:text-base;
+	}
+	main {
+		@apply relative my-10 flex min-h-screen w-full flex-col items-center justify-center gap-10;
+	}
+}
+
+@layer components {
+	.btn {
+		@apply relative inline-flex cursor-pointer flex-row items-center justify-center gap-2 rounded-md border-2 font-bold outline-none transition;
+	}
+	.btn-primary {
+		@apply border-accent-95 text-accent-95;
+		&:focus {
+			@apply bg-accent-10;
+		}
+	}
+	.btn-picton {
+		@apply border-accent-95 bg-picton text-black;
+		&:focus {
+			@apply bg-picton-60;
+		}
+	}
+
+	.btn-text {
+		@apply border-transparent bg-transparent;
+		&:focus {
+			@apply bg-accent-10;
+		}
+	}
+
+	.btn-sm {
+		@apply max-w-fit px-[24px] py-[6px] lg:px-[30px] lg:py-[9px];
+	}
+	.btn-md {
+		@apply max-w-fit px-[36px] py-8 lg:px-[40px] lg:py-[13px];
+	}
+	.btn-fluid {
+		@apply max-w-full px-[36px] py-8 lg:px-[40px] lg:py-[13px];
+	}
+	.btn-rounded {
+		@apply rounded-full p-2 lg:p-3;
+	}
+	.btn-square {
+		@apply p-1 lg:p-2;
+		&:hover {
+			@apply -translate-x-[2px] -translate-y-[2px] shadow-drop-sm;
+		}
+	}
+	.btn-loading {
+		@apply cursor-not-allowed;
+	}
+	.btn-disabled,
+	.btn-disabled:hover,
+	.btn-disabled:focus {
+		@apply transform-none cursor-not-allowed opacity-50 shadow-none;
+	}
+	.explicit {
+		&::before {
+			@apply mr-2 font-medium text-cinnabar-50 content-['🅴'];
+		}
+	}
+}
+
+@layer utilities {
+	::-webkit-scrollbar {
+		@apply h-2 w-2 overflow-auto;
+	}
+
+	::-webkit-scrollbar-track {
+		@apply bg-transparent;
+	}
+
+	::-webkit-scrollbar-thumb {
+		@apply rounded-md bg-picton;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		@apply bg-picton-60;
+	}
+}
