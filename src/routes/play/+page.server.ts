@@ -1,18 +1,18 @@
 import type { PageServerLoad } from './$types';
-import { getPlayNowMetadata } from '$lib/server/podcast';
+import { getPlayNowMetadata } from '$lib/server/podcasts';
 import sanitize from '$lib/utils/sanitize';
 import { type Segment } from 'transcriptator';
 import transcript from '$lib/utils/transcript';
-import { error } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 
 export const load = (async ({ url, fetch }) => {
 	const guid = url.searchParams.get('g');
 	const feedId = url.searchParams.get('f');
 
 	if (!guid || !feedId) {
-		error(400, { message: 'Bad Request' });
+		redirect(307, '/');
 	}
-	const { episode } = await getPlayNowMetadata({ guid, feedId });
+	const { data: episode } = await getPlayNowMetadata({ guid, feedId });
 
 	let chapters;
 	let transcripts: Segment[] | undefined = [];
@@ -41,7 +41,7 @@ export const load = (async ({ url, fetch }) => {
 			...episode,
 			description: episode.description && sanitize(episode.description)
 		},
-		chapters: chapters ? chapters.chapters : undefined,
+		chapters: chapters && chapters.length > 0 ? chapters.chapters : undefined,
 		transcript: transcripts && transcripts.length > 0 ? transcripts : undefined
 	};
 }) satisfies PageServerLoad;

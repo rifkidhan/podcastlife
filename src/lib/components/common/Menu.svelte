@@ -1,14 +1,20 @@
 <script lang="ts">
-	import { createDialog } from '@melt-ui/svelte';
+	import { createCollapsible } from '@melt-ui/svelte';
 	import { Menu, X } from 'lucide-svelte';
-	import { fly, fade } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import ThemeSwitcher from './ThemeSwitcher.svelte';
 	import { page } from '$app/stores';
+	import { Modal } from '$lib/components/base';
+	import { categories } from '$lib/utils/constants';
+
+	let open = false;
 
 	const {
-		elements: { trigger, content, close, portalled, overlay },
-		states: { open }
-	} = createDialog();
+		elements: { root: collapseRoot, content: collapseContent, trigger: collapseTrigger },
+		states: { open: collapseOpen }
+	} = createCollapsible({
+		forceVisible: true
+	});
 
 	const menuItem = [
 		{
@@ -28,63 +34,83 @@
 			screen: 'About'
 		}
 	];
+
+	let years = new Date().getFullYear();
 </script>
 
-<button class="btn btn-square btn-picton" {...$trigger} use:trigger title="Open Menu">
+<button
+	class="btn btn-square btn-picton"
+	aria-haspopup="dialog"
+	aria-expanded={open}
+	title="Open Menu"
+	on:click={() => (open = true)}
+>
 	<Menu />
 </button>
-<div {...$portalled} use:portalled>
-	{#if $open}
+<Modal
+	{open}
+	on:close={() => (open = false)}
+	overlay
+	portalElement="aside"
+	let:actions={action}
+	let:contents={content}
+>
+	<div
+		{...content.content}
+		use:action.content
+		class="fixed right-0 top-0 z-[101] block h-full min-h-screen w-full overflow-y-auto overflow-x-hidden bg-accent-5 focus:outline-none md:max-w-lg md:border-l-2 lg:max-w-md"
+		transition:fly={{
+			x: 350,
+			opacity: 1
+		}}
+	>
 		<div
-			{...$overlay}
-			use:overlay
-			class="fixed inset-0 z-[102] bg-black/50 backdrop-blur-sm"
-			transition:fade={{ duration: 250 }}
-		/>
-		<div
-			{...$content}
-			use:content
-			class="fixed right-0 top-0 z-[103] block h-full min-h-screen w-full overflow-y-auto overflow-x-hidden border-l-2 bg-accent-5 focus:outline-none md:max-w-lg lg:max-w-md"
-			transition:fly={{
-				x: 350,
-				opacity: 1
-			}}
+			{...content.title}
+			use:action.title
+			class="absolute -right-[30%] top-[50%] block -rotate-90 align-bottom text-[180px] font-black uppercase tracking-tighter text-accent-20"
 		>
-			<div
-				class="absolute -right-[30%] top-[50%] z-0 block -rotate-90 align-bottom text-[180px] font-black uppercase tracking-tighter text-accent-20"
-			>
-				menu
-			</div>
-			<div class="container relative mx-auto flex flex-col items-center justify-center gap-10 py-5">
-				<div class="flex w-full items-center justify-between">
-					<div class="block text-xl font-semibold text-picton md:text-2xl lg:text-3xl">
-						podcastlife
-					</div>
-					<div class="inline-flex items-center justify-between gap-2">
-						<ThemeSwitcher />
-						<button
-							{...$close}
-							use:close
-							class="btn btn-square btn-primary text-picton"
-							title="Close Menu"
-						>
-							<X />
-						</button>
-					</div>
+			Menu
+		</div>
+		<span {...content.description} use:action.description class="sr-only"> Menu Navigation </span>
+		<div class="container relative mx-auto flex flex-col items-center justify-center gap-10 py-5">
+			<div class="flex w-full items-center justify-between">
+				<div class="block text-xl font-semibold text-picton md:text-2xl lg:text-3xl">
+					podcastlife
 				</div>
-				<ul class="flex w-full flex-col gap-5 text-left">
-					{#each menuItem as menu}
-						<li
-							class="text-2xl font-bold hover:underline lg:text-4xl"
-							class:text-picton={$page.url.pathname === menu.href}
-						>
-							<a href={menu.href} {...$close} use:close>
-								{menu.screen}
-							</a>
-						</li>
-					{/each}
-				</ul>
+				<div class="inline-flex items-center justify-between gap-2">
+					<ThemeSwitcher />
+					<button
+						{...content.close}
+						use:action.close
+						class="btn btn-square btn-primary text-picton"
+						title="Close Menu"
+					>
+						<X />
+					</button>
+				</div>
+			</div>
+			<ul class="flex w-full flex-col gap-5 text-left">
+				{#each menuItem as menu}
+					<li
+						class="text-2xl font-bold hover:underline lg:text-4xl"
+						class:text-picton={$page.url.pathname === menu.href}
+					>
+						<a href={menu.href} {...content.close} use:action.close>
+							{menu.screen}
+						</a>
+					</li>
+				{/each}
+			</ul>
+		</div>
+		<div class="absolute bottom-0 block w-full">
+			<div class="inline-flex flex-row gap-x-2">
+				<span>
+					{years},
+				</span>
+				<span>Podcastlife</span>
+				<span> by </span>
+				<a href="https://rifkidhan.my.id" target="_blank" rel="noopener noreferrer"> Rifkidhan </a>
 			</div>
 		</div>
-	{/if}
-</div>
+	</div>
+</Modal>

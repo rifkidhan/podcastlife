@@ -1,16 +1,15 @@
 import type { PageServerLoad } from './$types';
-import { getPodcastsByCategory, getTrending } from '$lib/server/podcast';
+import { getPodcastsByCategory } from '$lib/server/podcasts';
 
-export const load = (async ({ params }) => {
-	const category = params.name.toUpperCase().replace('-', '_');
+export const load = (async ({ params, url }) => {
+	const category = params.name;
+	const before = url.searchParams.get('before');
+	const after = url.searchParams.get('after');
 
-	const [trending, podcast] = await Promise.all([
-		await getTrending({ category, limit: 5 }),
-		await getPodcastsByCategory({ category })
-	]);
+	const { data, meta } = await getPodcastsByCategory({ category, before, after });
 
 	return {
-		trending: trending.trending,
-		feeds: podcast.data
+		feeds: data,
+		meta: meta.page
 	};
 }) satisfies PageServerLoad;

@@ -14,20 +14,6 @@
 </script>
 
 <main>
-	<div class="flex min-h-screen items-center justify-center">
-		<div class="bg-cinnabar square-20" use:animate />
-	</div>
-	<!-- <div class="flex min-h-screen items-center justify-center">
-		<div
-			class="bg-cinnabar square-20"
-			use:animate={{
-				keyframe: {
-					rotate: [0, -90]
-				}
-			}}
-		/>
-	</div> -->
-
 	<div class="flex min-h-screen flex-col gap-10">
 		<span> About </span>
 

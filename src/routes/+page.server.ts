@@ -1,15 +1,11 @@
 import type { PageServerLoad } from './$types';
-import { podcastApi } from '$lib/server/podcasts';
-import { getTrending } from '$lib/server/podcast';
+import { getTrending, getRecentPodcast } from '$lib/server/podcasts';
 
-export const load = (async () => {
-	// const data = await podcastApi('/podcasts/trending');
+export const load = (async ({ setHeaders }) => {
+	const [trending, recent] = await Promise.all([getTrending({}), getRecentPodcast()]);
 
-	// const trendingFeeds = data.data.feeds;
-	// console.log(trendingFeeds);
-
-	const { trending } = await getTrending({});
 	return {
-		trending: trending
+		trending: trending.data,
+		recents: recent.data
 	};
 }) satisfies PageServerLoad;

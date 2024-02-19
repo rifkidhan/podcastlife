@@ -1,12 +1,8 @@
 import type { PageServerLoad } from './$types';
-import { podcastApi } from '$lib/server/podcasts';
-import { getLiveStream } from '$lib/server/podcast';
-import parser from '$lib/utils/parser';
-import type { PodcastInfo, LiveEpisode } from '$lib/utils/parser';
-import { error } from '@sveltejs/kit';
+import { getLiveStream } from '$lib/server/podcasts';
 
 export const load = (async () => {
-	const { live } = await getLiveStream();
+	const { data } = await getLiveStream();
 
-	return { live };
+	return { live: data };
 }) satisfies PageServerLoad;

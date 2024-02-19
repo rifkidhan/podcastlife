@@ -206,21 +206,5 @@ export default {
 			}
 		}
 	},
-	plugins: [
-		aspect,
-		typography,
-		plugin(({ matchUtilities, theme }) => {
-			matchUtilities(
-				{
-					square: (value) => ({
-						width: value,
-						height: value
-					})
-				},
-				{
-					values: theme('spacing')
-				}
-			);
-		})
-	]
+	plugins: [aspect, typography]
 };

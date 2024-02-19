@@ -1,13 +1,13 @@
 import type { PageServerLoad } from './$types';
-import { getPodcast } from '$lib/server/podcast';
+import { getPodcast } from '$lib/server/podcasts';
 import sanitize from '$lib/utils/sanitize';
 
-export const load = (async ({ params }) => {
+export const load = (async ({ params, setHeaders }) => {
 	const id = params.podcastId;
 
-	const { podcast } = await getPodcast(id);
+	const { data } = await getPodcast(id);
 
-	const { data: feed, episodes, live } = podcast;
+	const { feed, episodes, lives } = data;
 
 	return {
 		podcast: {
@@ -15,6 +15,6 @@ export const load = (async ({ params }) => {
 			description: sanitize(feed.description ?? '')
 		},
 		episodes: episodes,
-		live: live
+		live: lives
 	};
 }) satisfies PageServerLoad;

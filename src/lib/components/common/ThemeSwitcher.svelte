@@ -44,12 +44,12 @@
 <Switch
 	name="Theme Switcher"
 	value={$themes.current}
-	toggle={$themes.current === 'dark'}
+	checked={$themes.current === 'dark'}
 	on:click={toggle}
 >
 	{#if $themes.current === 'dark'}
-		<Moon class="h-[16px] w-[16px] md:h-[22px] md:w-[22px]" />
+		<Moon class="size-[16px] md:size-[22px]" />
 	{:else}
-		<Sun class="h-[16px] w-[16px] md:h-[22px] md:w-[22px]" />
+		<Sun class="size-[16px] md:size-[22px]" />
 	{/if}
 </Switch>

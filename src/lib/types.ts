@@ -1,34 +1,44 @@
-interface BasicFeed {
+export interface BasicFeed {
 	id: string;
 	author?: string;
 	description?: string;
 	image: string;
-	itunesId?: string;
 	language: string;
-	newestItemPublishTime: string;
+	newestItemPubdate: number;
 	tags: string[];
 	title: string;
 	url: string;
+	explicit: boolean;
 }
 
 export interface TrendingFeed extends BasicFeed {
 	trendScore?: number;
 }
 
-interface Feed extends BasicFeed {
+export interface Feed extends BasicFeed {
+	itunesId?: number;
 	contentType: string;
-	explicit: boolean;
 	generator?: string;
 	itunesType?: string;
 	link?: string;
-	oldestItemPublishTime: string;
+	oldestItemPubdate: string;
 	originalUrl?: string;
 	ownerName?: string;
 	podcastGuid: string;
 	copyright?: string;
 }
 
-interface Enclosure {
+export interface AlternativeEnclosure {
+	type: string;
+	length: number;
+	source: {
+		uri: string;
+		contentType: string;
+	}[];
+	default: boolean;
+}
+
+export interface Enclosure {
 	length: number;
 	type: string;
 	url: string;
@@ -87,6 +97,7 @@ interface Episode extends Items {
 	subtitle?: string;
 	summary?: string;
 	transcripts?: Transcript[];
+	alternativeEnclosures?: AlternativeEnclosure[];
 }
 
 interface Live extends Items {
@@ -95,6 +106,7 @@ interface Live extends Items {
 	persons?: [Person];
 	start: string;
 	status: 'live' | 'ended' | 'pending';
+	alternativeEnclosures?: AlternativeEnclosure[];
 }
 
 type SingleEpisodeType = Items &
@@ -102,58 +114,36 @@ type SingleEpisodeType = Items &
 	Pick<Live, 'end' | 'start' | 'status'>;
 
 export type Trending = {
-	data: { trending: TrendingFeed[] };
-	variables: {
-		limit?: number;
-		category?: string;
-		language?: 'EN' | 'IN';
-		since?: string;
-	};
+	data: BasicFeed[];
 };
 
 export type Podcast = {
 	data: {
-		podcast: {
-			data: Feed;
-			episodes: Episode[];
-			live?: Live[];
-		};
-	};
-	variables: {
-		id: string;
+		feed: Feed;
+		episodes: Episode[];
+		lives?: Live[];
 	};
 };
 
 export type LivePodcast = {
-	data: {
-		live: Live[];
-	};
+	data: Live[];
 };
 
 export type PodcastByCategory = {
-	data: {
-		podcastsByCategory: {
-			data: Feed[];
-			info: {
-				count: number;
-				endCursor?: string;
-			};
+	data: BasicFeed[];
+	meta: {
+		page: {
+			cursor: string;
+			more: boolean;
+			size: number;
 		};
-	};
-	variables: {
-		limit?: number;
-		category: string;
-		language?: 'EN' | 'IN';
-		cursor?: string;
 	};
 };
 
 export type SingleEpisode = {
-	data: {
-		episode: SingleEpisodeType;
-	};
-	variables: {
-		guid: string;
-		feedId: string;
-	};
+	data: SingleEpisodeType;
+};
+
+export type RecentPodcast = {
+	data: BasicFeed[];
 };

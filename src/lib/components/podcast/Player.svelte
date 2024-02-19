@@ -6,16 +6,15 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { createSlider, createPopover, type CreateSliderProps } from '@melt-ui/svelte';
-	import { onMount } from 'svelte';
 	import { playing, currentTime } from '$lib/stores/nowplaying';
-	import { Play, Pause, Volume2, VolumeX, ChevronUp, ChevronDown } from 'lucide-svelte';
+	import { Play, Pause, Volume2, VolumeX, ChevronUp } from 'lucide-svelte';
 	import { RunningText } from '$lib/components/common';
 	import { createAnimate } from '$lib/utils/motion';
 
 	import { Image } from '$lib/components/base';
 
-	let src = '';
 	let duration = 0;
+	let loading = true;
 
 	/**
 	 * Slider handler
@@ -31,7 +30,7 @@
 	};
 
 	const {
-		elements: { root, range, thumb },
+		elements: { root, range, thumbs },
 		states: { value },
 		options
 	} = createSlider({
@@ -45,14 +44,14 @@
 	 * Popover for volume
 	 */
 	const {
-		elements: { trigger: volumeTrigger, content: volumeContent, arrow, close },
+		elements: { trigger: volumeTrigger, content: volumeContent },
 		states: { open: volumeOpen }
 	} = createPopover({
 		forceVisible: true
 	});
 
 	const {
-		elements: { root: volumeSlider, range: volumeRange, thumb: volumeThumb },
+		elements: { root: volumeSlider, range: volumeRange, thumbs: volumeThumb },
 		states: { value: volumeValue }
 	} = createSlider({
 		orientation: 'vertical',
@@ -90,58 +89,34 @@
 		$value[0] = $currentTime;
 	}
 
-	$: if (content) {
-		src = content.url;
-	}
-
 	$: path = $page.url.pathname === '/play';
+	$: href = `/play?f=${$playing.podcast.id}&g=${encodeURIComponent(content.guid)}`;
 
 	const gotoPlayer = () => {
 		if (path) {
 			history.back();
 		} else {
-			goto(`/play?f=${$playing.podcast.id}&g=${content.guid}`);
+			goto(href);
 		}
 	};
-
-	onMount(() => {
-		$playing.paused = false;
-	});
-
-	let runningText: HTMLElement;
-
-	$: if (runningText) {
-		console.log(runningText.parentElement?.clientWidth, runningText.clientWidth);
-	}
 </script>
 
-<div
-	class="fixed bottom-0 z-[101] flex h-20 w-full items-center border-t-2 bg-accent-5 md:border-none"
->
-	<span
-		{...$root}
-		use:root
-		class="group absolute -top-2 left-0 hidden h-3 w-full items-center md:flex"
-	>
-		<span class="block h-[3px] w-full bg-accent-40">
-			<span {...$range} use:range class="h-[3px] bg-picton" />
-		</span>
-		<span
-			{...$thumb()}
-			use:thumb
-			class="hidden h-3 w-3 rounded-full border-2 bg-white group-hover:block group-focus:block group-aria-disabled:block"
-		/>
-	</span>
+{#key content.enclosure.url}
 	<audio
-		{src}
 		bind:duration
 		bind:currentTime={$currentTime}
 		bind:paused={$playing.paused}
 		bind:volume={$volumeValue[0]}
-		autoplay
 		preload="metadata"
-		on:ended={() => {
+		on:loadstart={() => {
+			loading = true;
 			currentTime.set(0);
+		}}
+		on:loadedmetadata={() => {
+			if (loading) {
+				loading = false;
+			}
+			playing.update((update) => ({ ...update, paused: false }));
 		}}
 		on:play={(e) => {
 			const audio = e.currentTarget;
@@ -152,7 +127,22 @@
 				currentTime.set(0);
 			}
 		}}
-	/>
+		on:ended={() => {
+			currentTime.set(0);
+		}}
+	>
+		{#if content.altEnclosure}
+			{#each content.altEnclosure as alt}
+				{#if alt.default}
+					<source src={alt.source[0].uri} type={alt.type} />
+				{:else}
+					<source src={alt.source[0].uri} type={alt.type} />
+				{/if}
+			{/each}
+		{:else}
+			<source src={content.enclosure.url} type={content.enclosure.type} />
+		{/if}
+	</audio>
 
 	<div class="container mx-auto grid grid-cols-8 gap-5 py-3">
 		<div class="col-span-2 hidden items-center gap-2 md:flex md:gap-3">
@@ -170,18 +160,20 @@
 				{/if}
 			</button>
 			<div class="relative flex w-full gap-1 text-xs font-semibold md:text-sm">
-				<span>
-					{formatTime($currentTime)}
-				</span>
-				<span class="font-bold">/</span>
-				<span>
-					{duration === Infinity ? 'live' : formatTime(duration)}
-				</span>
+				{#if duration === Infinity}
+					live
+				{:else if loading}
+					--/--
+				{:else}
+					{formatTime($currentTime)}/{formatTime(duration)}
+				{/if}
 			</div>
 		</div>
 
-		<div class="relative col-span-6 flex w-full items-center gap-2 md:col-span-5">
-			<div class="relative block aspect-1 w-14 overflow-hidden rounded-md border-2">
+		<div class="relative col-span-6 flex w-full items-center gap-x-2 md:col-span-5 lg:gap-x-3">
+			<div
+				class="relative block aspect-1 w-8 flex-none overflow-hidden rounded-md border-2 md:w-12"
+			>
 				{#if content}
 					<Image
 						src={content.image}
@@ -190,15 +182,15 @@
 					/>
 				{/if}
 			</div>
-			<div class="flex flex-col overflow-hidden pl-2">
-				<RunningText>
+			<div class="flex flex-col overflow-hidden md:gap-[2px]">
+				<RunningText class="text-sm md:text-base">
 					<span class:explicit={content?.explicit}>
 						{content.title}
 					</span>
 				</RunningText>
 				<a
 					href="/podcast/{$playing.podcast.id}"
-					class="max-w-fit text-xs font-semibold uppercase hover:text-picton lg:text-sm"
+					class="max-w-fit truncate text-xs uppercase text-accent-80 hover:text-picton lg:text-sm"
 				>
 					{$playing.podcast.title}
 				</a>
@@ -233,16 +225,11 @@
 			</button>
 			<button
 				class="btn btn-square btn-picton"
-				title="Open Player"
+				title={path ? 'Close Player' : 'Open Player'}
 				on:click={() => {
 					gotoPlayer();
 				}}
 			>
-				<!-- {#if path}
-					<ChevronUp />
-				{:else}
-					<ChevronDown />
-				{/if} -->
 				<span
 					use:animate={{
 						keyframe: {
@@ -250,12 +237,26 @@
 						}
 					}}
 				>
-					<ChevronDown />
+					<ChevronUp />
 				</span>
 			</button>
 		</div>
 	</div>
-</div>
+	<span
+		{...$root}
+		use:root
+		class="group absolute -top-2 left-0 hidden h-3 w-full items-center md:flex"
+	>
+		<span class="block h-[3px] w-full bg-accent-40">
+			<span {...$range} use:range class="h-[3px] bg-picton" />
+		</span>
+		<span
+			{...$thumbs[0]}
+			use:thumbs
+			class="block h-3 w-3 rounded-full border-2 bg-white group-aria-disabled:block"
+		/>
+	</span>
+{/key}
 
 <!-- volume slider component -->
 {#if $volumeOpen}
@@ -268,7 +269,7 @@
 			<span class="relative block h-full w-[3px] bg-accent-40">
 				<span {...$volumeRange} use:volumeRange class="w-full bg-picton" />
 			</span>
-			<span {...$volumeThumb()} use:volumeThumb class="h-3 w-3 rounded-full bg-picton" />
+			<span {...$volumeThumb[0]} use:volumeThumb class="h-3 w-3 rounded-full bg-picton" />
 		</span>
 	</div>
 {/if}

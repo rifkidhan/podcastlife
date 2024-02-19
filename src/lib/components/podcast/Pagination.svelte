@@ -37,7 +37,7 @@
 <div class="flex w-full flex-col items-center" aria-label="pagination" {...$root} use:root>
 	<div class="flex flex-row flex-wrap items-center justify-center gap-1 lg:gap-3">
 		<button
-			class="btn btn-primary btn-square disabled:btn-disabled square-12 data-[selected]:bg-accent-95 data-[selected]:text-accent-5"
+			class="btn btn-primary btn-square disabled:btn-disabled size-12 data-[selected]:bg-accent-95 data-[selected]:text-accent-5"
 			{...$prevButton}
 			use:prevButton
 			on:click={() => {
@@ -53,7 +53,7 @@
 				<span>...</span>
 			{:else}
 				<button
-					class="btn btn-primary btn-square disabled:btn-disabled square-12 data-[selected]:bg-accent-95 data-[selected]:text-accent-5"
+					class="btn btn-primary btn-square disabled:btn-disabled size-12 data-[selected]:bg-accent-95 data-[selected]:text-accent-5"
 					{...$pageTrigger(page)}
 					use:pageTrigger
 					on:click={() => {
@@ -67,7 +67,7 @@
 			{/if}
 		{/each}
 		<button
-			class="btn btn-primary btn-square disabled:btn-disabled square-12 data-[selected]:bg-accent-95 data-[selected]:text-accent-5"
+			class="btn btn-primary btn-square disabled:btn-disabled size-12 data-[selected]:bg-accent-95 data-[selected]:text-accent-5"
 			{...$nextButton}
 			use:nextButton
 			on:click={() => {

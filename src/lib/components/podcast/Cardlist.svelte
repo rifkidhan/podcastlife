@@ -37,21 +37,6 @@
 					alt={title ?? podcast}
 					class="h-full w-full object-cover object-center"
 				/>
-				<!-- <div class="absolute inset-0 h-full w-full">
-					<span
-						class="inline-flex h-full w-full items-center justify-center text-cinnabar opacity-50"
-					>
-						<span
-							class="inline-flex h-1/2 w-1/2 items-center justify-center rounded-full bg-white p-2 text-cinnabar-40"
-						>
-							{#if play}
-								<Pause class="h-full w-full stroke-[3px]" />
-							{:else}
-								<Play class="h-full w-full stroke-[3px]" />
-							{/if}
-						</span>
-					</span>
-				</div> -->
 			</div>
 		</div>
 		<div class="flex w-full flex-row items-center gap-2">
@@ -93,7 +78,7 @@
 				on:click
 				on:focus
 				title={play ? 'Pause podcast' : 'Play podcast'}
-				class="btn btn-picton btn-square square-6 md:square-8 lg:square-10"
+				class="btn btn-picton btn-square size-6 md:size-8 lg:size-10"
 			>
 				{#if play}
 					<Pause />
@@ -107,7 +92,7 @@
 
 <style lang="postcss">
 	.root {
-		@apply relative w-full rounded-md border-2 px-4 py-3 transition;
+		@apply relative block w-full rounded-md border-2 px-4 py-3 transition;
 		&:hover {
 			@apply -translate-x-1 -translate-y-1 shadow-drop;
 		}
@@ -116,16 +101,16 @@
 		@apply relative flex items-center gap-3 lg:gap-5;
 	}
 	.image {
-		@apply w-[10%];
+		@apply w-[10%] flex-none;
 		& > div {
 			@apply relative block aspect-1 w-full overflow-hidden rounded-md;
 		}
 	}
 	.content {
-		@apply relative flex w-full flex-col gap-2;
+		@apply relative flex w-full flex-col gap-1 lg:gap-2;
 	}
 	.title {
-		@apply text-base font-semibold leading-none md:text-xl lg:text-2xl;
+		@apply line-clamp-3 text-sm leading-none md:text-xl md:font-semibold lg:text-2xl;
 	}
 
 	.date {

@@ -2,6 +2,8 @@
 	import type { PageServerData } from './$types';
 	import { Cardlist } from '$lib/components/podcast';
 	import { playing, player } from '$lib/stores/nowplaying';
+	import type { NowPlayingProps } from '$lib/stores/nowplaying';
+	import { Head } from '$lib/components/common';
 
 	export let data: PageServerData;
 
@@ -9,20 +11,13 @@
 		podcast,
 		content
 	}: {
-		podcast: {
-			id: string;
-			title: string;
-			image: string;
-		};
-		content: {
-			guid: string;
-			title: string;
-			url: string;
-			image: string;
-			explicit?: boolean;
-		};
+		podcast: NowPlayingProps['podcast'];
+		content: NowPlayingProps['content'];
 	}) => {
-		if (content.url !== $playing.content.url) {
+		if (!$player.open) {
+			$player.open = true;
+		}
+		if (content.enclosure.url !== $playing.content.enclosure.url) {
 			$playing.podcast = podcast;
 			$playing.content = content;
 			$playing.paused = false;
@@ -33,6 +28,8 @@
 
 	$: live = data.live;
 </script>
+
+<Head title="live stream" />
 
 <main>
 	<h1>Live</h1>
@@ -51,11 +48,8 @@
 					linked={true}
 					podcastId={item.feedId}
 					end={item.end}
-					play={$playing.paused === false && item.enclosure.url === $playing.content.url}
+					play={$playing.paused === false && item.enclosure.url === $playing.content.enclosure.url}
 					on:click={() => {
-						if (!$player.open) {
-							$player.open = true;
-						}
 						nowplaying({
 							podcast: {
 								id: item.feedId ?? '',
@@ -64,10 +58,11 @@
 							},
 							content: {
 								title: item.title ?? '',
-								image: item.image,
-								url: item.enclosure.url,
+								image: item.image ?? item.image,
+								enclosure: item.enclosure,
 								guid: item.guid ?? '',
-								explicit: false
+								explicit: false,
+								altEnclosure: item.alternativeEnclosures
 							}
 						});
 					}}
@@ -90,11 +85,8 @@
 					podcastId={item.feedId}
 					start={item.start}
 					end={item.end}
-					play={$playing.paused === false && item.enclosure.url === $playing.content.url}
+					play={$playing.paused === false && item.enclosure.url === $playing.content.enclosure.url}
 					on:click={() => {
-						if (!$player.open) {
-							$player.open = true;
-						}
 						nowplaying({
 							podcast: {
 								id: item.feedId ?? '',
@@ -103,10 +95,11 @@
 							},
 							content: {
 								title: item.title ?? '',
-								image: item.image,
-								url: item.enclosure.url,
+								image: item.image ?? item.image,
+								enclosure: item.enclosure,
 								guid: item.guid ?? '',
-								explicit: false
+								explicit: false,
+								altEnclosure: item.alternativeEnclosures
 							}
 						});
 					}}
@@ -114,7 +107,7 @@
 			{/each}
 		</ul>
 	</section>
-	<section class="container relative mx-auto flex flex-col gap-5">
+	<!-- <section class="container relative mx-auto flex flex-col gap-5">
 		<h2>Ended Livestream</h2>
 		<ul class="flex w-full flex-col gap-5">
 			{#each live.filter((val) => val.status === 'ended') as item}
@@ -129,11 +122,8 @@
 					explicit={false}
 					start={item.start}
 					end={item.end}
-					play={$playing.paused === false && item.enclosure.url === $playing.content.url}
+					play={$playing.paused === false && item.enclosure.url === $playing.content.enclosure.url}
 					on:click={() => {
-						if (!$player.open) {
-							$player.open = true;
-						}
 						nowplaying({
 							podcast: {
 								id: item.feedId ?? '',
@@ -142,15 +132,16 @@
 							},
 							content: {
 								title: item.title ?? '',
-								image: item.image,
-								url: item.enclosure.url,
+								image: item.image ?? item.image,
+								enclosure: item.enclosure,
 								guid: item.guid ?? '',
-								explicit: false
+								explicit: false,
+								altEnclosure: item.alternativeEnclosures
 							}
 						});
 					}}
 				/>
 			{/each}
 		</ul>
-	</section>
+	</section> -->
 </main>

@@ -6,6 +6,11 @@
 
 	let error = false;
 	let loaded = false;
+
+	let imageSrc = src;
+	$: if (src === '') {
+		error = true;
+	}
 </script>
 
 {#if error}
@@ -14,13 +19,14 @@
 	</span>
 {:else}
 	<img
-		{src}
-		{alt}
 		loading="lazy"
 		decoding="async"
+		src={imageSrc}
+		{alt}
 		on:load={() => (loaded = true)}
 		on:error={() => (error = true)}
 		class:blur={!loaded}
+		class:bg-accent-20={true}
 		class:transition={true}
 		{...$$restProps}
 	/>

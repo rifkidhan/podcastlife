@@ -1,14 +1,7 @@
 import { writable } from 'svelte/store';
-import type { Episode, LiveEpisode } from '$lib/utils/parser';
+import type { Enclosure, AlternativeEnclosure } from '$lib/types';
 
-interface Player {
-	podcastName: string;
-	type: 'podcast' | 'live';
-	content?: Episode | LiveEpisode;
-	paused: boolean;
-}
-
-interface NowPlaying {
+export interface NowPlayingProps {
 	podcast: {
 		id: string;
 		title: string;
@@ -17,13 +10,14 @@ interface NowPlaying {
 	content: {
 		guid: string;
 		title: string;
-		url: string;
+		enclosure: Enclosure;
 		image: string;
 		explicit?: boolean;
+		altEnclosure?: AlternativeEnclosure[];
 	};
 	paused: boolean;
 }
-export const playing = writable<NowPlaying>({
+export const playing = writable<NowPlayingProps>({
 	podcast: {
 		id: '',
 		title: '',
@@ -32,34 +26,16 @@ export const playing = writable<NowPlaying>({
 	content: {
 		guid: '',
 		title: '',
-		url: '',
-		image: ''
+		enclosure: {
+			url: '',
+			type: '',
+			length: 0
+		},
+		image: '',
+		altEnclosure: undefined
 	},
 	paused: true
 });
-
-interface Basic {
-	podcastName: string;
-	type: 'podcast' | 'live';
-	paused: boolean;
-}
-
-interface Podcast extends Basic {
-	content?: Episode;
-}
-
-interface Live extends Basic {
-	content?: LiveEpisode;
-}
-
-export const play = (isPodcast: boolean) => {
-	const podcast = writable<Podcast>({
-		podcastName: '',
-		type: 'podcast',
-		content: undefined,
-		paused: true
-	});
-};
 
 export const player = writable({
 	open: false,

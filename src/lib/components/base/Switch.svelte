@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { createSwitch } from '@melt-ui/svelte';
+	import { createSwitch, createSync } from '@melt-ui/svelte';
 	import { spring } from 'svelte/motion';
 
-	export let toggle = false;
+	export let checked = false;
 	export let variant: 'primary' | 'secondary' = 'primary';
 	export let name = 'switch';
 	export let disabled = false;
@@ -10,19 +10,25 @@
 
 	const {
 		elements: { root, input },
-		states: { checked },
+		states,
 		options
-	} = createSwitch({ defaultChecked: toggle });
+	} = createSwitch();
+
+	const sync = createSync({ ...options, ...states });
 
 	$: {
 		options.name.update((update) => (update = name));
-		options.disabled.update((update) => (update = disabled));
-		options.value.update((update) => (update = value));
 	}
+
+	$: sync.disabled(disabled, (v) => (disabled = v));
+	$: sync.value(value);
+	$: sync.name(name);
+	$: sync.defaultChecked(checked);
+	$: sync.checked(checked, (v) => (checked = v));
 
 	const thumb = spring(0);
 
-	$: $thumb = $checked ? 28 : 0;
+	$: $thumb = checked ? 28 : 0;
 </script>
 
 <button

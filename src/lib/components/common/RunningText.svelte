@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { beforeUpdate, afterUpdate } from 'svelte';
+	import { afterUpdate } from 'svelte';
 	import { createAnimate } from '$lib/utils/motion';
 	export let component = 'span';
 
@@ -9,13 +9,19 @@
 
 	const { animate } = createAnimate({});
 
-	afterUpdate(() => {
+	const handleResize = () => {
 		if (runningText && runningText.parentElement) {
 			letsMove = runningText.scrollWidth > runningText.parentElement.clientWidth;
 			sumWidth = runningText.scrollWidth - runningText.parentElement.clientWidth;
 		}
+	};
+
+	afterUpdate(() => {
+		handleResize();
 	});
 </script>
+
+<svelte:window on:resize={handleResize} />
 
 <svelte:element
 	this={component}
@@ -27,7 +33,7 @@
 			x: [0, -(sumWidth + 15)]
 		},
 		options: {
-			duration: sumWidth / 100 + 2,
+			duration: Math.floor((sumWidth * 3) / 100 + 3),
 			repeat: Infinity,
 			easing: 'ease-in-out',
 			direction: 'alternate'
@@ -37,23 +43,3 @@
 >
 	<slot />
 </svelte:element>
-
-<style>
-	.animatiton {
-		animation-name: running;
-		animation-duration: var(--duration);
-		animation-fill-mode: both;
-		animation-iteration-count: infinite;
-	}
-	@keyframes running {
-		0% {
-			transform: translateX(0);
-		}
-		50% {
-			transform: translateX(var(--transform));
-		}
-		100% {
-			transform: translateX(0);
-		}
-	}
-</style>
