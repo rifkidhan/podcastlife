@@ -44,7 +44,7 @@
 	<section
 		class="container relative mx-auto mb-20 grid min-h-screen grid-cols-1 gap-10 md:mb-24 lg:grid-cols-2"
 	>
-		<div class="relative flex w-full flex-col gap-5">
+		<div class="relative flex h-full w-full flex-col items-center gap-5">
 			<div class="relative block aspect-1 size-32 overflow-hidden rounded-lg">
 				<Image
 					src={content.image}
@@ -52,8 +52,11 @@
 					class="h-full w-full object-cover object-center"
 				/>
 			</div>
-			<div>
-				<h1 class="text-xl font-semibold md:text-3xl" class:explicit={content.explicit}>
+			<div class="text-center">
+				<h1
+					class="text-balance text-xl font-semibold md:text-3xl"
+					class:explicit={content.explicit}
+				>
 					{content.title}
 				</h1>
 				<div>
@@ -62,11 +65,11 @@
 			</div>
 		</div>
 
-		<Tabs class="relative flex w-full flex-col" {tabs} let:active>
+		<Tabs class="relative flex h-full w-full flex-col" {tabs} let:active>
 			<TabsContent contentId="description" value={active}>
 				{#if episode.description}
 					<div
-						class="prose relative block max-w-none prose-p:mb-2 prose-p:mt-0 prose-p:break-words"
+						class="prose relative block h-full max-w-none prose-p:mb-2 prose-p:mt-0 prose-p:break-words"
 					>
 						{@html episode.description}
 					</div>

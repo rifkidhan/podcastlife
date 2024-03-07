@@ -35,7 +35,7 @@
 	<div
 		{...content.content}
 		use:action.content
-		class="fixed bottom-0 z-[100] flex h-16 w-full items-center border-t-2 bg-accent-5 md:h-20 md:border-none"
+		class="fixed bottom-0 z-[100] flex h-16 w-full items-center bg-accent-5 md:h-20"
 		transition:fly={{
 			y: 350,
 			opacity: 1

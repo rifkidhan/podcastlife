@@ -3,7 +3,7 @@ import { convertFile, Options } from 'transcriptator';
 const transcript = (data: string) => {
 	Options.setOptions({
 		combineSegments: true,
-		combineSegmentsLength: 102,
+		combineSegmentsLength: 70,
 		combineEqualTimes: true,
 		speakerChange: true
 	});

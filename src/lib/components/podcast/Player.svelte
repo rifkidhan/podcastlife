@@ -5,7 +5,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { createSlider, createPopover, type CreateSliderProps } from '@melt-ui/svelte';
+	import {
+		createSlider,
+		createPopover,
+		createProgress,
+		type CreateSliderProps
+	} from '@melt-ui/svelte';
 	import { playing, currentTime } from '$lib/stores/nowplaying';
 	import { Play, Pause, Volume2, VolumeX, ChevronUp } from 'lucide-svelte';
 	import { RunningText } from '$lib/components/common';
@@ -61,6 +66,20 @@
 		defaultValue: [1]
 	});
 
+	/**
+	 * Progress
+	 */
+	const {
+		elements: { root: progressRoot },
+		states: { value: progress },
+		options: { max: progressMax }
+	} = createProgress({
+		max: Math.floor(duration)
+	});
+
+	/**
+	 * Animate
+	 */
 	const { animate } = createAnimate({});
 
 	/**
@@ -84,9 +103,11 @@
 	$: content = $playing.content;
 
 	$: {
-		options.max.set(duration);
+		options.max.set(Math.floor(duration));
 		options.disabled.set($currentTime === Infinity);
+		progressMax.set(Math.floor(duration));
 		$value[0] = $currentTime;
+		$progress = $currentTime;
 	}
 
 	$: path = $page.url.pathname === '/play';
@@ -199,6 +220,8 @@
 		<div class="col-span-2 flex items-center justify-end gap-2 md:col-span-1 md:gap-3">
 			<button
 				class="btn btn-square btn-picton block md:hidden"
+				class:btn-disabled={loading}
+				disabled={loading}
 				on:click={() => {
 					$playing.paused = !$playing.paused;
 				}}
@@ -242,10 +265,10 @@
 			</button>
 		</div>
 	</div>
-	<span
+	<div
 		{...$root}
 		use:root
-		class="group absolute -top-2 left-0 hidden h-3 w-full items-center md:flex"
+		class="group absolute -top-2 left-0 hidden h-3 w-full items-center xl:flex"
 	>
 		<span class="block h-[3px] w-full bg-accent-40">
 			<span {...$range} use:range class="h-[3px] bg-picton" />
@@ -255,7 +278,15 @@
 			use:thumbs
 			class="block h-3 w-3 rounded-full border-2 bg-white group-aria-disabled:block"
 		/>
-	</span>
+	</div>
+	<div class="absolute top-0 block h-fit w-full xl:hidden">
+		<span {...$progressRoot} use:progressRoot class="relative block h-[3px] w-full bg-accent-40">
+			<span
+				class="absolute left-0 top-0 h-full bg-picton"
+				style:width="{(100 * ($progress ?? 0)) / ($progressMax ?? 1)}%"
+			/>
+		</span>
+	</div>
 {/key}
 
 <!-- volume slider component -->

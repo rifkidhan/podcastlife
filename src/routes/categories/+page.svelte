@@ -8,10 +8,10 @@
 <Head title="Categories" />
 
 <main class="container mx-auto">
-	<ul class="grid w-full grid-cols-6 gap-5">
+	<ul class="grid w-full grid-cols-4 gap-5">
 		{#each data.categories as cat}
-			<li class="capitalize">
-				<a href="/categories/{cat.id}">
+			<li class="relative block capitalize">
+				<a href="/categories/{cat.id}" class="w-full bg-picton p-2">
 					{cat.title}
 				</a>
 			</li>

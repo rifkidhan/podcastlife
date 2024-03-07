@@ -50,8 +50,13 @@
 	};
 </script>
 
-<div bind:this={viewport} class="size-fit overflow-y-auto">
+<div bind:this={viewport} class="size-full overflow-y-scroll">
 	<div bind:this={content} style:padding-top="{top}px" style:padding-bottom="{bottom}px">
+		{#each data.slice(a, b) as item, i (item)}
+			<div class="flow-root" data-item-id={a + i} use:measure={a + i}>
+				<slot name="item" {item} i={a + i} />
+			</div>
+		{/each}
 		<slot />
 	</div>
 </div>

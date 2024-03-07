@@ -8,8 +8,8 @@
 
 <Head title={$page.params.name} />
 <main>
-	<section>
-		<h1 class="text-2xl uppercase">
+	<section class="container mx-auto">
+		<h1 class="text-4xl font-bold uppercase">
 			{$page.params.name}
 		</h1>
 	</section>

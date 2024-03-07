@@ -16,7 +16,7 @@
 </script>
 
 <div
-	class="flex min-h-[100px] w-full flex-col gap-5 rounded-md rounded-tl-none border-2 bg-accent-5 px-5 py-8 shadow-drop"
+	class="flex max-h-max min-h-[100px] w-full flex-col gap-5 overflow-y-auto rounded-md rounded-tl-none border-2 bg-accent-5 px-5 py-8 shadow-drop"
 	{...$content(contentId)}
 	use:content
 	bind:this={ref}

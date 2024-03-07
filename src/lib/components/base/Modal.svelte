@@ -54,7 +54,7 @@
 			<div
 				{...$contentOverlay}
 				use:contentOverlay
-				class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm"
+				class="fixed inset-0 z-[102] bg-black/50 backdrop-blur-sm"
 				transition:fade={{ duration: 250 }}
 			/>
 		{/if}

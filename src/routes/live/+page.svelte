@@ -67,6 +67,8 @@
 						});
 					}}
 				/>
+			{:else}
+				<div>No one live stream now.</div>
 			{/each}
 		</ul>
 	</section>
@@ -104,44 +106,9 @@
 						});
 					}}
 				/>
+			{:else}
+				<div>No one upcoming live stream.</div>
 			{/each}
 		</ul>
 	</section>
-	<!-- <section class="container relative mx-auto flex flex-col gap-5">
-		<h2>Ended Livestream</h2>
-		<ul class="flex w-full flex-col gap-5">
-			{#each live.filter((val) => val.status === 'ended') as item}
-				<Cardlist
-					title={item.title}
-					podcast={item.feedTitle ?? ''}
-					type="live"
-					status={item.status}
-					imageSrc={item.image}
-					linked={true}
-					podcastId={item.feedId}
-					explicit={false}
-					start={item.start}
-					end={item.end}
-					play={$playing.paused === false && item.enclosure.url === $playing.content.enclosure.url}
-					on:click={() => {
-						nowplaying({
-							podcast: {
-								id: item.feedId ?? '',
-								title: item.feedTitle ?? '',
-								image: item.image
-							},
-							content: {
-								title: item.title ?? '',
-								image: item.image ?? item.image,
-								enclosure: item.enclosure,
-								guid: item.guid ?? '',
-								explicit: false,
-								altEnclosure: item.alternativeEnclosures
-							}
-						});
-					}}
-				/>
-			{/each}
-		</ul>
-	</section> -->
 </main>

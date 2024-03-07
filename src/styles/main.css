@@ -106,13 +106,11 @@
 
 	html,
 	body {
-		@apply box-border h-full touch-manipulation overscroll-x-none bg-accent-5 font-sans
+		@apply box-border touch-manipulation overscroll-x-none bg-accent-5 font-sans
 		font-medium text-accent-95 antialiased selection:bg-chartreuse dark:selection:text-black;
-
-		scrollbar-color: var(--red-2) transparent;
 	}
 	body {
-		@apply relative m-0 min-h-full text-sm md:text-base;
+		@apply relative m-0 min-h-dvh text-sm md:text-base;
 	}
 	main {
 		@apply relative my-10 flex min-h-screen w-full flex-col items-center justify-center gap-10;

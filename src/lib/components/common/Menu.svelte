@@ -58,7 +58,7 @@
 	<div
 		{...content.content}
 		use:action.content
-		class="fixed right-0 top-0 z-[101] block h-full min-h-screen w-full overflow-y-auto overflow-x-hidden bg-accent-5 focus:outline-none md:max-w-lg md:border-l-2 lg:max-w-md"
+		class="fixed right-0 top-0 z-[102] block h-full min-h-screen w-full overflow-y-auto overflow-x-hidden bg-accent-5 focus:outline-none md:max-w-lg md:border-l-2 lg:max-w-md"
 		transition:fly={{
 			x: 350,
 			opacity: 1
@@ -72,7 +72,9 @@
 			Menu
 		</div>
 		<span {...content.description} use:action.description class="sr-only"> Menu Navigation </span>
-		<div class="container relative mx-auto flex flex-col items-center justify-center gap-10 py-5">
+		<div
+			class="container relative mx-auto flex min-h-dvh flex-col items-center justify-between gap-10 py-5"
+		>
 			<div class="flex w-full items-center justify-between">
 				<div class="block text-xl font-semibold text-picton md:text-2xl lg:text-3xl">
 					podcastlife
@@ -101,8 +103,6 @@
 					</li>
 				{/each}
 			</ul>
-		</div>
-		<div class="absolute bottom-0 block w-full">
 			<div class="inline-flex flex-row gap-x-2">
 				<span>
 					{years},
@@ -112,5 +112,6 @@
 				<a href="https://rifkidhan.my.id" target="_blank" rel="noopener noreferrer"> Rifkidhan </a>
 			</div>
 		</div>
+		<div class="absolute bottom-0 block w-full"></div>
 	</div>
 </Modal>

@@ -6,7 +6,7 @@
 
 <div class="flex w-full">
 	<ul
-		class="relative flex touch-pan-x snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto px-3 pb-8 pt-1"
+		class="relative flex snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto px-3 pb-8 pt-1"
 		data-sveltekit-preload-data="tap"
 	>
 		{#each items as item (item.id)}
