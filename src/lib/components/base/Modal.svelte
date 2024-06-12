@@ -21,7 +21,7 @@
 		role,
 		preventScroll,
 		forceVisible,
-		closeOnEscape,
+		escapeBehavior: closeOnEscape ? 'close' : 'ignore',
 		closeOnOutsideClick
 	});
 

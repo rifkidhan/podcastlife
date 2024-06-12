@@ -73,7 +73,7 @@
 		</div>
 		<span {...content.description} use:action.description class="sr-only"> Menu Navigation </span>
 		<div
-			class="container relative mx-auto flex min-h-dvh flex-col items-center justify-between gap-10 py-5"
+			class="container relative mx-auto flex h-dvh flex-col items-center justify-between gap-10 py-5"
 		>
 			<div class="flex w-full items-center justify-between">
 				<div class="block text-xl font-semibold text-picton md:text-2xl lg:text-3xl">
@@ -103,7 +103,7 @@
 					</li>
 				{/each}
 			</ul>
-			<div class="inline-flex flex-row gap-x-2">
+			<div class="inline-flex w-full flex-row gap-x-2">
 				<span>
 					{years},
 				</span>
