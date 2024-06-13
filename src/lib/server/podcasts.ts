@@ -1,4 +1,4 @@
-import { API_URL, API_TOKEN } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { error } from '@sveltejs/kit';
 import type {
 	Trending,
@@ -8,6 +8,9 @@ import type {
 	PodcastByCategory,
 	RecentPodcast
 } from '$lib/types';
+
+const API_URL = env.API_URL;
+const API_TOKEN = env.API_URL;
 
 export const podcastApi = async <T>({
 	endpoint,

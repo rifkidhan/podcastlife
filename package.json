@@ -5,13 +5,12 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-		"postbuild": "cp package.json package-lock.json build && cd build && npm ci --omit dev",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"start": "node index.js"
+		"start": "node -r dotenv/config build"
 	},
 	"devDependencies": {
 		"@melt-ui/svelte": "^0.81.0",
@@ -45,6 +44,7 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource-variable/plus-jakarta-sans": "^5.0.21",
+		"dotenv": "^16.4.5",
 		"sanitize-html": "^2.13.0",
 		"transcriptator": "^1.1.4"
 	}

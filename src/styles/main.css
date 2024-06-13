@@ -106,8 +106,7 @@
 
 	html,
 	body {
-		@apply box-border touch-manipulation overscroll-x-none bg-accent-5 font-sans
-		font-medium text-accent-95 antialiased selection:bg-chartreuse dark:selection:text-black;
+		@apply box-border touch-manipulation overscroll-x-none bg-accent-5 font-sans font-medium text-accent-95 antialiased selection:bg-chartreuse dark:selection:text-black;
 	}
 	body {
 		@apply relative m-0 min-h-dvh text-sm md:text-base;

@@ -1,6 +1,6 @@
-import {text} from '@sveltejs/kit'
-import type { RequestHandler } from "./$types";
+import { text } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = () => {
-	return text("Health Check: OK")
-}
+	return text('Health Check: OK');
+};
