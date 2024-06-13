@@ -10,7 +10,7 @@ import type {
 } from '$lib/types';
 
 const API_URL = env.API_URL;
-const API_TOKEN = env.API_URL;
+const API_TOKEN = env.API_TOKEN;
 
 export const podcastApi = async <T>({
 	endpoint,

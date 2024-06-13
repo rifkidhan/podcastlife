@@ -1,5 +1,4 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
-import plugin from 'tailwindcss/plugin';
 import aspect from '@tailwindcss/aspect-ratio';
 import typography from '@tailwindcss/typography';
 
@@ -15,7 +14,7 @@ function addColor(str) {
 /** @type {import('tailwindcss').Config} */
 export default {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
-	darkMode: 'class',
+	darkMode: 'selector',
 	theme: {
 		container: {
 			padding: {
