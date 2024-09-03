@@ -65,6 +65,7 @@ interface Items {
 	enclosure: Enclosure;
 	feedId: string;
 	feedTitle: string;
+	feedImage: string;
 	guid?: string;
 	image: string;
 	link?: string;
@@ -110,7 +111,10 @@ interface Live extends Items {
 }
 
 type SingleEpisodeType = Items &
-	Pick<Episode, 'chapters' | 'pubDate' | 'season' | 'transcripts' | 'duration' | 'episode'> &
+	Pick<
+		Episode,
+		'chapters' | 'pubDate' | 'season' | 'transcripts' | 'duration' | 'episode' | 'explicit'
+	> &
 	Pick<Live, 'end' | 'start' | 'status'>;
 
 export type Trending = {

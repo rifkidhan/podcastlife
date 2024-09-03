@@ -1,117 +1,175 @@
 <script lang="ts">
-	import { createCollapsible } from '@melt-ui/svelte';
-	import { Menu, X } from 'lucide-svelte';
-	import { fly } from 'svelte/transition';
+	import { Button, Icons, useUI } from '$lib/components';
 	import ThemeSwitcher from './ThemeSwitcher.svelte';
-	import { page } from '$app/stores';
-	import { Modal } from '$lib/components/base';
+	import { fly, fade } from 'svelte/transition';
 	import { categories } from '$lib/utils/constants';
+	// import { page } from '$app/stores';
 
-	let open = false;
-
-	const {
-		elements: { root: collapseRoot, content: collapseContent, trigger: collapseTrigger },
-		states: { open: collapseOpen }
-	} = createCollapsible({
-		forceVisible: true
-	});
-
-	const menuItem = [
+	const menuItems = [
 		{
 			href: '/',
-			screen: 'Home'
+			title: 'Home'
 		},
 		{
 			href: '/categories',
-			screen: 'Categories'
+			title: 'Categories'
 		},
 		{
 			href: '/live',
-			screen: 'Live Now'
+			title: 'Live Podcast'
 		},
 		{
 			href: '/about',
-			screen: 'About'
+			title: 'About'
 		}
 	];
 
-	let years = new Date().getFullYear();
+	const open = useUI();
 </script>
 
-<button
-	class="btn btn-square btn-picton"
-	aria-haspopup="dialog"
-	aria-expanded={open}
-	title="Open Menu"
-	on:click={() => (open = true)}
->
-	<Menu />
-</button>
-<Modal
-	{open}
-	on:close={() => (open = false)}
-	overlay
-	portalElement="aside"
-	let:actions={action}
-	let:contents={content}
->
-	<div
-		{...content.content}
-		use:action.content
-		class="fixed right-0 top-0 z-[102] block h-full min-h-screen w-full overflow-y-auto overflow-x-hidden bg-accent-5 focus:outline-none md:max-w-lg md:border-l-2 lg:max-w-md"
-		transition:fly={{
-			x: 350,
-			opacity: 1
-		}}
-	>
-		<div
-			{...content.title}
-			use:action.title
-			class="absolute -right-[30%] top-[50%] block -rotate-90 align-bottom text-[180px] font-black uppercase tracking-tighter text-accent-20"
-		>
-			Menu
-		</div>
-		<span {...content.description} use:action.description class="sr-only"> Menu Navigation </span>
-		<div
-			class="container relative mx-auto flex h-dvh flex-col items-center justify-between gap-10 py-5"
-		>
-			<div class="flex w-full items-center justify-between">
-				<div class="block text-xl font-semibold text-picton md:text-2xl lg:text-3xl">
-					podcastlife
-				</div>
-				<div class="inline-flex items-center justify-between gap-2">
+<div id="side-menu-wrapper" inert={!open.menuOpen} class="drawer">
+	{#if open.menuOpen}
+		<div class="backdrop" aria-hidden="true" transition:fade={{ duration: 250 }}></div>
+		<div id="side-menu" transition:fly={{ x: 350, opacity: 1 }} class="menu">
+			<div class="wrapper container">
+				<div class="top">
 					<ThemeSwitcher />
-					<button
-						{...content.close}
-						use:action.close
-						class="btn btn-square btn-primary text-picton"
-						title="Close Menu"
+					<Button
+						type="button"
+						id="close-menu-button"
+						variant="picton"
+						onclick={() => (open.menuOpen = false)}
 					>
-						<X />
-					</button>
+						<Icons icon="close" />
+					</Button>
 				</div>
-			</div>
-			<ul class="flex w-full flex-col gap-5 text-left">
-				{#each menuItem as menu}
-					<li
-						class="text-2xl font-bold hover:underline lg:text-4xl"
-						class:text-picton={$page.url.pathname === menu.href}
-					>
-						<a href={menu.href} {...content.close} use:action.close>
-							{menu.screen}
-						</a>
-					</li>
-				{/each}
-			</ul>
-			<div class="inline-flex w-full flex-row gap-x-2">
-				<span>
-					{years},
-				</span>
-				<span>Podcastlife</span>
-				<span> by </span>
-				<a href="https://rifkidhan.my.id" target="_blank" rel="noopener noreferrer"> Rifkidhan </a>
+				<nav>
+					{#snippet list({ href, title, classes })}
+						<li class:list-item={classes}>
+							<a {href} onclick={() => (open.menuOpen = false)}>{title}</a>
+						</li>
+					{/snippet}
+					<ul>
+						{#each menuItems as menu}
+							{#if menu.title === 'Categories'}
+								<li>
+									<details>
+										<summary>
+											{menu.title}
+										</summary>
+										<ul>
+											{@render list({ href: menu.href, title: 'All Categories', classes: true })}
+
+											{#each categories as item}
+												{@render list({
+													href: `/categories/${item.id}`,
+													title: item.title,
+													classes: true
+												})}
+											{/each}
+										</ul>
+									</details>
+								</li>
+							{:else}
+								{@render list({ href: menu.href, title: menu.title })}
+							{/if}
+						{/each}
+					</ul>
+				</nav>
 			</div>
 		</div>
-		<div class="absolute bottom-0 block w-full"></div>
-	</div>
-</Modal>
+	{/if}
+</div>
+
+<style>
+	.drawer {
+		z-index: 20;
+	}
+	.backdrop {
+		position: fixed;
+		inset: 0px;
+		backdrop-filter: blur(8px);
+		background-color: color-mix(in srgb, var(--black) 50%, transparent);
+	}
+	.menu {
+		position: fixed;
+		right: 0;
+		top: 0;
+		height: 100dvh;
+		width: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+		background-color: var(--accent-5);
+
+		@media (min-width: 768px) {
+			border-left: 4px solid var(--picton);
+			max-width: var(--width-lg);
+		}
+
+		@media (min-width: 1024px) {
+			max-width: var(--width-md);
+			padding-inline: 2.5rem;
+		}
+
+		&:focus {
+			outline: 2px solid transparent;
+			outline-offset: 2px;
+		}
+
+		& > .wrapper {
+			margin-inline: auto;
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-8);
+			padding-block: var(--space-4);
+
+			& .top {
+				display: flex;
+				flex-direction: row;
+				column-gap: var(--space-3);
+			}
+
+			& nav ul {
+				display: flex;
+				flex-direction: column;
+				row-gap: var(--space-8);
+			}
+		}
+	}
+
+	li {
+		font-size: var(--text-2xl);
+		font-weight: 700;
+
+		@media (min-width: 768px) {
+			font-size: var(--text-4xl);
+		}
+
+		:where(a:hover) {
+			text-decoration: underline;
+			text-decoration-color: var(--picton);
+		}
+	}
+
+	li :where(details) {
+		& summary {
+			cursor: pointer;
+			list-style-type: none;
+		}
+		& ul {
+			display: flex;
+			flex-direction: col;
+			row-gap: var(--space-2);
+			margin-block: var(--space-4);
+			margin-inline-start: var(--space-2);
+
+			@media (min-width: 768px) {
+				row-gap: var(--space-4);
+				margin-inline-start: var(--space-4);
+			}
+		}
+	}
+	li:is(.list-item) {
+		font-weight: 500;
+	}
+</style>

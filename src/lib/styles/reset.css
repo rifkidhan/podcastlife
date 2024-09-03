@@ -1,0 +1,168 @@
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+	box-sizing: border-box; /* 1 */
+	margin: 0; /* 2 */
+	padding: 0; /* 2 */
+	border: 0 solid; /* 3 */
+}
+
+html,
+:host {
+	line-height: 1.5; /* 1 */
+	-webkit-text-size-adjust: 100%; /* 2 */
+	tab-size: 4; /* 3 */
+	font-feature-settings: normal; /* 5 */
+	font-variation-settings: normal; /* 6 */
+	-webkit-tap-highlight-color: transparent; /* 7 */
+}
+
+body {
+	margin: 0; /* 1 */
+	line-height: inherit; /* 2 */
+}
+
+abbr:where([title]) {
+	-webkit-text-decoration: underline dotted;
+	text-decoration: underline dotted;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+a {
+	color: inherit;
+	-webkit-text-decoration: inherit;
+	text-decoration: inherit;
+}
+
+b,
+strong {
+	font-weight: bolder;
+}
+
+small {
+	font-size: 80%;
+}
+
+sub,
+sup {
+	font-size: 75%;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
+}
+
+sub {
+	bottom: -0.25em;
+}
+
+sup {
+	top: -0.5em;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea,
+::file-selector-button {
+	font: inherit; /* 1 */
+	font-feature-settings: inherit; /* 1 */
+	font-variation-settings: inherit; /* 1 */
+	letter-spacing: inherit; /* 1 */
+	color: inherit; /* 1 */
+	background: transparent; /* 2 */
+}
+
+input:where(:not([type='button'], [type='reset'], [type='submit'])),
+select,
+textarea {
+	border: 1px solid;
+}
+
+button,
+input:where([type='button'], [type='reset'], [type='submit']),
+::file-selector-button {
+	appearance: button;
+}
+
+:-moz-focusring {
+	outline: auto;
+}
+
+progress {
+	vertical-align: baseline;
+}
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+	height: auto;
+}
+
+::-webkit-search-decoration {
+	-webkit-appearance: none;
+}
+
+summary {
+	display: list-item;
+}
+
+ol,
+ul,
+menu {
+	list-style: none;
+}
+
+textarea {
+	resize: vertical;
+}
+
+dialog {
+	padding: 0;
+}
+
+::placeholder {
+	opacity: 1; /* 1 */
+	color: color-mix(in srgb, currentColor 50%, transparent); /* 2 */
+}
+
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+	display: block; /* 1 */
+	vertical-align: middle; /* 2 */
+}
+
+img,
+video {
+	max-width: 100%;
+	height: auto;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+button,
+[role='button'] {
+	cursor: pointer;
+}
+
+:disabled {
+	cursor: default;
+}

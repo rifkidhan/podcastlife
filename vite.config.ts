@@ -1,6 +1,18 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
+import browserslist from 'browserslist';
+import { browserslistToTargets } from 'lightningcss';
 
 export default defineConfig({
-	plugins: [sveltekit()]
+	plugins: [sveltekit()],
+
+	css: {
+		transformer: 'lightningcss',
+		lightningcss: {
+			targets: browserslistToTargets(browserslist(['>0.25%', 'not dead']))
+		}
+	},
+	build: {
+		cssMinify: 'lightningcss'
+	}
 });

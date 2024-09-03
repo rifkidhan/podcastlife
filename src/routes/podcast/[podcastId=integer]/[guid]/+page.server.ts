@@ -1,0 +1,56 @@
+import type { PageServerLoad } from './$types';
+import { podcastAPI } from '$lib/server/podcasts';
+import type { SingleEpisode } from '$lib/types';
+import sanitize from '$lib/utils/sanitize';
+import transcript from '$lib/utils/transcript';
+
+export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
+	const guid = params.guid;
+	const feedId = params.podcastId;
+
+	const res = await podcastAPI({
+		endpoint: '/episodes/single',
+		query: {
+			feedId,
+			guid
+		}
+	});
+
+	const { data: episode } = (await res.json()) as SingleEpisode;
+
+	const getTranscript = async (url?: string) => {
+		if (!url || typeof url !== 'string') return undefined;
+
+		const data = await fetch(url);
+
+		if (!data.ok) return undefined;
+
+		const result = await data.text();
+
+		return transcript(result);
+	};
+
+	const getChapters = async (url?: string) => {
+		if (!url || typeof url !== 'string') return undefined;
+
+		const data = await fetch(url);
+
+		if (!data.ok) return undefined;
+
+		return await data.json();
+	};
+
+	setHeaders({
+		'cache-control':
+			res.headers.get('cache-control') || 'public, max-age=1800, stale-while-revalidate=1800'
+	});
+
+	return {
+		episode: {
+			...episode,
+			description: episode.description && sanitize(episode.description)
+		},
+		chapters: getChapters(episode.chapters ? episode.chapters : undefined),
+		transcripts: getTranscript(episode.transcripts ? episode.transcripts[0].url : undefined)
+	};
+};

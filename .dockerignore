@@ -10,5 +10,8 @@ node_modules
 build
 package
 vite.config.ts.timestamp-*
-.env
+.env*
 .env.*
+tests
+test-results
+.zed

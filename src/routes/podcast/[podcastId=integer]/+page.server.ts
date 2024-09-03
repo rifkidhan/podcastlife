@@ -1,20 +1,26 @@
 import type { PageServerLoad } from './$types';
-import { getPodcast } from '$lib/server/podcasts';
+import type { Podcast } from '$lib/types';
+import { podcastAPI } from '$lib/server/podcasts';
 import sanitize from '$lib/utils/sanitize';
 
-export const load = (async ({ params, setHeaders }) => {
-	const id = params.podcastId;
+export const load: PageServerLoad = async ({ params, setHeaders }) => {
+	const res = await podcastAPI({ endpoint: `/podcasts/podcast/feed/${params.podcastId}` });
 
-	const { data } = await getPodcast(id);
+	const { data } = (await res.json()) as Podcast;
 
 	const { feed, episodes, lives } = data;
+
+	setHeaders({
+		'cache-control':
+			res.headers.get('cache-control') || 'public, max-age=1800, stale-while-revalidate=1800'
+	});
 
 	return {
 		podcast: {
 			...feed,
-			description: sanitize(feed.description ?? '')
+			description: feed.description ? sanitize(feed.description ?? '') : ''
 		},
-		episodes: episodes,
+		episodes,
 		live: lives
 	};
-}) satisfies PageServerLoad;
+};

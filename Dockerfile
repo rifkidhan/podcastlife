@@ -14,7 +14,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
 # builder
-from base AS builder
+FROM base AS builder
 WORKDIR /app
 COPY . ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
@@ -44,4 +44,4 @@ ENV API_TOKEN=""
 ENV HOST_HEADER=""
 ENV ADDRESS_HEADER=""
 
-CMD ["node", "-r", "dotenv/config", "build"]
+CMD ["node", "--env-file=.env", "build"]

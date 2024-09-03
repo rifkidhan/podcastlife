@@ -1,45 +1,62 @@
 <script lang="ts">
-	import { afterUpdate } from 'svelte';
-	import { createAnimate } from '$lib/utils/motion';
-	export let component = 'span';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import type { Snippet } from 'svelte';
 
-	let runningText: HTMLElement;
-	let letsMove = false;
-	let sumWidth = 0;
+	interface RunningProps extends HTMLAttributes<HTMLDivElement> {
+		children: Snippet;
+	}
 
-	const { animate } = createAnimate({});
+	let { children, class: className, ...attrs }: RunningProps = $props();
+
+	let runningText: HTMLDivElement | undefined = $state();
+	let move = $state(false);
+	let sumWidth = $state(0);
 
 	const handleResize = () => {
 		if (runningText && runningText.parentElement) {
-			letsMove = runningText.scrollWidth > runningText.parentElement.clientWidth;
+			move = runningText.scrollWidth > runningText.parentElement.clientWidth;
 			sumWidth = runningText.scrollWidth - runningText.parentElement.clientWidth;
 		}
 	};
 
-	afterUpdate(() => {
+	$effect.pre(() => {
 		handleResize();
 	});
 </script>
 
-<svelte:window on:resize={handleResize} />
+<svelte:window onresize={handleResize} />
 
-<svelte:element
-	this={component}
+<div
 	bind:this={runningText}
-	{...$$restProps}
-	class="relative flex max-w-fit shrink-0 flex-row flex-nowrap whitespace-nowrap"
-	use:animate={{
-		keyframe: {
-			x: [0, -(sumWidth + 15)]
-		},
-		options: {
-			duration: Math.floor((sumWidth * 3) / 100 + 3),
-			repeat: Infinity,
-			easing: 'ease-in-out',
-			direction: 'alternate'
-		},
-		play: letsMove
-	}}
+	class={className}
+	class:running-animation={move}
+	class:root={true}
+	style:--running-keyframe={`-${sumWidth + 15}px`}
+	style:--running-duration={`${Math.floor((sumWidth * 3) / 100 + 3)}s`}
+	{...attrs}
 >
-	<slot />
-</svelte:element>
+	{@render children()}
+</div>
+
+<style>
+	@keyframes slide {
+		from {
+			transform: translateX(1px);
+		}
+		to {
+			transform: translateX(var(--running-keyframe));
+		}
+	}
+	.root {
+		display: flex;
+		position: relative;
+		max-width: fit-content;
+		flex-shrink: 0;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		white-space: nowrap;
+	}
+	.running-animation {
+		animation: slide var(--running-duration) ease-in-out infinite alternate;
+	}
+</style>

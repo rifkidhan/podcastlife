@@ -1,11 +1,48 @@
 <script lang="ts">
-	export let title: string | undefined = undefined;
-	export let description = 'podcastlife is a podcast web apps.';
+	import { playerState } from '$lib/stores/player.svelte';
+	import { page } from '$app/stores';
 
-	const template = 'podcastlife';
+	interface HeadProps {
+		title?: string;
+		description?: string;
+		image?: string;
+	}
+
+	const og_url = 'https://cemin_og-1-i4510336.deta.app/og';
+
+	let {
+		title: title_props,
+		description: description_props,
+		image = `${og_url}?title=podcastlife&content=${encodeURIComponent('Podcast web apps.')}`
+	}: HeadProps = $props();
+
+	let title = $derived.by(() => {
+		const title_base = 'podcastlife';
+		let title = title_base;
+
+		if (!playerState.paused) {
+			title = playerState.podcast.title + ' | ' + title_base;
+			return title;
+		}
+		if (title_props) {
+			title = title_props + ' | ' + title_base;
+		}
+
+		return title;
+	});
+
+	let description = $derived.by(() => {
+		let description = 'Podcast Web Apps.';
+		if (description_props) {
+			description = description_props;
+		}
+
+		return description;
+	});
 </script>
 
 <svelte:head>
-	<title>{title ? title + ' | ' : ''}{template}</title>
+	<title>{title}</title>
 	<meta name="description" content={description} />
+	<link rel="canonical" href={$page.url.href} />
 </svelte:head>

@@ -1,60 +1,37 @@
 <script lang="ts">
-	import { createTimeline, createAnimate } from '$lib/utils/motion';
+	import { Main, Head } from '$lib/components';
 
-	const { segment } = createTimeline();
-
-	const { animate } = createAnimate({
-		keyframe: {
-			rotate: [0, 90]
-		},
-		options: {
-			duration: 10
-		}
-	});
+	let test_life = $state('al');
 </script>
 
-<main>
-	<div class="flex min-h-screen flex-col gap-10">
-		<span> About </span>
+<Head title="About Me" />
+<Main>
+	<section class="container">
+		<h1 class="text-display">About Podcastlife</h1>
+	</section>
+	<section>
+		<p>
+			{test_life}
+		</p>
+		<select name="test" id="test" bind:value={test_life}>
+			<option value="all">All Language</option>
+			<option value="en">English</option>
+			<option value="id">Indonesia</option>
+		</select>
+	</section>
+</Main>
 
-		<div
-			use:segment={{
-				keyframe: {
-					opacity: [0, 1]
-				},
-				options: {
-					duration: 2
-				}
-			}}
-		>
-			Test
-		</div>
+<style>
+	section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+		margin-left: auto;
+		margin-right: auto;
 
-		<div
-			use:segment={{
-				keyframe: {
-					opacity: [0, 1]
-				},
-				options: {
-					duration: 2,
-					at: '>'
-				}
-			}}
-		>
-			Test 2
-		</div>
-		<div
-			use:segment={{
-				keyframe: {
-					opacity: [0, 1]
-				},
-				options: {
-					duration: 2,
-					at: '<'
-				}
-			}}
-		>
-			Test 3
-		</div>
-	</div>
-</main>
+		& h1 {
+			font-size: var(--text-3xl);
+			font-weight: 600;
+		}
+	}
+</style>

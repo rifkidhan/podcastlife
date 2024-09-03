@@ -1,46 +1,47 @@
 <script lang="ts">
+	// import '../app.css';
+	import '$lib/styles/app.css';
 	import '@fontsource-variable/plus-jakarta-sans';
 	import '@fontsource-variable/plus-jakarta-sans/wght-italic.css';
-	import '../styles/main.css';
 
-	import { Navigation, Footer } from '$lib/components/common';
-	import { Modal } from '$lib/components/base';
-	import { Player } from '$lib/components/podcast';
-	import { player } from '$lib/stores/nowplaying';
-	import { viewTransition } from '$lib/utils/transition';
-	import { page } from '$app/stores';
-	import { fly } from 'svelte/transition';
+	import type { Snippet } from 'svelte';
+	import { Footer, Header, Menu, Player, ScrollTop, useUI } from '$lib/components';
+	import { viewTransition } from '$lib/utils/viewTransition';
+
+	let { children }: { children: Snippet } = $props();
+
+	const uiState = useUI();
 
 	viewTransition();
 </script>
 
-<div class="relative flex min-h-screen flex-col items-center justify-center gap-10">
-	<Navigation />
-	<slot />
-	{#if $page.url.pathname !== '/play'}
-		<Footer />
-	{/if}
+<div class="wrapper" data-menu-opened={uiState.menuOpen}>
+	<Header />
+	{@render children()}
+	<Menu />
+	<Footer />
+	<ScrollTop />
+	<Player />
 </div>
 
-<Modal
-	preventScroll={false}
-	open={$player.open}
-	closeOnEscape={false}
-	closeOnOutsideClick={false}
-	let:actions={action}
-	let:contents={content}
->
-	<span {...content.title} use:action.title class="sr-only"> Player </span>
-	<span {...content.description} use:action.description class="sr-only"> Player </span>
-	<div
-		{...content.content}
-		use:action.content
-		class="fixed bottom-0 z-[100] flex h-16 w-full items-center bg-accent-5 md:h-20"
-		transition:fly={{
-			y: 350,
-			opacity: 1
-		}}
-	>
-		<Player />
-	</div>
-</Modal>
+<style>
+	.wrapper {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-4);
+		min-height: 100vh;
+
+		@media (min-height: 768px) {
+			gap: var(--space-6);
+		}
+		@media (min-height: 1024px) {
+			gap: var(--space-8);
+		}
+		@media (min-height: 1280px) {
+			gap: var(--space-10);
+		}
+	}
+</style>

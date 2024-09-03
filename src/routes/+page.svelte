@@ -1,23 +1,31 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-	import { Image } from '$lib/components/base';
-	import { Carousel, Head } from '$lib/components/common';
+	import { Carousel, Main, Head } from '$lib/components';
 
-	export let data: PageServerData;
+	const { data } = $props();
 </script>
 
 <Head />
+<Main>
+	<h1 class="sr-only">Podcastlife</h1>
 
-<main class="mt-20">
-	<section class="container relative mx-auto flex flex-col gap-5">
-		<h1 class="text-4xl font-bold xl:text-7xl">podcastlife</h1>
+	<section class="container full">
+		<h2 class="text-xl">Trending now</h2>
+		<Carousel items={data.trendings} label="Trending carousel" />
 	</section>
-	<section class="container relative mx-auto flex flex-col gap-5">
-		<h2 class="text-3xl font-semibold">Trending Now</h2>
-		<Carousel items={data.trending} />
+	<section class="container full">
+		<h2 class="text-xl">Recent Update</h2>
+		<Carousel items={data.recents} label="Recent update carousel" />
 	</section>
-	<section class="container relative mx-auto flex flex-col gap-5">
-		<h2 class="text-3xl font-semibold">Last Update</h2>
-		<Carousel items={data.recents} />
-	</section>
-</main>
+</Main>
+
+<style>
+	section {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-5);
+
+		& > h2 {
+			font-weight: 600;
+		}
+	}
+</style>

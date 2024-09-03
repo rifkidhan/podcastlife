@@ -1,234 +1,390 @@
 <script lang="ts">
 	import type { PageServerData } from './$types';
-	import { navigating } from '$app/stores';
-	import { Cardlist, Pagination } from '$lib/components/podcast';
-	import { Image } from '$lib/components/base';
-	import { playing, player } from '$lib/stores/nowplaying';
-	import type { NowPlayingProps } from '$lib/stores/nowplaying';
-	import { Tabs, TabsContent, Head } from '$lib/components/common';
+	import {
+		Image,
+		Main,
+		TabPanel,
+		Tabs,
+		Cardlist,
+		Button,
+		RunningText,
+		Head,
+		WindowVirtual
+	} from '$lib/components';
 
-	export let data: PageServerData;
+	let { data }: { data: PageServerData } = $props();
 
-	$: podcast = data.podcast;
-	$: episodefull = data.episodes;
-	$: live = data.live;
+	let episodesData = $state(data.episodes);
 
-	let start = 0;
-	let end = 20;
+	let episodeLength = $state(episodesData.length > 10 ? 10 : episodesData.length);
+	let updateEpisodeLength = $state(false);
 
-	$: episodes = episodefull.slice(start, end);
+	let windowSize = $state(0);
+	let episodeItemSize = $state(160);
+	let updateEpisodeItemSize = $state(false);
 
-	const tabs = [
+	let feed = $derived(data.podcast);
+
+	let episodes = $derived.by(() => {
+		const length = episodesData.length;
+		let episodes = episodesData;
+
+		if (episodeLength < length) {
+			episodes = data.episodes.slice(0, episodeLength);
+		}
+
+		return episodes;
+	});
+
+	let live = $derived(data.live);
+
+	const list = [
 		{
-			id: 'pod',
-			title: 'Podcasts'
+			id: 'podcast',
+			content: 'Podcast'
 		},
 		{
 			id: 'live',
-			title: 'Live'
+			content: 'live'
 		}
 	];
 
-	const nowplaying = ({
-		podcast,
-		content
-	}: {
-		podcast: NowPlayingProps['podcast'];
-		content: NowPlayingProps['content'];
-	}) => {
-		if (!$player.open) {
-			$player.open = true;
+	let active = $state(list[0].id);
+
+	$effect.pre(() => {
+		if (windowSize <= 412) {
+			updateEpisodeItemSize = true;
+			episodeItemSize = 100;
 		}
-		if (content.enclosure.url !== $playing.content.enclosure.url) {
-			$playing.podcast = podcast;
-			$playing.content = content;
-			$playing.paused = false;
-		} else {
-			$playing.paused = !$playing.paused;
+
+		if (windowSize > 412 && windowSize < 768) {
+			updateEpisodeItemSize = true;
+			episodeItemSize = 120;
+		}
+		if (windowSize >= 768) {
+			updateEpisodeItemSize = true;
+			episodeItemSize = 160;
+		}
+	});
+
+	const load = () => {
+		if (episodeLength > episodesData.length) return;
+
+		if (episodesData.length - episodeLength > 20) {
+			updateEpisodeLength = true;
+			episodeLength += 20;
+		}
+		if (episodesData.length - episodeLength < 20) {
+			updateEpisodeLength = true;
+			episodeLength += episodesData.length - episodeLength;
 		}
 	};
-
-	let targetScrollElement: HTMLElement;
-	let targetScroll = 0;
-
-	$: if (targetScrollElement) {
-		targetScroll = targetScrollElement.getBoundingClientRect().top;
-	}
 </script>
 
-<Head title={podcast.title} />
+<svelte:window bind:innerWidth={windowSize} />
 
-<main class="container mx-auto">
-	<section class="grid w-full grid-cols-4 gap-10">
-		<div
-			class="relative col-span-full block aspect-1 w-full overflow-hidden rounded-lg border-2 shadow-drop md:col-span-1"
-			style:--tag="img-{podcast.id}"
-		>
-			<Image
-				src={podcast.image}
-				alt={podcast.title}
-				class="h-full w-full object-cover object-center"
-			/>
-		</div>
-		<div class="col-span-full flex w-full flex-col gap-10 md:col-span-3">
-			<div class="flex flex-col border-l-4 border-picton pl-4">
-				<div style:--tag="author-{podcast.id}" class="text-base uppercase text-picton lg:text-lg">
-					{podcast.author}
-				</div>
-				<h1
-					style:--tag="title-{podcast.id}"
-					class="relative text-3xl font-bold lg:text-5xl xl:text-7xl"
-				>
-					{podcast.title}
-				</h1>
+{#key feed.id}
+	<Head title={feed.title} description={feed.description} />
+	<Main class="full container">
+		<section class="meta">
+			<div class="image" style:--tag={`img-${feed.id}`}>
+				<Image src={feed.image} alt={feed.title} full />
 			</div>
-			<div class="flex w-full flex-col gap-2">
-				<div class="flex w-full flex-wrap gap-3">
-					{#each podcast.tags as tag}
-						<span class="rounded-full bg-cerise px-2 py-1 text-xs uppercase text-white">
+
+			<div class="content">
+				<div class="intro">
+					<div class="author" style:--tag={`author-${feed.id}`}>
+						{feed.author}
+					</div>
+					<div class="title" title={feed.title}>
+						<RunningText class="text-display">
+							<h1 style:--tag={`feed-${feed.id}`}>
+								{feed.title}
+							</h1>
+						</RunningText>
+					</div>
+				</div>
+				<div class="tags">
+					{#each feed.tags as tag}
+						<span class="tag">
 							{tag}
 						</span>
 					{/each}
 				</div>
 			</div>
-		</div>
-		<div class="text-md prose col-span-full max-w-none">
-			{@html podcast.description}
-		</div>
-	</section>
+			<div class="description prose">
+				{@html feed.description}
+			</div>
+		</section>
 
-	<section class="relative flex w-full flex-col-reverse gap-10 lg:flex-row">
-		<Tabs class="flex w-full flex-col lg:w-3/4" {tabs} bind:ref={targetScrollElement} let:active>
-			<TabsContent contentId="pod" value={active}>
-				<ul class="flex w-full flex-col gap-5 lg:gap-10">
-					{#each episodes as item (item.enclosure.url)}
-						<Cardlist
-							title={item.title ?? ''}
-							podcast={podcast.title}
-							imageSrc={item.image ?? podcast.image}
-							pubDate={item.pubDate}
-							explicit={item.explicit}
-							play={$playing.paused === false &&
-								item.enclosure.url === $playing.content.enclosure.url}
-							on:click={() => {
-								nowplaying({
-									podcast: {
-										id: podcast.id,
-										title: podcast.title,
-										image: podcast.image
-									},
-									content: {
-										title: item.title ?? '',
-										image: item.image ?? podcast.image,
-										enclosure: item.enclosure,
-										guid: item.guid ?? '',
-										explicit: item.explicit,
-										altEnclosure: item.alternativeEnclosures
-									}
-								});
-							}}
-						/>
-					{/each}
-				</ul>
-				{#if episodefull.length > 20}
-					<Pagination
-						total={episodefull.length}
-						limit={20}
-						target={targetScroll}
-						on:pagenow={({ detail }) => {
-							start = detail.start;
-							end = detail.end;
-						}}
-					/>
-				{/if}
-			</TabsContent>
-			<TabsContent contentId="live" value={active}>
-				{#if live}
-					<ul class="flex w-full flex-col gap-5 lg:gap-10">
-						{#each live as item}
-							<Cardlist
-								title={item.title}
-								podcast={podcast.title}
-								type="live"
-								status={item.status}
-								imageSrc={item.image ?? podcast.image}
-								explicit={false}
-								start={item.start}
-								end={item.end}
-								play={$playing.paused === false &&
-									item.enclosure.url === $playing.content.enclosure.url}
-								on:click={() => {
-									nowplaying({
-										podcast: {
-											id: podcast.id,
-											title: podcast.title,
-											image: podcast.image
-										},
-										content: {
-											title: item.title ?? '',
-											image: item.image ?? podcast.image,
-											enclosure: item.enclosure,
-											guid: item.guid ?? '',
-											explicit: false,
-											altEnclosure: item.alternativeEnclosures
-										}
-									});
-								}}
-							/>
-						{/each}
-					</ul>
-				{:else}
-					No Live Podcast
-				{/if}
-			</TabsContent>
-		</Tabs>
-		<div class="w-full flex-auto lg:w-auto">
-			<div
-				class="relative flex w-full flex-col gap-5 rounded-lg border-2 px-2 py-3 shadow-drop lg:sticky lg:top-20"
-			>
-				<h2 class="text-xl font-semibold text-picton lg:text-2xl">Live Now</h2>
-				<div class="flex flex-col gap-3">
-					{#if live && live.filter((val) => val.status === 'live').length > 0}
-						{#each live as item}
-							{#if item.status === 'live'}
-								<button
-									type="button"
-									on:click={() => {
-										nowplaying({
-											podcast: {
-												id: podcast.id,
-												title: podcast.title,
-												image: podcast.image
-											},
-											content: {
-												title: item.title ?? '',
-												image: item.image ?? podcast.image,
-												enclosure: item.enclosure,
-												guid: item.guid ?? '',
-												explicit: false,
-												altEnclosure: item.alternativeEnclosures
-											}
-										});
-									}}
-									class="inline-flex items-center gap-2 hover:text-picton"
-								>
-									<span class="relative inline-flex size-2">
-										<span
-											class="absolute inline-flex h-full w-full animate-ping rounded-full bg-cinnabar"
-										/>
-										<span class="h-full w-full rounded-full bg-cinnabar" />
-									</span>
-									<span class="text-left">
-										{item.title}
-									</span>
-								</button>
-							{/if}
-						{/each}
+		<section class="panels">
+			<Tabs class="tabs" bind:active tablist={list}>
+				<TabPanel id="podcast" {active}>
+					{#key episodesData.length}
+						<WindowVirtual
+							count={episodeLength}
+							bind:updateCount={updateEpisodeLength}
+							estimateSize={episodeItemSize}
+							bind:updateSize={updateEpisodeItemSize}
+							gap={10}
+							overscan={10}
+						>
+							{#snippet virtualItems(item)}
+								<Cardlist
+									type="podcast"
+									podcast={feed.title}
+									podcastId={feed.id}
+									title={episodes[item.index].title}
+									enclosure={episodes[item.index].enclosure.url}
+									guid={episodes[item.index].guid ?? feed.podcastGuid}
+									image={episodes[item.index].image ?? feed.image}
+									explicit={episodes[item.index].explicit}
+									pubDate={episodes[item.index].pubDate}
+									altEnclosure={episodes[item.index].alternativeEnclosures}
+									style="height: 100%"
+								/>
+							{/snippet}
+						</WindowVirtual>
+					{/key}
+					{#if data.episodes.length > episodeLength}
+						<Button
+							type="button"
+							variant="picton"
+							size="full"
+							disabled={data.episodes.length <= episodeLength}
+							onclick={load}
+						>
+							Load More
+						</Button>
+					{:else}
+						<div class="data">No More Data</div>
+					{/if}
+				</TabPanel>
+				<TabPanel id="live" {active}>
+					{#if live}
+						<div class="live-list" role="list">
+							{#each live as episode}
+								<Cardlist
+									role="listitem"
+									type="live"
+									podcast={feed.title}
+									podcastId={feed.id}
+									title={episode.title}
+									enclosure={episode.enclosure.url}
+									guid={episode.guid ?? feed.podcastGuid}
+									image={episode.image ?? feed.image}
+									altEnclosure={episode.alternativeEnclosures}
+									status={episode.status}
+									start={episode.start}
+									end={episode.end}
+								/>
+							{/each}
+						</div>
 					{:else}
 						No Live Podcast
 					{/if}
+				</TabPanel>
+			</Tabs>
+			<div class="live-info">
+				<div class="stick">
+					<h2>Live Now</h2>
+					<div class="list">
+						{#if live && live.filter((v) => v.status === 'live').length > 0}
+							{#each live as item}
+								<span class="live-sign">
+									<span class="sign">
+										<span class="pulse"></span>
+										<span></span>
+									</span>
+									<span>{item.title}</span>
+								</span>
+							{/each}
+						{:else}
+							No Live Podcast
+						{/if}
+					</div>
 				</div>
 			</div>
-		</div>
-	</section>
-</main>
+		</section>
+	</Main>
+{/key}
+
+<style>
+	.meta {
+		--meta-grid-col: 1;
+		display: grid;
+		grid-template-columns: repeat(var(--meta-grid-col), minmax(0, 1fr));
+		width: 100%;
+		gap: var(--space-10);
+
+		@media (min-width: 768px) {
+			--meta-grid-col: 4;
+		}
+
+		.image {
+			position: relative;
+			display: block;
+			width: 100%;
+			overflow: hidden;
+			border-radius: var(--space-2);
+			border: 2px solid currentColor;
+			aspect-ratio: 1 / 1;
+			box-shadow: var(--shadow-drop);
+
+			@media (min-width: 768px) {
+				grid-column: span 1 / span 1;
+			}
+		}
+
+		.content {
+			display: flex;
+			width: 100%;
+			flex-direction: column;
+			gap: var(--space-10);
+
+			@media (min-width: 768px) {
+				grid-column: span 3 / span 3;
+			}
+			.intro {
+				display: flex;
+				flex-direction: column;
+				border-left: 4px solid var(--picton);
+				padding-left: var(--space-4);
+
+				.author {
+					font-size: var(--text-base);
+					text-transform: uppercase;
+					color: var(--picton);
+					line-height: var(--space-6);
+
+					@media (min-width: 1024px) {
+						font-size: var(--text-lg);
+					}
+				}
+				.title {
+					display: block;
+					width: 100%;
+					height: 100%;
+					overflow: hidden;
+
+					& > :global(.text-display) {
+						margin-bottom: var(--space-1);
+
+						@media (min-width: 1280px) {
+							margin-bottom: var(--space-2);
+						}
+					}
+				}
+			}
+
+			.tags {
+				display: flex;
+				width: 100%;
+				flex-wrap: wrap;
+				gap: var(--space-3);
+
+				.tag {
+					background-color: var(--cerise);
+					padding: var(--space-1) var(--space-2);
+					text-transform: uppercase;
+					color: var(--white);
+					font-size: var(--text-xs);
+					border-radius: 9999px;
+
+					@media (min-width: 768px) {
+						font-size: var(--text-sm);
+					}
+				}
+			}
+		}
+		.description {
+			grid-column: 1 / -1;
+		}
+	}
+	.panels {
+		--panels-grid-col: 1;
+
+		display: grid;
+		position: relative;
+		grid-template-rows: repeat(1, minmax(0, 1fr));
+		grid-template-columns: repeat(var(--panels-grid-col), minmax(0, 1fr));
+		width: 100%;
+		gap: var(--space-10);
+
+		@media (min-width: 1024px) {
+			--panels-grid-col: 4;
+			grid-auto-flow: row;
+		}
+
+		& > :global(:is(.tabs)) {
+			width: 100%;
+
+			@media (min-width: 1024px) {
+				grid-column: span 3 / span 3;
+			}
+		}
+	}
+
+	.data {
+		width: 100%;
+		background-color: var(--accent-40);
+		padding: var(--space-3) var(--space-2);
+		text-align: center;
+		border-radius: var(--space-2);
+	}
+
+	.live-list {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		gap: var(--space-5);
+
+		@media (min-width: 1024px) {
+			gap: var(--space-10);
+		}
+	}
+
+	.live-info {
+		grid-row-start: 1;
+
+		@media (min-width: 1024px) {
+			grid-column-start: 4;
+		}
+
+		& > .stick {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-5);
+			border-radius: var(--space-2);
+			border: 2px solid currentColor;
+			box-shadow: var(--shadow-drop);
+			padding: var(--space-3) var(--space-2);
+
+			@media (min-width: 1024px) {
+				position: sticky;
+				top: var(--space-20);
+			}
+
+			h2 {
+				font-size: var(--text-xl);
+				font-weight: 600;
+				color: var(--picton);
+				@media (min-width: 1024px) {
+					font-size: var(--text-2xl);
+				}
+			}
+			.list {
+				display: flex;
+				flex-direction: column;
+				gap: var(--space-3);
+
+				.live-sign {
+					&:hover {
+						color: var(--picton);
+					}
+				}
+			}
+		}
+	}
+</style>

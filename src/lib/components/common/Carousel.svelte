@@ -1,39 +1,29 @@
 <script lang="ts">
-	import { Image } from '$lib/components/base';
 	import type { BasicFeed } from '$lib/types';
-	export let items: BasicFeed[];
+	import { Image } from '$lib/components';
+
+	interface CarouselProps {
+		items: BasicFeed[];
+		label: string;
+	}
+
+	let { items, label }: CarouselProps = $props();
 </script>
 
-<div class="flex w-full">
-	<ul
-		class="relative flex snap-x snap-mandatory scroll-px-5 gap-5 overflow-x-auto px-3 pb-8 pt-1"
-		data-sveltekit-preload-data="tap"
-	>
+<div class="carousel">
+	<ul role="group" aria-label={label} aria-live="polite" data-sveltekit-preload-data="tap">
 		{#each items as item (item.id)}
-			<li class="relative w-2/3 shrink-0 snap-center snap-always md:w-1/3 lg:w-1/4">
-				<a
-					href="/podcast/{item.id}"
-					class="group flex h-full w-full flex-col gap-3 overflow-hidden rounded-md border-2 bg-accent-5 transition hover:-translate-x-1.5 hover:-translate-y-1 hover:shadow-drop hover:shadow-accent-95"
-				>
-					<div class="relative block aspect-1 overflow-hidden" style:--tag="img-{item.id}">
-						<Image
-							src={item.image ?? ''}
-							alt={item.title}
-							class="h-full w-full object-cover object-center group-hover:scale-105"
-						/>
+			<li class="carousel-item">
+				<a href="/podcast/{item.id}" class="wrapper">
+					<div class="thumbnail" style:--tag="img-{item.id}">
+						<Image src={item.image ?? ''} alt={item.title} full />
 					</div>
-					<div class="flex flex-col px-2 py-3">
-						<span
-							style:--tag="author-{item.id}"
-							class="line-clamp-3 text-sm uppercase text-picton md:text-base"
-						>
+					<div class="info">
+						<div class="author" style:--tag="author-{item.id}">
 							{item.author}
-						</span>
-						<h3
-							style:--tag="title-{item.id}"
-							class="line-clamp-3 text-lg font-bold md:line-clamp-4 md:text-xl lg:text-2xl"
-						>
-							<span class="group-hover:shadow-highlight">
+						</div>
+						<h3 class="title" style:--tag="feed-{item.id}">
+							<span>
 								{item.title}
 							</span>
 						</h3>
@@ -43,3 +33,114 @@
 		{/each}
 	</ul>
 </div>
+
+<style>
+	.carousel {
+		display: flex;
+		width: 100%;
+
+		& > ul {
+			position: relative;
+			display: flex;
+			scroll-snap-type: x mandatory;
+			scroll-padding-inline: var(--space-6);
+			gap: var(--space-6);
+			overflow-x: auto;
+			padding-inline: var(--space-3);
+			padding-bottom: var(--space-5);
+			padding-top: var(--space-1);
+
+			.carousel-item {
+				position: relative;
+				flex-shrink: 0;
+				scroll-snap-align: start;
+				scroll-snap-stop: always;
+				width: 60%;
+
+				@media (min-width: 768px) {
+					width: 35%;
+				}
+				@media (min-width: 1024px) {
+					width: 25%;
+				}
+
+				.wrapper {
+					display: flex;
+					width: 100%;
+					height: 100%;
+					flex-direction: column;
+					gap: var(--space-3);
+					overflow: hidden;
+					border-radius: var(--space-2);
+					border: 2px solid currentColor;
+					transition-property: box-shadow, transform, filter;
+					transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+					transition-duration: 150ms;
+
+					&:hover {
+						transform: translate(-0.25rem, -0.25rem);
+						box-shadow: var(--shadow-drop);
+
+						& > .thumbnail > :global(img) {
+							transform: scale(1.05, 1.05);
+						}
+						& > * > .title span {
+							box-shadow: var(--shadow-highlight);
+						}
+					}
+
+					& > .thumbnail {
+						display: block;
+						position: relative;
+						overflow: hidden;
+						aspect-ratio: 1;
+					}
+					& > .info {
+						display: flex;
+						flex-direction: column;
+						padding-inline: var(--space-2);
+						padding-block: var(--space-3);
+
+						& > .author {
+							font-size: var(--text-sm);
+							text-transform: uppercase;
+							line-height: 1.25rem;
+							color: var(--picton);
+							overflow: hidden;
+							display: -webkit-box;
+							-webkit-box-orient: vertical;
+							-webkit-line-clamp: 3;
+
+							@media (min-width: 768px) {
+								font-size: var(--text-base);
+								line-height: 1.5rem;
+							}
+						}
+
+						& > .title {
+							font-size: var(--text-lg);
+							line-height: 1.75rem;
+							font-weight: 700;
+							overflow: hidden;
+							display: -webkit-box;
+							-webkit-box-orient: vertical;
+							-webkit-line-clamp: 3;
+
+							@media (min-width: 768px) {
+								font-size: var(--text-xl);
+								overflow: hidden;
+								display: -webkit-box;
+								-webkit-box-orient: vertical;
+								-webkit-line-clamp: 4;
+							}
+							@media (min-width: 1024px) {
+								font-size: var(--text-2xl);
+								line-height: 2rem;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+</style>

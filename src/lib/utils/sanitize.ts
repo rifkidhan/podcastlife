@@ -1,6 +1,6 @@
 import sanitizeHTML from 'sanitize-html';
 
-const sanitize = (content: string) => {
+export default function sanitize(content: string) {
 	const data = sanitizeHTML(content, {
 		allowedTags: [
 			'address',
@@ -70,8 +70,5 @@ const sanitize = (content: string) => {
 			a: sanitizeHTML.simpleTransform('a', { target: '_blank', rel: 'noopener noreferrer' })
 		}
 	});
-
 	return data;
-};
-
-export default sanitize;
+}
