@@ -1,27 +1,30 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { createWindowVirtualizer } from '$lib/hooks/useVirtual.svelte';
 	import type { VirtualItem } from '@tanstack/virtual-core';
 
 	interface Props {
 		count: number;
-		updateCount?: boolean;
 		estimateSize: number;
-		updateSize?: boolean;
 		overscan?: number;
 		gap?: number;
 		virtualItems: Snippet<[VirtualItem]>;
+		updateCount?: (count: number) => void;
+		loading?: boolean;
 	}
 
 	let {
 		count,
-		updateCount = $bindable(false),
 		estimateSize,
-		updateSize = $bindable(false),
 		overscan = 5,
 		gap = 5,
+		loading = false,
 		virtualItems
 	}: Props = $props();
+
+	let initialCount = $state(1);
+	let initialSize = $state(1);
 
 	const virtual = createWindowVirtualizer<HTMLDivElement>({
 		count,
@@ -30,24 +33,28 @@
 		gap
 	});
 
-	$effect(() => {
-		if (updateCount) {
+	initialCount = count;
+	initialSize = estimateSize;
+
+	$effect.pre(() => {
+		if (initialCount !== count) {
 			virtual.setOptions({
 				count
 			});
-			updateCount = false;
+			initialCount = count;
 		}
 	});
 
-	$effect(() => {
-		if (updateSize) {
+	$effect.pre(() => {
+		if (initialSize !== estimateSize) {
 			virtual.setOptions({
 				estimateSize: () => estimateSize
 			});
-
-			updateSize = false;
+			initialSize = estimateSize;
 		}
 	});
+
+	onDestroy(virtual.cleanup);
 </script>
 
 <div role="list" class="virtual-list" style:height={`${virtual.totalSize}px`}>
@@ -59,7 +66,11 @@
 			style:transform={`translateY(${item.start}px)`}
 			data-index={item.index}
 		>
-			{@render virtualItems(item)}
+			{#if loading}
+				<div></div>
+			{:else}
+				{@render virtualItems(item)}
+			{/if}
 		</div>
 	{/each}
 </div>

@@ -7,6 +7,11 @@
 	margin: 0; /* 2 */
 	padding: 0; /* 2 */
 	border: 0 solid; /* 3 */
+
+	@supports (scrollbar-width: auto) {
+		scrollbar-width: thin;
+		scrollbar-color: hsl(var(--pl-picton)) transparent;
+	}
 }
 
 html,
@@ -22,11 +27,6 @@ html,
 body {
 	margin: 0; /* 1 */
 	line-height: inherit; /* 2 */
-}
-
-abbr:where([title]) {
-	-webkit-text-decoration: underline dotted;
-	text-decoration: underline dotted;
 }
 
 h1,
@@ -52,22 +52,6 @@ strong {
 
 small {
 	font-size: 80%;
-}
-
-sub,
-sup {
-	font-size: 75%;
-	line-height: 0;
-	position: relative;
-	vertical-align: baseline;
-}
-
-sub {
-	bottom: -0.25em;
-}
-
-sup {
-	top: -0.5em;
 }
 
 button,
@@ -118,13 +102,8 @@ summary {
 }
 
 ol,
-ul,
-menu {
+ul {
 	list-style: none;
-}
-
-textarea {
-	resize: vertical;
 }
 
 dialog {
@@ -140,10 +119,7 @@ img,
 svg,
 video,
 canvas,
-audio,
-iframe,
-embed,
-object {
+audio {
 	display: block; /* 1 */
 	vertical-align: middle; /* 2 */
 }

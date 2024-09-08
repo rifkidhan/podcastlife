@@ -5,43 +5,17 @@
 	import '@fontsource-variable/plus-jakarta-sans/wght-italic.css';
 
 	import type { Snippet } from 'svelte';
-	import { Footer, Header, Menu, Player, ScrollTop, useUI } from '$lib/components';
+	import { Footer, Header, SideNav, Player, ScrollTop } from '$lib/components';
 	import { viewTransition } from '$lib/utils/viewTransition';
 
 	let { children }: { children: Snippet } = $props();
 
-	const uiState = useUI();
-
 	viewTransition();
 </script>
 
-<div class="wrapper" data-menu-opened={uiState.menuOpen}>
-	<Header />
-	{@render children()}
-	<Menu />
-	<Footer />
-	<ScrollTop />
-	<Player />
-</div>
-
-<style>
-	.wrapper {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: var(--space-4);
-		min-height: 100vh;
-
-		@media (min-height: 768px) {
-			gap: var(--space-6);
-		}
-		@media (min-height: 1024px) {
-			gap: var(--space-8);
-		}
-		@media (min-height: 1280px) {
-			gap: var(--space-10);
-		}
-	}
-</style>
+<Header />
+{@render children()}
+<SideNav />
+<Footer />
+<ScrollTop />
+<Player />

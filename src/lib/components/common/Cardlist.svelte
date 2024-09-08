@@ -43,7 +43,11 @@
 </script>
 
 <div class={className} class:cardlist={true} {...attrs}>
-	<div class="thumbnail" class:border={type === 'live' && status === 'live'}>
+	<div
+		class="thumbnail"
+		class:border={type === 'live' && status === 'live'}
+		style:--tag={`episode-${guid}-thumbnail`}
+	>
 		<Image src={image} alt={title ?? podcast} full />
 	</div>
 	<div class="wrapper">
@@ -67,7 +71,7 @@
 						{title}
 						data-sveltekit-preload-data="tap"
 					>
-						<h3 class="linked" class:explicit>
+						<h3 class="linked" class:explicit style:--tag={`episode-${guid}-title`}>
 							<span>{title}</span>
 						</h3>
 					</a>
@@ -158,7 +162,7 @@
 			overflow: hidden;
 			aspect-ratio: 1;
 
-			&:has(.border) {
+			&:is(.border) {
 				border: 4px solid var(--cinnabar);
 			}
 		}

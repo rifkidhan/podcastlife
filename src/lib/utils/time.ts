@@ -8,7 +8,7 @@ export const getTime = (date: string | number) => {
 		day = new Date(date * 1000);
 	}
 	const format = new Intl.DateTimeFormat(undefined, {
-		dateStyle: 'medium',
+		dateStyle: 'short',
 		timeStyle: 'short'
 	}).format(day);
 

@@ -4,12 +4,15 @@
 		icon?:
 			| 'chevron-left'
 			| 'chevron-right'
+			| 'chevron-up'
+			| 'chevron-down'
 			| 'image-off'
 			| 'play'
 			| 'pause'
 			| 'menu'
 			| 'close'
 			| 'move-up'
+			| 'explicit'
 			| 'podcastlife';
 	}
 
@@ -32,6 +35,10 @@
 		<path d="m15 18-6-6 6-6" />
 	{:else if icon === 'chevron-right'}
 		<path d="m9 18 6-6-6-6" />
+	{:else if icon === 'chevron-up'}
+		<path d="m18 15-6-6-6 6" />
+	{:else if icon === 'chevron-down'}
+		<path d="m6 9 6 6 6-6" />
 	{:else if icon === 'image-off'}
 		<line x1="2" x2="22" y1="2" y2="22" />
 		<path d="M10.41 10.41a2 2 0 1 1-2.83-2.83" />
@@ -54,6 +61,10 @@
 	{:else if icon === 'move-up'}
 		<path d="M8 6L12 2L16 6" />
 		<path d="M12 2V22" />
+	{:else if icon === 'explicit'}
+		<path
+			d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 16H5V5h14zm-4-4h-4v-2h4v-2h-4V9h4V7H9v10h6z"
+		/>
 	{:else}
 		<circle cx="12" cy="12" r="12" fill="#006BAB" />
 		<path

@@ -9,28 +9,94 @@ import {
 } from '@tanstack/virtual-core';
 import type { VirtualizerOptions, PartialKeys } from '@tanstack/virtual-core';
 import type { Action } from 'svelte/action';
-import { onDestroy } from 'svelte';
+
+const base = <TScroll extends Element | Window, TItem extends Element>(
+	opts: VirtualizerOptions<TScroll, TItem>
+) => {
+	let resolvedOptions: VirtualizerOptions<TScroll, TItem> = $state(opts);
+
+	let instanced = $state(new Virtualizer(resolvedOptions));
+
+	let virtualItems = $state(instanced.getVirtualItems());
+	let totalSize = $state(instanced.getTotalSize());
+
+	const setOptions = (newOptions: Partial<VirtualizerOptions<TScroll, TItem>>) => {
+		resolvedOptions = {
+			...instanced.options,
+			...newOptions,
+			onChange: (instance: Virtualizer<TScroll, TItem>, sync: boolean) => {
+				instanced = instance;
+				virtualItems = instance.getVirtualItems();
+				totalSize = instance.getTotalSize();
+				newOptions.onChange?.(instance, sync);
+			}
+		};
+	};
+
+	const measureElement: Action<TItem> = (node) => {
+		instanced.measureElement(node);
+
+		return {
+			update: () => {
+				instanced.measureElement(node);
+			}
+		};
+	};
+
+	const cleanup = $effect.root(() => {
+		$effect.pre(() => {
+			instanced.setOptions(resolvedOptions);
+			instanced.measure();
+		});
+
+		$effect.pre(() => {
+			instanced._willUpdate();
+		});
+
+		$effect.pre(() => {
+			virtualItems = instanced.getVirtualItems();
+			totalSize = instanced.getTotalSize();
+		});
+
+		return () => {
+			instanced._didMount();
+		};
+	});
+
+	return {
+		setOptions,
+		get virtualItems() {
+			return virtualItems;
+		},
+		get totalSize() {
+			return totalSize;
+		},
+		instance: instanced,
+		measureElement,
+		cleanup
+	};
+};
 
 const virtualBase = <TScroll extends Element | Window, TItem extends Element>(
 	opts: VirtualizerOptions<TScroll, TItem>
 ) => {
 	let resolvedOptions: VirtualizerOptions<TScroll, TItem> = $state(opts);
 
-	let instanced = $state(new Virtualizer<TScroll, TItem>(resolvedOptions));
+	let instanced = $state(new Virtualizer<TScroll, TItem>(opts));
 
 	let virtualItems = $state(instanced.getVirtualItems());
 	let totalSize = $state(instanced.getTotalSize());
 
-	const setOptions = (options: Partial<VirtualizerOptions<TScroll, TItem>>) => {
+	const setOptions = (newOptions: Partial<VirtualizerOptions<TScroll, TItem>>) => {
 		resolvedOptions = {
 			...resolvedOptions,
-			...options,
+			...newOptions,
 			onChange: (instance: Virtualizer<TScroll, TItem>, sync: boolean) => {
 				instance._willUpdate();
 				instanced = instance;
 				virtualItems = instance.getVirtualItems();
 				totalSize = instance.getTotalSize();
-				options.onChange?.(instance, sync);
+				newOptions.onChange?.(instance, sync);
 			}
 		};
 		instanced.measure();
@@ -46,24 +112,42 @@ const virtualBase = <TScroll extends Element | Window, TItem extends Element>(
 		};
 	};
 
-	instanced = new Virtualizer<TScroll, TItem>(resolvedOptions);
+	instanced = new Virtualizer<TScroll, TItem>(opts);
+	console.log('create object');
 
-	$effect.pre(() => {
-		instanced.setOptions(resolvedOptions);
-		instanced.measure();
-	});
+	const cleanup = $effect.root(() => {
+		$effect.pre(() => {
+			console.log('update from options');
+			instanced.setOptions(resolvedOptions);
+			instanced.measure();
 
-	$effect.pre(() => {
-		instanced._willUpdate();
-	});
+			return () => {
+				console.log('destroy from options');
+			};
+		});
 
-	$effect(() => {
-		virtualItems = instanced.getVirtualItems();
-		totalSize = instanced.getTotalSize();
-	});
+		$effect.pre(() => {
+			console.log('update from willUpdate');
+			instanced._willUpdate();
 
-	onDestroy(() => {
-		instanced._didMount();
+			return () => {
+				console.log('destroy from willupdate');
+			};
+		});
+
+		$effect.pre(() => {
+			virtualItems = instanced.getVirtualItems();
+			totalSize = instanced.getTotalSize();
+
+			return () => {
+				console.log('destroy from item');
+			};
+		});
+
+		return () => {
+			console.log('destroy from root');
+			instanced._didMount();
+		};
 	});
 
 	return {
@@ -75,7 +159,8 @@ const virtualBase = <TScroll extends Element | Window, TItem extends Element>(
 			return totalSize;
 		},
 		instance: instanced,
-		measureElement
+		measureElement,
+		cleanup
 	};
 };
 
@@ -99,7 +184,7 @@ export const createWindowVirtualizer = <T extends Element>(
 		'getScrollElement' | 'observeElementRect' | 'observeElementOffset' | 'scrollToFn'
 	>
 ) => {
-	return virtualBase({
+	return base({
 		getScrollElement: () => (typeof document !== 'undefined' ? window : null),
 		observeElementRect: observeWindowRect,
 		observeElementOffset: observeWindowOffset,

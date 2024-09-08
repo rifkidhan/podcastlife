@@ -11,23 +11,21 @@
 		Head,
 		WindowVirtual
 	} from '$lib/components';
+	import { onNavigate } from '$app/navigation';
 
 	let { data }: { data: PageServerData } = $props();
 
-	let episodesData = $state(data.episodes);
-
-	let episodeLength = $state(episodesData.length > 10 ? 10 : episodesData.length);
-	let updateEpisodeLength = $state(false);
+	let episodeLength = $state(data.episodes.length > 10 ? 10 : data.episodes.length);
 
 	let windowSize = $state(0);
 	let episodeItemSize = $state(160);
-	let updateEpisodeItemSize = $state(false);
+	let loading = $state(false);
 
 	let feed = $derived(data.podcast);
 
 	let episodes = $derived.by(() => {
-		const length = episodesData.length;
-		let episodes = episodesData;
+		let episodes = data.episodes;
+		const length = episodes.length;
 
 		if (episodeLength < length) {
 			episodes = data.episodes.slice(0, episodeLength);
@@ -37,6 +35,17 @@
 	});
 
 	let live = $derived(data.live);
+
+	onNavigate((nav) => {
+		if (nav.to?.params?.podcastId && !nav.to.params.guid) {
+			loading = true;
+			episodeLength = 10;
+			nav.complete.then(() => {
+				episodeLength = data.episodes.length > 10 ? 10 : data.episodes.length;
+				loading = false;
+			});
+		}
+	});
 
 	const list = [
 		{
@@ -53,30 +62,25 @@
 
 	$effect.pre(() => {
 		if (windowSize <= 412) {
-			updateEpisodeItemSize = true;
 			episodeItemSize = 100;
 		}
 
 		if (windowSize > 412 && windowSize < 768) {
-			updateEpisodeItemSize = true;
 			episodeItemSize = 120;
 		}
 		if (windowSize >= 768) {
-			updateEpisodeItemSize = true;
 			episodeItemSize = 160;
 		}
 	});
 
 	const load = () => {
-		if (episodeLength > episodesData.length) return;
+		if (episodeLength > data.episodes.length) return;
 
-		if (episodesData.length - episodeLength > 20) {
-			updateEpisodeLength = true;
+		if (data.episodes.length - episodeLength > 20) {
 			episodeLength += 20;
 		}
-		if (episodesData.length - episodeLength < 20) {
-			updateEpisodeLength = true;
-			episodeLength += episodesData.length - episodeLength;
+		if (data.episodes.length - episodeLength < 20) {
+			episodeLength += data.episodes.length - episodeLength;
 		}
 	};
 </script>
@@ -120,32 +124,30 @@
 		<section class="panels">
 			<Tabs class="tabs" bind:active tablist={list}>
 				<TabPanel id="podcast" {active}>
-					{#key episodesData.length}
-						<WindowVirtual
-							count={episodeLength}
-							bind:updateCount={updateEpisodeLength}
-							estimateSize={episodeItemSize}
-							bind:updateSize={updateEpisodeItemSize}
-							gap={10}
-							overscan={10}
-						>
-							{#snippet virtualItems(item)}
-								<Cardlist
-									type="podcast"
-									podcast={feed.title}
-									podcastId={feed.id}
-									title={episodes[item.index].title}
-									enclosure={episodes[item.index].enclosure.url}
-									guid={episodes[item.index].guid ?? feed.podcastGuid}
-									image={episodes[item.index].image ?? feed.image}
-									explicit={episodes[item.index].explicit}
-									pubDate={episodes[item.index].pubDate}
-									altEnclosure={episodes[item.index].alternativeEnclosures}
-									style="height: 100%"
-								/>
-							{/snippet}
-						</WindowVirtual>
-					{/key}
+					<WindowVirtual
+						count={episodes.length}
+						estimateSize={episodeItemSize}
+						gap={10}
+						overscan={10}
+						{loading}
+					>
+						{#snippet virtualItems(item)}
+							<Cardlist
+								type="podcast"
+								podcast={feed.title}
+								podcastId={feed.id}
+								title={episodes[item.index].title}
+								enclosure={episodes[item.index].enclosure.url}
+								guid={episodes[item.index].guid ?? feed.podcastGuid}
+								image={episodes[item.index].image ?? feed.image}
+								explicit={episodes[item.index].explicit}
+								pubDate={episodes[item.index].pubDate}
+								altEnclosure={episodes[item.index].alternativeEnclosures}
+								style="height: 100%"
+							/>
+						{/snippet}
+					</WindowVirtual>
+
 					{#if data.episodes.length > episodeLength}
 						<Button
 							type="button"

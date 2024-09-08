@@ -4,6 +4,7 @@ img {
 	transition-property: transform, filter;
 	transition-timing-function: ease-in-out;
 	transition-duration: 150ms;
+
 	&:where(.blur) {
 		filter: blur(8px);
 	}
@@ -180,6 +181,7 @@ img {
 		display: inline-flex;
 		width: var(--space-2);
 		height: var(--space-2);
+		flex-shrink: 0;
 
 		& > span {
 			border-radius: 9999px;

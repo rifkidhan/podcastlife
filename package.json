@@ -14,31 +14,30 @@
 		"clean:build": "rm -rf build && echo 'Clean build folder.'"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.46.1",
+		"@playwright/test": "^1.47.0",
 		"@sveltejs/adapter-node": "^5.2.2",
-		"@sveltejs/kit": "^2.5.25",
-		"@sveltejs/vite-plugin-svelte": "4.0.0-next.6",
-		"@tanstack/virtual-core": "^3.10.5",
+		"@sveltejs/kit": "^2.5.26",
+		"@sveltejs/vite-plugin-svelte": "4.0.0-next.7",
+		"@tanstack/virtual-core": "^3.10.7",
 		"@types/eslint": "^8.56.12",
 		"@types/sanitize-html": "^2.13.0",
 		"browserslist": "^4.23.3",
-		"eslint": "^9.9.1",
+		"eslint": "^9.10.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.42.0",
 		"globals": "^15.9.0",
 		"lightningcss": "^1.26.0",
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.6",
-		"svelte": "5.0.0-next.240",
+		"svelte": "5.0.0-next.244",
 		"svelte-check": "^3.8.6",
 		"typescript": "^5.5.4",
 		"typescript-eslint": "8.3.0",
-		"vite": "^5.4.2"
+		"vite": "^5.4.3"
 	},
 	"type": "module",
 	"dependencies": {
-		"@fontsource-variable/plus-jakarta-sans": "^5.0.22",
-		"motion": "^10.18.0",
+		"@fontsource-variable/plus-jakarta-sans": "^5.0.23",
 		"sanitize-html": "^2.13.0",
 		"transcriptator": "^1.1.4"
 	}

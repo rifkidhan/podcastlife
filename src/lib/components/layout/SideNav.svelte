@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button, Icons, useUI } from '$lib/components';
-	import ThemeSwitcher from './ThemeSwitcher.svelte';
+	import ThemeSwitcher from '../common/ThemeSwitcher.svelte';
 	import { fly, fade } from 'svelte/transition';
 	import { categories } from '$lib/utils/constants';
 	// import { page } from '$app/stores';
@@ -27,7 +27,12 @@
 	const open = useUI();
 </script>
 
-<div id="side-menu-wrapper" inert={!open.menuOpen} class="drawer">
+<div
+	id="side-menu-wrapper"
+	data-sidenav-open={open.menuOpen}
+	inert={!open.menuOpen || open.playerModal}
+	class="drawer"
+>
 	{#if open.menuOpen}
 		<div class="backdrop" aria-hidden="true" transition:fade={{ duration: 250 }}></div>
 		<div id="side-menu" transition:fly={{ x: 350, opacity: 1 }} class="menu">
@@ -84,30 +89,29 @@
 <style>
 	.drawer {
 		z-index: 20;
+		position: relative;
 	}
 	.backdrop {
 		position: fixed;
 		inset: 0px;
 		backdrop-filter: blur(8px);
-		background-color: color-mix(in srgb, var(--black) 50%, transparent);
+		background-color: hsla(var(--pl-black), 0.5);
 	}
 	.menu {
 		position: fixed;
 		right: 0;
 		top: 0;
 		height: 100dvh;
-		width: 100%;
+		width: var(--pl-nav-width);
 		overflow-y: auto;
 		overflow-x: hidden;
-		background-color: var(--accent-5);
+		background-color: hsl(var(--pl-accent-5));
 
 		@media (min-width: 768px) {
-			border-left: 4px solid var(--picton);
-			max-width: var(--width-lg);
+			border-left: 4px solid hsl(var(--pl-picton));
 		}
 
 		@media (min-width: 1024px) {
-			max-width: var(--width-md);
 			padding-inline: 2.5rem;
 		}
 
@@ -121,7 +125,7 @@
 			display: flex;
 			flex-direction: column;
 			gap: var(--space-8);
-			padding-block: var(--space-4);
+			padding-block: var(--pl-header-padding);
 
 			& .top {
 				display: flex;
@@ -147,7 +151,7 @@
 
 		:where(a:hover) {
 			text-decoration: underline;
-			text-decoration-color: var(--picton);
+			text-decoration-color: hsl(var(--pl-picton));
 		}
 	}
 

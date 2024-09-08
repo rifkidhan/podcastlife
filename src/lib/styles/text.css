@@ -7,28 +7,11 @@
 	margin-block: var(--space-4);
 }
 
-.prose :where(a) {
-	color: var(--accent-95);
-	text-decoration: underline;
-	font-weight: 500;
-	&:hover {
-		color: var(--picton);
-	}
-}
-
 .prose :where(strong) {
 	color: rgb(var(--accent-95));
 	font-weight: 600;
 }
-.prose :where(a strong) {
-	color: inherit;
-}
-.prose :where(blockquote strong) {
-	color: inherit;
-}
-.prose :where(thead th strong) {
-	color: inherit;
-}
+
 .prose :where(ol) {
 	list-style-type: decimal;
 	margin-block: var(--space-4);
@@ -73,228 +56,12 @@
 .prose :where(ul > li)::marker {
 	color: var(--cerise);
 }
-.prose :where(dt) {
-	color: var(--flamingo);
-	font-weight: 600;
-	margin-block-start: var(--space-4);
-}
 .prose :where(hr) {
 	border-color: var(--accent-95);
 	border-top-width: 1px;
 	margin-block: var(--space-16);
 }
-.prose :where(blockquote) {
-	font-weight: 500;
-	font-style: italic;
-	color: var(--accent-70);
-	border-inline-start-width: var(--space-2);
-	border-inline-start-color: var(--cerise);
-	quotes: '\201C' '\201D' '\2018' '\2019';
-	margin-block: var(--space-8);
-	padding-inline-start: var(--space-4);
-	border-left-color: var(--cerise);
-}
-.prose :where(blockquote p:first-of-type)::before {
-	content: open-quote;
-}
-.prose :where(blockquote p:last-of-type)::after {
-	content: close-quote;
-}
 
-.prose :where(h1, h2, h3, h4, h5, h6) {
-	color: var(--flamingo);
-}
-.prose :where(h1) {
-	font-weight: 800;
-	font-size: var(--text-3xl);
-	line-height: 1;
-	margin-block-start: var(--space-4);
-	margin-block-end: var(--space-6);
-
-	@media (min-width: 768px) {
-		font-size: var(--text-4xl);
-	}
-	@media (min-width: 1280px) {
-		font-size: var(--text-5xl);
-	}
-}
-.prose :where(h1 strong) {
-	font-weight: 900;
-	color: inherit;
-}
-.prose :where(h2) {
-	font-weight: 700;
-	line-height: 1;
-	font-size: var(--text-2xl);
-	margin-block-start: var(--space-4);
-	margin-block-end: var(--space-6);
-
-	@media (min-width: 768px) {
-		font-size: var(--text-3xl);
-	}
-	@media (min-width: 1280px) {
-		font-size: var(--text-4xl);
-	}
-}
-.prose :where(h2 strong) {
-	font-weight: 800;
-	color: inherit;
-}
-.prose :where(h3) {
-	font-weight: 600;
-	margin-block-start: var(--space-4);
-	margin-block-end: var(--space-6);
-	line-height: 1.5;
-
-	font-size: var(--text-xl);
-
-	@media (min-width: 768px) {
-		font-size: var(--text-2xl);
-	}
-	@media (min-width: 1280px) {
-		font-size: var(--text-3xl);
-	}
-}
-.prose :where(h3 strong) {
-	font-weight: 700;
-	color: inherit;
-}
-.prose :where(h4) {
-	font-weight: 600;
-	margin-block-start: var(--space-4);
-	margin-block-end: var(--space-6);
-	line-height: 1.5;
-
-	font-size: var(--text-lg);
-
-	@media (min-width: 768px) {
-		font-size: var(--text-xl);
-	}
-	@media (min-width: 1280px) {
-		font-size: var(--text-2xl);
-	}
-}
-.prose :where(h4 strong) {
-	font-weight: 700;
-	color: inherit;
-}
-
-.prose :where(h5) {
-	font-size: var(--text-md);
-
-	@media (min-width: 768px) {
-		font-size: var(--text-lg);
-	}
-	@media (min-width: 1280px) {
-		font-size: var(--text-xl);
-	}
-}
-
-.prose :where(h6) {
-	font-size: var(--text-base);
-
-	@media (min-width: 768px) {
-		font-size: var(--text-md);
-	}
-	@media (min-width: 1280px) {
-		font-size: var(--text-lg);
-	}
-}
-.prose :where(picture) {
-	display: block;
-	margin-block: var(--space-8);
-}
-.prose :where(video) {
-	margin-block: var(--space-8);
-}
-.prose :where(kbd) {
-	font-weight: 500;
-	font-family: inherit;
-	color: var(--accent-95);
-	box-shadow:
-		0 0 0 1px color-mix(in srgb, var(--accent-95) 10%, transparent),
-		0 3px 0 color-mix(in srgb, var(--accent-95) 10%, transparent);
-	border-radius: var(--space-1);
-	padding-block: var(--space-2);
-	padding-inline: var(--space-1);
-}
-.prose :where(a code) {
-	color: inherit;
-}
-.prose :where(h1 code) {
-	color: inherit;
-}
-.prose :where(h2 code) {
-	color: inherit;
-	font-size: 0.875em;
-}
-.prose :where(h3 code) {
-	color: inherit;
-	font-size: 0.9em;
-}
-.prose :where(h4 code) {
-	color: inherit;
-}
-.prose :where(blockquote code) {
-	color: inherit;
-}
-.prose :where(thead th code) {
-	color: inherit;
-}
-.prose :where(table) {
-	width: 100%;
-	table-layout: auto;
-	margin-block: var(--space-8);
-	line-height: 1;
-}
-.prose :where(thead) {
-	border-bottom-width: 1px;
-	border-bottom-color: var(--accent-95);
-}
-.prose :where(thead th) {
-	color: var(--accent-95);
-	font-weight: 600;
-	vertical-align: bottom;
-	padding-bottom: var(--space-1);
-	padding-inline: var(--space-1);
-}
-.prose :where(tbody tr) {
-	border-bottom-width: 1px;
-	border-bottom-color: var(--accent-95);
-}
-.prose :where(tbody tr:last-child) {
-	border-bottom-width: 0;
-}
-.prose :where(tbody td) {
-	vertical-align: baseline;
-}
-.prose :where(tfoot) {
-	border-top-width: 1px;
-	border-bottom-color: var(--accent-95);
-}
-.prose :where(tfoot td) {
-	vertical-align: top;
-}
-.prose :where(th, td) {
-	text-align: start;
-}
-.prose :where(figure > *) {
-	margin-top: 0;
-	margin-bottom: 0;
-}
-.prose :where(figcaption) {
-	color: var(--accent-70);
-	line-height: 1.5;
-	margin-top: var(--space-1);
-}
-.prose :where(picture > img) {
-	margin-top: 0;
-	margin-bottom: 0;
-}
-.prose :where(img) {
-	border-radius: var(--space-2);
-	border: var(--space-1) solid var(--accent-95);
-}
 .prose :where(li) {
 	margin-block: var(--space-2);
 }
@@ -322,53 +89,10 @@
 .prose :where(ul ul, ul ol, ol ul, ol ol) {
 	margin-block: var(--space-3);
 }
-.prose :where(dl) {
-	margin-block: var(--space-6);
-}
-.prose :where(dd) {
-	margin-top: 0.5em;
-	padding-inline-start: var(--space-6);
-}
-.prose :where(hr + *) {
-	margin-top: 0;
-}
-.prose :where(h2 + *) {
-	margin-top: 0;
-}
-.prose :where(h3 + *) {
-	margin-top: 0;
-}
-.prose :where(h4 + *) {
-	margin-top: 0;
-}
-.prose :where(thead th:first-child) {
-	padding-inline-start: 0;
-}
-.prose :where(thead th:last-child) {
-	padding-inline-end: 0;
-}
-.prose :where(tbody td, tfoot td) {
-	padding-top: 0.5714286em;
-	padding-inline-end: 0.5714286em;
-	padding-bottom: 0.5714286em;
-	padding-inline-start: 0.5714286em;
-}
-.prose :where(tbody td:first-child, tfoot td:first-child) {
-	padding-inline-start: 0;
-}
-.prose :where(tbody td:last-child, tfoot td:last-child) {
-	padding-inline-end: 0;
-}
-.prose :where(figure) {
-	margin-top: 2em;
-	margin-bottom: 2em;
-}
+
 .prose :where(.prose > :first-child) {
 	margin-top: 0;
 }
 .prose :where(.prose > :last-child) {
 	margin-bottom: 0;
-}
-.prose :where(thead, tbody tr, tfoot) {
-	border-bottom-color: var(--accent-95);
 }

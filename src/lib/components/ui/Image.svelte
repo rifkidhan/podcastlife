@@ -7,7 +7,7 @@
 		full?: boolean;
 	}
 
-	const image_off =
+	const imageOff =
 		'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNmZDM2MzciIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBjbGFzcz0ibHVjaWRlIGx1Y2lkZS1pbWFnZS1vZmYiPjxsaW5lIHgxPSIyIiB4Mj0iMjIiIHkxPSIyIiB5Mj0iMjIiLz48cGF0aCBkPSJNMTAuNDEgMTAuNDFhMiAyIDAgMSAxLTIuODMtMi44MyIvPjxsaW5lIHgxPSIxMy41IiB4Mj0iNiIgeTE9IjEzLjUiIHkyPSIyMSIvPjxsaW5lIHgxPSIxOCIgeDI9IjIxIiB5MT0iMTIiIHkyPSIxNSIvPjxwYXRoIGQ9Ik0zLjU5IDMuNTlBMS45OSAxLjk5IDAgMCAwIDMgNXYxNGEyIDIgMCAwIDAgMiAyaDE0Yy41NSAwIDEuMDUyLS4yMiAxLjQxLS41OSIvPjxwYXRoIGQ9Ik0yMSAxNVY1YTIgMiAwIDAgMC0yLTJIOSIvPjwvc3ZnPg==';
 
 	let {
@@ -25,14 +25,14 @@
 	let error = $state(false);
 	let loaded = $state(false);
 
-	let img_src = $derived.by(() => {
-		let img_src = src;
+	let imgSrc = $derived.by(() => {
+		let imgSrc = src;
 
 		if (error) {
-			img_src = image_off;
+			imgSrc = imageOff;
 		}
 
-		return img_src;
+		return imgSrc;
 	});
 </script>
 
@@ -41,7 +41,7 @@
 	{decoding}
 	{width}
 	{height}
-	src={img_src}
+	src={imgSrc}
 	{alt}
 	onload={() => (loaded = true)}
 	onerror={() => (error = true)}

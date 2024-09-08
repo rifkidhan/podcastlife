@@ -30,7 +30,7 @@
 <Head title={episode.title} description={episode.description} />
 <Main class="container mx-auto">
 	<section class="details">
-		<div class="thumbnails">
+		<div class="thumbnails" style:--tag={`episode-${episode.guid}-thumbnail`}>
 			<Image
 				src={episode.image !== '' ? episode.image : episode.feedImage}
 				alt={episode.title ?? episode.feedTitle}
@@ -40,15 +40,17 @@
 		<div class="content">
 			<div class="title" title={episode.title ?? 'Untitled'}>
 				<RunningText class="running">
-					<h1 class:explicit={episode.explicit}>{episode.title ?? 'Untitled'}</h1>
+					<h1 style:--tag={`episode-${episode.guid}-title`}>
+						{episode.title ?? 'Untitled'}
+					</h1>
 				</RunningText>
 			</div>
-			<div>
+			<div class:explicit={episode.explicit}>
 				{episode.feedTitle}
 			</div>
 			<div>{episode.author}</div>
 			<div>Published at {getTime(episode.pubDate ?? 0)}</div>
-			<div>duration {formatTime(episode.duration)}</div>
+			<div>Duration {formatTime(episode.duration)}</div>
 			<div>
 				<Button
 					type="button"
@@ -89,7 +91,7 @@
 	<Tabs tablist={tabItems} bind:active class="tabs">
 		<TabPanel id={tabItems[0].id} {active}>
 			{#if episode.description}
-				<div class="prose max-w-none">
+				<div class="prose">
 					{@html episode.description}
 				</div>
 			{/if}
@@ -98,16 +100,17 @@
 			{#await data.transcripts}
 				loading Transcript
 			{:then transcripts}
-				<div class="transcript">
-					{#each transcripts as script}
-						<div class="transcript">
-							<div>{script.speaker}</div>
-							<div>{script.body}</div>
-							<div></div>
-						</div>
+				<div class="transcripts">
+					{#if transcripts && transcripts.length > 0}
+						{#each transcripts as script}
+							<div class="transcript">
+								<div class="speaker">{script.speaker}</div>
+								<div class="message">{script.body}</div>
+							</div>
+						{/each}
 					{:else}
 						No Transcript Provide
-					{/each}
+					{/if}
 				</div>
 			{/await}
 		</TabPanel>
@@ -115,11 +118,13 @@
 			{#await data.chapters}
 				Loading
 			{:then chapters}
-				{#each chapters as chap}
-					<p>{chap.speaker}</p>
+				{#if chapters}
+					{#each chapters.chapters as chap}
+						<p>{chap.title}</p>
+					{/each}
 				{:else}
 					No Chapters
-				{/each}
+				{/if}
 			{/await}
 		</TabPanel>
 	</Tabs>
@@ -142,7 +147,7 @@
 			width: 100%;
 			overflow: hidden;
 			border-radius: var(--space-2);
-			border: 2px solid currentColor;
+			border: 2px solid var(--accent-95);
 			box-shadow: var(--shadow-drop);
 
 			@media (min-width: 768px) {
@@ -158,7 +163,8 @@
 			}
 
 			& > .title {
-				display: block;
+				display: flex;
+				flex-direction: row;
 				overflow: hidden;
 
 				& > :global(.running) {
@@ -180,11 +186,31 @@
 		}
 	}
 
-	.transcript {
+	.transcripts {
 		display: flex;
 		flex-direction: column;
 		width: 100%;
-		gap: var(--space-3);
+		gap: var(--space-5);
+
+		& > .transcript {
+			display: inherit;
+			flex-direction: inherit;
+			width: inherit;
+			gap: var(--space-3);
+
+			& > .speaker {
+				font-weight: 600;
+			}
+
+			& > .message {
+				background-color: var(--picton);
+				border: 2px solid var(--accent-95);
+				border-radius: var(--space-2);
+				padding-inline: var(--space-3);
+				padding-block: var(--space-5);
+				color: var(--black);
+			}
+		}
 	}
 
 	:global(.tabs) {

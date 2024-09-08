@@ -7,11 +7,11 @@
 		children: Snippet;
 	}
 
-	const menu = useUI();
+	let uiState = $derived(useUI().menuOpen || useUI().playerModal);
 
 	let { children, ...props }: MainProps = $props();
 </script>
 
-<main inert={menu.menuOpen} {...props}>
+<main inert={uiState} {...props}>
 	{@render children()}
 </main>

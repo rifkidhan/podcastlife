@@ -14,56 +14,27 @@ body {
 	box-sizing: border-box;
 	touch-action: manipulation;
 	overscroll-behavior-x: none;
-	font-family: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif,
-		'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-	font-weight: 500;
-	color: var(--accent-95);
+	font-family: 'Plus Jakarta Sans Variable', ui-sans-serif, system-ui, sans-serif;
+	font-weight: 400;
+	color: hsl(var(--pl-accent-95));
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 
-	@supports (scrollbar-width: auto) {
-		scrollbar-width: auto;
-		scrollbar-color: var(--picton) transparent;
-	}
-
-	@supports selector(::-webkit-scrollbar) {
-		::-webkit-scrollbar {
-			height: var(--space-1);
-			width: var(--space-1);
-		}
-
-		::-webkit-scrollbar-track {
-			background-color: transparent;
-		}
-
-		::-webkit-scrollbar-thumb {
-			border-radius: var(--space-1);
-			background-color: var(--picton);
-		}
-
-		::-webkit-scrollbar-thumb:hover {
-			background-color: color-mix(in srgb, var(--picton), black 5%);
-		}
-	}
-
 	&::selection {
-		background: var(--golden);
-		color: var(--black);
+		background: hsl(var(--pl-golden));
+		color: hsl(var(--pl-black));
 	}
 }
 
-html:has([data-menu-opened='true']) {
+html:has([data-sidenav-open='true'], dialog[open]) {
 	overflow: hidden;
-	padding-right: var(--space-1);
+	padding-right: 2px;
 }
 
 body {
-	position: relative;
-	margin: 0px;
-	min-height: 100dvh;
 	font-size: var(--text-sm);
 	line-height: 1.25rem;
-	background-color: var(--accent-5);
+	background-color: hsl(var(--pl-accent-5));
 
 	@media (min-width: 768px) {
 		font-size: var(--text-base);
@@ -99,7 +70,7 @@ main {
 .explicit::before {
 	content: '🅴';
 	font-weight: 500;
-	color: var(--cinnabar);
+	color: hsl(var(--pl-cinnabar));
 	margin-inline-end: var(--space-2);
 }
 
@@ -108,8 +79,7 @@ main {
 	padding-inline: 1rem;
 
 	&:where(.full) {
-		margin-left: auto;
-		margin-right: auto;
+		margin-inline: auto;
 	}
 
 	@media (min-width: 640px) {

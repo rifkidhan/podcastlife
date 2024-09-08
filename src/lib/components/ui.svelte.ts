@@ -1,6 +1,7 @@
 import { playerState } from '$lib/stores/player.svelte';
 
 let menu = $state(false);
+let playerModalState = $state(false);
 
 export function useUI() {
 	return {
@@ -12,6 +13,12 @@ export function useUI() {
 		},
 		get player() {
 			return playerState.feed.id !== '';
+		},
+		get playerModal() {
+			return playerModalState;
+		},
+		set playerModal(value) {
+			playerModalState = value;
 		}
 	};
 }

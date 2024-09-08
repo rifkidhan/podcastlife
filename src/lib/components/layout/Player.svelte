@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { Button, Image, Icons, Progress, Slider, useUI } from '$lib/components';
+	import { Button, Image, Icons, Progress, Slider, RunningText, useUI } from '$lib/components';
 	import { playerState } from '$lib/stores/player.svelte';
-	import RunningText from './RunningText.svelte';
 	import { formatTime } from '$lib/utils/time';
 	import { fly } from 'svelte/transition';
 
@@ -13,12 +12,31 @@
 	let current = $derived(Math.floor(playerState.currentTime));
 
 	let windowWidth = $state(0);
+
+	let playerFull: HTMLDialogElement | undefined = $state();
+
+	const playerModal = {
+		open: () => {
+			if (!playerFull) return;
+			playerFull.showModal();
+			uiState.playerModal = true;
+		},
+		close: () => {
+			if (!playerFull) return;
+			playerFull.close();
+			uiState.playerModal = false;
+		}
+	};
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} />
 
 {#if uiState.player}
-	<div transition:fly={{ y: 350, opacity: 1 }} class="player" inert={uiState.menuOpen}>
+	<div
+		transition:fly={{ y: 350, opacity: 1 }}
+		class="player"
+		inert={uiState.menuOpen || uiState.playerModal}
+	>
 		{#key podcast.enclosure}
 			<audio
 				src={podcast.enclosure}
@@ -113,7 +131,11 @@
 						</a>
 					</div>
 				</div>
-				<div class="right">another</div>
+				<div class="right">
+					<Button type="button" variant="picton" title="Open player" onclick={playerModal.open}>
+						<Icons icon="chevron-up" />
+					</Button>
+				</div>
 			</div>
 			<div class="upper">
 				{#if Number.isFinite(playerState.duration) && windowWidth > 1024}
@@ -136,6 +158,13 @@
 		{/key}
 	</div>
 {/if}
+
+<dialog bind:this={playerFull} class="player-modal" inert={!uiState.playerModal}>
+	Dialog
+	<Button type="button" variant="picton" title="Close Player" onclick={playerModal.close}>
+		<Icons icon="chevron-down" />
+	</Button>
+</dialog>
 
 <style>
 	.player {
@@ -257,5 +286,12 @@
 			display: flex;
 			text-align: center;
 		}
+	}
+
+	.player-modal {
+		width: 100dvw;
+		height: 100dvh;
+		max-width: unset;
+		max-height: unset;
 	}
 </style>

@@ -12,24 +12,18 @@
 	let metadata = $state(data.feeds.meta.page);
 
 	let status: 'loaded' | 'loading' | 'error' = $state('loaded');
-
-	let updateFeedsLength = $state(false);
 	let windowSize = $state(0);
 	let feedsItemSize = $state(160);
-	let updateFeedsItemSize = $state(false);
 
 	$effect.pre(() => {
 		if (windowSize <= 412) {
-			updateFeedsItemSize = true;
 			feedsItemSize = 100;
 		}
 
 		if (windowSize > 412 && windowSize < 768) {
-			updateFeedsItemSize = true;
 			feedsItemSize = 120;
 		}
 		if (windowSize >= 768) {
-			updateFeedsItemSize = true;
 			feedsItemSize = 160;
 		}
 	});
@@ -53,8 +47,6 @@
 		feeds = [...feeds, ...data.data];
 		metadata = data.meta.page;
 
-		updateFeedsLength = true;
-
 		status = 'loaded';
 	};
 </script>
@@ -73,14 +65,7 @@
 		<section class="container full">
 			<h2>Another in {$page.params.slug}</h2>
 			<div class="podcastlist" data-sveltekit-preload-data="tap">
-				<WindowVirtual
-					count={feeds.length}
-					bind:updateCount={updateFeedsLength}
-					estimateSize={feedsItemSize}
-					bind:updateSize={updateFeedsItemSize}
-					gap={10}
-					overscan={10}
-				>
+				<WindowVirtual count={feeds.length} estimateSize={feedsItemSize} gap={10} overscan={10}>
 					{#snippet virtualItems(item)}
 						<a href="/podcast/{feeds[item.index].id}" class="card">
 							<div class="thumbnail">

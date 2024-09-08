@@ -2,12 +2,12 @@
 	import { SvelteDate } from 'svelte/reactivity';
 	import { useUI } from '$lib/components';
 
-	const menu = useUI();
+	let uiState = $derived(useUI().menuOpen || useUI().playerModal);
 
 	const years = new SvelteDate().getFullYear();
 </script>
 
-<footer inert={menu.menuOpen === true}>
+<footer inert={uiState}>
 	<div class="wrapper container">
 		<div>Semua Text</div>
 		<span class="line"></span>
@@ -22,8 +22,8 @@
 	footer {
 		position: relative;
 		width: 100%;
-		border-top: 2px solid currentColor;
-		background-color: var(--accent-5);
+		border-top: 2px solid hsl(var(--pl-accent-95));
+		background-color: hsl(var(--pl-accent-5));
 		padding-block: var(--space-4);
 
 		& > .wrapper {
