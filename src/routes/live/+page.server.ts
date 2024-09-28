@@ -1,8 +1,18 @@
 import type { PageServerLoad } from './$types';
-import { getLiveStream } from '$lib/server/podcasts';
+import type { LivePodcast } from '$lib/types';
+import { podcastAPI } from '$lib/server/api';
 
-export const load = (async () => {
-	const { data } = await getLiveStream();
+export const load: PageServerLoad = async ({ setHeaders }) => {
+	const res = await podcastAPI({ endpoint: '/episodes/live' });
 
-	return { live: data };
-}) satisfies PageServerLoad;
+	const { data } = (await res.json()) as LivePodcast;
+
+	setHeaders({
+		'cache-control':
+			res.headers.get('cache-control') || 'public, max-age=1800, stale-while-revalidate=1800'
+	});
+
+	return {
+		live: data
+	};
+};

@@ -1,45 +1,75 @@
 <script lang="ts">
-	import { afterUpdate } from 'svelte';
-	import { createAnimate } from '$lib/utils/motion';
-	export let component = 'span';
+	import type { HTMLAttributes } from 'svelte/elements';
+	import type { Snippet } from 'svelte';
 
-	let runningText: HTMLElement;
-	let letsMove = false;
-	let sumWidth = 0;
+	interface RunningProps extends HTMLAttributes<HTMLElement> {
+		as?: string;
+		children: Snippet;
+	}
 
-	const { animate } = createAnimate({});
+	let { as = 'span', children, class: className, ...attrs }: RunningProps = $props();
+
+	let runningText: HTMLElement | undefined = $state();
+	let move = $state(false);
+	let sumWidth = $state(0);
 
 	const handleResize = () => {
 		if (runningText && runningText.parentElement) {
-			letsMove = runningText.scrollWidth > runningText.parentElement.clientWidth;
+			move = runningText.scrollWidth > runningText.parentElement.clientWidth;
 			sumWidth = runningText.scrollWidth - runningText.parentElement.clientWidth;
 		}
 	};
 
-	afterUpdate(() => {
-		handleResize();
-	});
+	$effect.pre(handleResize);
 </script>
 
-<svelte:window on:resize={handleResize} />
+<svelte:window onresize={handleResize} />
 
 <svelte:element
-	this={component}
-	bind:this={runningText}
-	{...$$restProps}
-	class="relative flex max-w-fit shrink-0 flex-row flex-nowrap whitespace-nowrap"
-	use:animate={{
-		keyframe: {
-			x: [0, -(sumWidth + 15)]
-		},
-		options: {
-			duration: Math.floor((sumWidth * 3) / 100 + 3),
-			repeat: Infinity,
-			easing: 'ease-in-out',
-			direction: 'alternate'
-		},
-		play: letsMove
-	}}
+	this={as}
+	class={className}
+	class:root={true}
+	style:--pl-running-text-length={`-${Math.round(sumWidth + 20)}px`}
+	style:--pl-running-text-duration={`${Math.floor((sumWidth * 3) / 100 + 3)}s`}
+	{...attrs}
 >
-	<slot />
+	<span bind:this={runningText} class:running-animation={move}>
+		{@render children()}
+	</span>
 </svelte:element>
+
+<style>
+	@keyframes slide {
+		from {
+			transform: translateX(1px);
+		}
+		to {
+			transform: translateX(calc(var(--pl-running-text-length)));
+		}
+	}
+	.root {
+		display: inline-flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		overflow: hidden;
+		user-select: none;
+		width: 100%;
+
+		&:hover {
+			--pl-running-text-state: paused;
+		}
+
+		& > span {
+			margin-block-end: var(--pl-running-text-margin, 0.5rem);
+			display: block;
+			white-space: nowrap;
+			width: 100%;
+			text-align: var(--pl-running-text-align, center);
+		}
+	}
+
+	.running-animation {
+		animation: slide var(--pl-running-text-duration) ease-in-out infinite alternate;
+		animation-play-state: var(--pl-running-text-state, running);
+	}
+</style>

@@ -1,23 +1,27 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-	import { Image } from '$lib/components/base';
-	import { Carousel, Head } from '$lib/components/common';
+	import { Carousel, Head } from '$lib/components';
 
-	export let data: PageServerData;
+	let { data } = $props();
+
+	let trendings = $derived(data.trendings);
+	let recents = $derived(data.recents);
 </script>
 
 <Head />
-
-<main class="mt-20">
-	<section class="container relative mx-auto flex flex-col gap-5">
-		<h1 class="text-4xl font-bold xl:text-7xl">podcastlife</h1>
+<main class="page">
+	<h1 class="sr-only">Podcastlife</h1>
+	<section>
+		<h2 class="text-lg">Trending</h2>
+		<Carousel label="trending" items={trendings} />
 	</section>
-	<section class="container relative mx-auto flex flex-col gap-5">
-		<h2 class="text-3xl font-semibold">Trending Now</h2>
-		<Carousel items={data.trending} />
-	</section>
-	<section class="container relative mx-auto flex flex-col gap-5">
-		<h2 class="text-3xl font-semibold">Last Update</h2>
-		<Carousel items={data.recents} />
+	<section>
+		<h2 class="text-lg">Recent update</h2>
+		<Carousel label="recent update" items={recents} />
 	</section>
 </main>
+
+<style>
+	section {
+		max-width: 90vw;
+	}
+</style>

@@ -1,15 +1,18 @@
-const throttle = <P extends any[]>(
-	fn: (...args: P) => any,
-	timeout: number
-): ((...args: P) => void) => {
-	let timer: ReturnType<typeof setTimeout>;
-	return (...args) => {
-		clearTimeout(timer);
+export default function throttle<T extends () => void>(fn: T, ms: number) {
+	let id: ReturnType<typeof setTimeout> | undefined | null;
 
-		timer = setTimeout(() => {
-			fn(...args);
-		}, timeout);
+	const cancel = () => {
+		if (id !== null) {
+			clearTimeout(id);
+		}
 	};
-};
-
-export default throttle;
+	const debouncedFn = () => {
+		cancel();
+		id = setTimeout(() => {
+			id = null;
+			fn();
+		}, ms);
+	};
+	debouncedFn._cancel = cancel;
+	return debouncedFn;
+}

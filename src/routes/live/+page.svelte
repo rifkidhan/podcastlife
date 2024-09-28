@@ -1,114 +1,80 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-	import { Cardlist } from '$lib/components/podcast';
-	import { playing, player } from '$lib/stores/nowplaying';
-	import type { NowPlayingProps } from '$lib/stores/nowplaying';
-	import { Head } from '$lib/components/common';
+	import { EpisodeCard, Head } from '$lib/components';
 
-	export let data: PageServerData;
+	let { data } = $props();
 
-	const nowplaying = ({
-		podcast,
-		content
-	}: {
-		podcast: NowPlayingProps['podcast'];
-		content: NowPlayingProps['content'];
-	}) => {
-		if (!$player.open) {
-			$player.open = true;
-		}
-		if (content.enclosure.url !== $playing.content.enclosure.url) {
-			$playing.podcast = podcast;
-			$playing.content = content;
-			$playing.paused = false;
-		} else {
-			$playing.paused = !$playing.paused;
-		}
-	};
-
-	$: live = data.live;
+	let liveNow = $derived(data.live.filter((v) => v.status === 'live'));
+	let livePending = $derived(data.live.filter((v) => v.status === 'pending'));
 </script>
 
-<Head title="live stream" />
-
-<main>
-	<h1>Live</h1>
-	<section class="container relative mx-auto flex flex-col gap-5">
-		<h2>Livestream Now</h2>
-		<ul class="flex w-full flex-col gap-5">
-			{#each live.filter((val) => val.status === 'live') as item}
-				<Cardlist
-					title={item.title}
-					podcast={item.feedTitle ?? ''}
-					type="live"
-					status={item.status}
-					imageSrc={item.image}
-					explicit={false}
-					start={item.start}
-					linked={true}
-					podcastId={item.feedId}
-					end={item.end}
-					play={$playing.paused === false && item.enclosure.url === $playing.content.enclosure.url}
-					on:click={() => {
-						nowplaying({
-							podcast: {
-								id: item.feedId ?? '',
-								title: item.feedTitle ?? '',
-								image: item.image
-							},
-							content: {
-								title: item.title ?? '',
-								image: item.image ?? item.image,
-								enclosure: item.enclosure,
-								guid: item.guid ?? '',
-								explicit: false,
-								altEnclosure: item.alternativeEnclosures
-							}
-						});
-					}}
-				/>
+<Head title="Live Stream" />
+<main class="page">
+	<section>
+		<h1 class="text-display">Live</h1>
+	</section>
+	<section>
+		<h2 class="text-lg">Streaming Now</h2>
+		<ul class="list">
+			{#each liveNow as live}
+				<li>
+					<EpisodeCard
+						type="live"
+						title={live.title ?? 'untitled'}
+						feed={live.feedTitle}
+						feedId={live.feedId}
+						enclosure={live.enclosure.url}
+						guid={live.guid ?? ''}
+						summary={live.description}
+						image={live.image ?? live.feedImage}
+						status={live.status}
+						start={live.start}
+						end={live.end}
+						linked
+					/>
+				</li>
 			{:else}
-				<div>No one live stream now.</div>
+				No one live now
 			{/each}
 		</ul>
 	</section>
-	<section class="container relative mx-auto flex flex-col gap-5">
-		<h2>Pending Livestream</h2>
-		<ul class="flex w-full flex-col gap-5">
-			{#each live.filter((val) => val.status === 'pending') as item}
-				<Cardlist
-					title={item.title}
-					podcast={item.feedTitle ?? ''}
-					type="live"
-					status={item.status}
-					imageSrc={item.image}
-					explicit={false}
-					linked={true}
-					podcastId={item.feedId}
-					start={item.start}
-					end={item.end}
-					play={$playing.paused === false && item.enclosure.url === $playing.content.enclosure.url}
-					on:click={() => {
-						nowplaying({
-							podcast: {
-								id: item.feedId ?? '',
-								title: item.feedTitle ?? '',
-								image: item.image
-							},
-							content: {
-								title: item.title ?? '',
-								image: item.image ?? item.image,
-								enclosure: item.enclosure,
-								guid: item.guid ?? '',
-								explicit: false,
-								altEnclosure: item.alternativeEnclosures
-							}
-						});
-					}}
-				/>
+	<section>
+		<h2 class="text-lg">Pending Stream</h2>
+		<ul class="list">
+			{#each livePending as live}
+				<li>
+					<EpisodeCard
+						type="live"
+						title={live.title ?? 'untitled'}
+						feed={live.feedTitle}
+						feedId={live.feedId}
+						enclosure={live.enclosure.url}
+						guid={live.guid ?? ''}
+						summary={live.description}
+						image={live.image ?? live.feedImage}
+						status={live.status}
+						start={live.start}
+						end={live.end}
+						linked
+					/>
+				</li>
 			{:else}
-				<div>No one upcoming live stream.</div>
+				No one live now
 			{/each}
 		</ul>
 	</section>
 </main>
+
+<style>
+	section {
+		width: 90vw;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.list {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+</style>

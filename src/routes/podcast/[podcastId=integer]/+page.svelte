@@ -1,234 +1,299 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-	import { navigating } from '$app/stores';
-	import { Cardlist, Pagination } from '$lib/components/podcast';
-	import { Image } from '$lib/components/base';
-	import { playing, player } from '$lib/stores/nowplaying';
-	import type { NowPlayingProps } from '$lib/stores/nowplaying';
-	import { Tabs, TabsContent, Head } from '$lib/components/common';
+	import { Head, Image, Icon, RunningText, Button, Truncate, EpisodeCard } from '$lib/components';
+	import { Pagination } from '$lib/utils/pagination.svelte';
+	import { afterNavigate } from '$app/navigation';
 
-	export let data: PageServerData;
+	let { data } = $props();
 
-	$: podcast = data.podcast;
-	$: episodefull = data.episodes;
-	$: live = data.live;
+	const episodePagination = new Pagination({ count: data.episodes.length, limit: 20 });
 
-	let start = 0;
-	let end = 20;
+	let episodesStart = $derived(episodePagination.rangeStart);
+	let episodesEnd = $derived(episodePagination.rangeEnd);
+	let feed = $derived(data.podcast);
+	let episodes = $derived.by(() => {
+		let episodeNow = data.episodes.slice(episodesStart, episodesEnd);
 
-	$: episodes = episodefull.slice(start, end);
+		return episodeNow;
+	});
+	let live = $derived(data.live);
+	let episodeSection: HTMLElement | undefined = $state();
 
-	const tabs = [
-		{
-			id: 'pod',
-			title: 'Podcasts'
-		},
-		{
-			id: 'live',
-			title: 'Live'
-		}
-	];
+	afterNavigate(() => {
+		episodePagination.count = data.episodes.length;
+	});
 
-	const nowplaying = ({
-		podcast,
-		content
-	}: {
-		podcast: NowPlayingProps['podcast'];
-		content: NowPlayingProps['content'];
-	}) => {
-		if (!$player.open) {
-			$player.open = true;
-		}
-		if (content.enclosure.url !== $playing.content.enclosure.url) {
-			$playing.podcast = podcast;
-			$playing.content = content;
-			$playing.paused = false;
-		} else {
-			$playing.paused = !$playing.paused;
-		}
-	};
+	$effect.pre(() => {
+		if (!episodeSection) return;
+		episodePagination.rootElement = episodeSection;
+	});
 
-	let targetScrollElement: HTMLElement;
-	let targetScroll = 0;
-
-	$: if (targetScrollElement) {
-		targetScroll = targetScrollElement.getBoundingClientRect().top;
-	}
+	let innerWidth = $state(0);
 </script>
 
-<Head title={podcast.title} />
+<svelte:window bind:innerWidth />
+<Head title={feed.title} />
 
-<main class="container mx-auto">
-	<section class="grid w-full grid-cols-4 gap-10">
-		<div
-			class="relative col-span-full block aspect-1 w-full overflow-hidden rounded-lg border-2 shadow-drop md:col-span-1"
-			style:--tag="img-{podcast.id}"
-		>
-			<Image
-				src={podcast.image}
-				alt={podcast.title}
-				class="h-full w-full object-cover object-center"
-			/>
-		</div>
-		<div class="col-span-full flex w-full flex-col gap-10 md:col-span-3">
-			<div class="flex flex-col border-l-4 border-picton pl-4">
-				<div style:--tag="author-{podcast.id}" class="text-base uppercase text-picton lg:text-lg">
-					{podcast.author}
-				</div>
-				<h1
-					style:--tag="title-{podcast.id}"
-					class="relative text-3xl font-bold lg:text-5xl xl:text-7xl"
-				>
-					{podcast.title}
-				</h1>
+{#key feed.id}
+	<main class="page">
+		<div class="detail">
+			<div class="thumbnail">
+				<Image src={feed.image} loading="eager" alt={feed.title} full />
 			</div>
-			<div class="flex w-full flex-col gap-2">
-				<div class="flex w-full flex-wrap gap-3">
-					{#each podcast.tags as tag}
-						<span class="rounded-full bg-cerise px-2 py-1 text-xs uppercase text-white">
-							{tag}
-						</span>
-					{/each}
+			<div class="header">
+				<div class="title">
+					<div class="text-md">{feed.author}</div>
+					<RunningText
+						as="h1"
+						class="text-xl"
+						title={feed.title}
+						--pl-running-text-align={innerWidth > 1024 ? 'left' : 'center'}
+					>
+						{feed.title}
+					</RunningText>
 				</div>
-			</div>
-		</div>
-		<div class="text-md prose col-span-full max-w-none">
-			{@html podcast.description}
-		</div>
-	</section>
-
-	<section class="relative flex w-full flex-col-reverse gap-10 lg:flex-row">
-		<Tabs class="flex w-full flex-col lg:w-3/4" {tabs} bind:ref={targetScrollElement} let:active>
-			<TabsContent contentId="pod" value={active}>
-				<ul class="flex w-full flex-col gap-5 lg:gap-10">
-					{#each episodes as item (item.enclosure.url)}
-						<Cardlist
-							title={item.title ?? ''}
-							podcast={podcast.title}
-							imageSrc={item.image ?? podcast.image}
-							pubDate={item.pubDate}
-							explicit={item.explicit}
-							play={$playing.paused === false &&
-								item.enclosure.url === $playing.content.enclosure.url}
-							on:click={() => {
-								nowplaying({
-									podcast: {
-										id: podcast.id,
-										title: podcast.title,
-										image: podcast.image
-									},
-									content: {
-										title: item.title ?? '',
-										image: item.image ?? podcast.image,
-										enclosure: item.enclosure,
-										guid: item.guid ?? '',
-										explicit: item.explicit,
-										altEnclosure: item.alternativeEnclosures
-									}
-								});
-							}}
-						/>
+				<div class="tags list-with-dot text-sm">
+					{#each feed.tags as tag}
+						<span>{tag}</span>
 					{/each}
-				</ul>
-				{#if episodefull.length > 20}
-					<Pagination
-						total={episodefull.length}
-						limit={20}
-						target={targetScroll}
-						on:pagenow={({ detail }) => {
-							start = detail.start;
-							end = detail.end;
-						}}
-					/>
-				{/if}
-			</TabsContent>
-			<TabsContent contentId="live" value={active}>
-				{#if live}
-					<ul class="flex w-full flex-col gap-5 lg:gap-10">
-						{#each live as item}
-							<Cardlist
-								title={item.title}
-								podcast={podcast.title}
-								type="live"
-								status={item.status}
-								imageSrc={item.image ?? podcast.image}
-								explicit={false}
-								start={item.start}
-								end={item.end}
-								play={$playing.paused === false &&
-									item.enclosure.url === $playing.content.enclosure.url}
-								on:click={() => {
-									nowplaying({
-										podcast: {
-											id: podcast.id,
-											title: podcast.title,
-											image: podcast.image
-										},
-										content: {
-											title: item.title ?? '',
-											image: item.image ?? podcast.image,
-											enclosure: item.enclosure,
-											guid: item.guid ?? '',
-											explicit: false,
-											altEnclosure: item.alternativeEnclosures
-										}
-									});
-								}}
-							/>
-						{/each}
-					</ul>
-				{:else}
-					No Live Podcast
-				{/if}
-			</TabsContent>
-		</Tabs>
-		<div class="w-full flex-auto lg:w-auto">
-			<div
-				class="relative flex w-full flex-col gap-5 rounded-lg border-2 px-2 py-3 shadow-drop lg:sticky lg:top-20"
-			>
-				<h2 class="text-xl font-semibold text-picton lg:text-2xl">Live Now</h2>
-				<div class="flex flex-col gap-3">
-					{#if live && live.filter((val) => val.status === 'live').length > 0}
-						{#each live as item}
-							{#if item.status === 'live'}
-								<button
-									type="button"
-									on:click={() => {
-										nowplaying({
-											podcast: {
-												id: podcast.id,
-												title: podcast.title,
-												image: podcast.image
-											},
-											content: {
-												title: item.title ?? '',
-												image: item.image ?? podcast.image,
-												enclosure: item.enclosure,
-												guid: item.guid ?? '',
-												explicit: false,
-												altEnclosure: item.alternativeEnclosures
-											}
-										});
-									}}
-									class="inline-flex items-center gap-2 hover:text-picton"
-								>
-									<span class="relative inline-flex size-2">
-										<span
-											class="absolute inline-flex h-full w-full animate-ping rounded-full bg-cinnabar"
-										/>
-										<span class="h-full w-full rounded-full bg-cinnabar" />
-									</span>
-									<span class="text-left">
-										{item.title}
-									</span>
-								</button>
-							{/if}
-						{/each}
-					{:else}
-						No Live Podcast
+					{#if feed.explicit}
+						<Icon name="explicit" stroke="none" aria-hidden="true" size={18} class="explicit" />
 					{/if}
 				</div>
 			</div>
+			<div class="description">
+				<Truncate>
+					{@html feed.description}
+				</Truncate>
+			</div>
+			<div class="misc">
+				<Button size="fit">Play latest</Button>
+				{#if feed.link}
+					<a class="homepage" href={feed.link} rel="noopener noreferrer" target="_blank">
+						<Icon name="external-link" aria-hidden="true" size={20} style="display: inline;" />
+						<span>Podcaster page</span>
+					</a>
+				{/if}
+			</div>
 		</div>
-	</section>
-</main>
+
+		{#if live && live.length > 0}
+			<section>
+				<h2 class="text-lg">Live</h2>
+				<ul class="episode-list">
+					{#each live as eps (eps.guid)}
+						<li class="episode">
+							<EpisodeCard
+								type="live"
+								feed={feed.title}
+								feedId={feed.id}
+								title={eps.title ?? 'untitled'}
+								image={eps.image ?? feed.image}
+								summary={eps.description}
+								explicit={eps.explicit}
+								guid={eps.guid ?? feed.podcastGuid}
+								enclosure={eps.enclosure.url}
+								altEnclosure={eps.alternativeEnclosures}
+								status={eps.status}
+								start={eps.start}
+								end={eps.end}
+							/>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/if}
+
+		<section bind:this={episodeSection}>
+			<h2 class="text-lg">Episodes</h2>
+			<ul class="episode-list">
+				{#each episodes as eps (eps.guid)}
+					<li class="episode">
+						<EpisodeCard
+							feed={feed.title}
+							feedId={feed.id}
+							title={eps.title ?? 'untitled'}
+							image={eps.image ?? feed.image}
+							summary={eps.subtitle ?? eps.summary ?? eps.description}
+							publishedDate={eps.pubDate}
+							duration={eps.duration}
+							explicit={eps.explicit}
+							guid={eps.guid ?? feed.podcastGuid}
+							enclosure={eps.enclosure.url}
+							altEnclosure={eps.alternativeEnclosures}
+							episode={eps.episode ?? eps.itunesEpisode}
+						/>
+					</li>
+				{/each}
+			</ul>
+			{#if data.episodes.length > 20}
+				<div class="pagination">
+					<Button
+						type="button"
+						icon="chevrons-left"
+						aria-label="Go to first episode page"
+						onclick={episodePagination.firstButtonHandler}
+						disabled={episodePagination.page === 1}
+					/>
+					<Button
+						type="button"
+						icon="chevron-left"
+						aria-label="Go to previous episode page"
+						onclick={episodePagination.prevButtonHandler}
+						disabled={episodePagination.page <= 1}
+					/>
+					<span>{episodePagination.page} / {episodePagination.totalPage}</span>
+					<Button
+						type="button"
+						icon="chevron-right"
+						aria-label="Go to next episode page"
+						onclick={episodePagination.nextButtonHandler}
+						disabled={episodePagination.page >= episodePagination.totalPage}
+					/>
+					<Button
+						type="button"
+						icon="chevrons-right"
+						aria-label="Go to last episode page"
+						onclick={episodePagination.lastButtonHandler}
+						disabled={episodePagination.page === episodePagination.totalPage}
+					/>
+				</div>
+			{/if}
+		</section>
+	</main>
+{/key}
+
+<style>
+	main {
+		width: 90dvw;
+		margin-inline: auto;
+	}
+
+	.detail {
+		display: grid;
+		grid-template-areas:
+			'thumbnail'
+			'title'
+			'misc'
+			'description';
+		gap: 1rem;
+		justify-items: center;
+		width: 100%;
+		grid-template-columns: minmax(0, 1fr);
+
+		@media (min-width: 1024px) {
+			grid-template-areas:
+				'thumbnail title title'
+				'thumbnail description description'
+				'thumbnail misc .';
+			grid-template-columns: auto 1fr auto;
+			grid-template-rows: 1fr auto auto;
+			justify-items: start;
+			gap: 2rem;
+		}
+	}
+	.thumbnail {
+		display: block;
+		position: relative;
+		overflow: hidden;
+		aspect-ratio: 1;
+		border-radius: var(--pl-border-radius-md);
+		grid-area: thumbnail;
+		width: 300px;
+		border: 4px solid hsl(var(--pl-accent-95));
+		box-shadow: var(--pl-shadow-drop);
+	}
+	.header {
+		grid-area: title;
+		align-self: self-start;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		width: 100%;
+		align-items: flex-start;
+
+		.title {
+			border-inline-start: 4px solid hsl(var(--pl-picton));
+			padding-inline-start: 1rem;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+
+			@media (max-width: 1024px) {
+				border-inline-start: none;
+				padding-block-start: none;
+				align-items: center;
+			}
+
+			& > .text-md {
+				text-transform: uppercase;
+				color: hsl(var(--pl-picton));
+				overflow: hidden;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				line-clamp: 2;
+			}
+		}
+	}
+
+	.description {
+		--pl-rotate-plus-sign: 0deg;
+		grid-area: description;
+		cursor: default;
+		align-self: flex-start;
+	}
+
+	.tags {
+		display: inline-flex;
+		text-transform: uppercase;
+		font-weight: 600;
+		color: hsl(var(--pl-accent-80));
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+
+		@media (max-width: 1024px) {
+			margin-inline: auto;
+		}
+	}
+
+	.misc {
+		grid-area: misc;
+		display: flex;
+		flex-direction: row;
+		gap: 3rem;
+		align-items: center;
+	}
+
+	.homepage {
+		display: inline-flex;
+		flex-direction: row;
+		gap: 0.2rem;
+		align-items: center;
+
+		&:hover {
+			box-shadow: var(--pl-shadow-highlight);
+		}
+	}
+
+	section {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.episode-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.pagination {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+		align-items: center;
+		justify-content: center;
+	}
+</style>
