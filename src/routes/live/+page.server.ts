@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import type { LivePodcast } from '$lib/types';
-import { podcastAPI } from '$lib/server/podcasts';
+import { podcastAPI } from '$lib/server/api';
 
 export const load: PageServerLoad = async ({ setHeaders }) => {
 	const res = await podcastAPI({ endpoint: '/episodes/live' });

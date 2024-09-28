@@ -1,21 +1,32 @@
 <script lang="ts">
-	// import '../app.css';
-	import '$lib/styles/app.css';
-	import '@fontsource-variable/plus-jakarta-sans';
-	import '@fontsource-variable/plus-jakarta-sans/wght-italic.css';
-
 	import type { Snippet } from 'svelte';
-	import { Footer, Header, SideNav, Player, ScrollTop } from '$lib/components';
-	import { viewTransition } from '$lib/utils/viewTransition';
+	import {
+		Header,
+		Footer,
+		SideNav,
+		ScrollTop,
+		Player,
+		LoadingIndicator,
+		useUI
+	} from '$lib/components';
+	import { navigating } from '$app/stores';
+
+	import '@fontsource-variable/plus-jakarta-sans';
+	import '$lib/styles/app.css';
 
 	let { children }: { children: Snippet } = $props();
 
-	viewTransition();
+	const uiState = useUI();
 </script>
 
 <Header />
-{@render children()}
+<div inert={uiState.menuOpen} class="content">
+	{@render children()}
+	{#if $navigating}
+		<LoadingIndicator />
+	{/if}
+</div>
 <SideNav />
-<Footer />
 <ScrollTop />
+<Footer inert={uiState.menuOpen} />
 <Player />

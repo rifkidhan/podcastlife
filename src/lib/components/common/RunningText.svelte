@@ -2,13 +2,14 @@
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Snippet } from 'svelte';
 
-	interface RunningProps extends HTMLAttributes<HTMLDivElement> {
+	interface RunningProps extends HTMLAttributes<HTMLElement> {
+		as?: string;
 		children: Snippet;
 	}
 
-	let { children, class: className, ...attrs }: RunningProps = $props();
+	let { as = 'span', children, class: className, ...attrs }: RunningProps = $props();
 
-	let runningText: HTMLDivElement | undefined = $state();
+	let runningText: HTMLElement | undefined = $state();
 	let move = $state(false);
 	let sumWidth = $state(0);
 
@@ -19,24 +20,23 @@
 		}
 	};
 
-	$effect.pre(() => {
-		handleResize();
-	});
+	$effect.pre(handleResize);
 </script>
 
 <svelte:window onresize={handleResize} />
 
-<div
-	bind:this={runningText}
+<svelte:element
+	this={as}
 	class={className}
-	class:running-animation={move}
 	class:root={true}
-	style:--running-keyframe={`-${sumWidth + 15}px`}
-	style:--running-duration={`${Math.floor((sumWidth * 3) / 100 + 3)}s`}
+	style:--pl-running-text-length={`-${Math.round(sumWidth + 20)}px`}
+	style:--pl-running-text-duration={`${Math.floor((sumWidth * 3) / 100 + 3)}s`}
 	{...attrs}
 >
-	{@render children()}
-</div>
+	<span bind:this={runningText} class:running-animation={move}>
+		{@render children()}
+	</span>
+</svelte:element>
 
 <style>
 	@keyframes slide {
@@ -44,19 +44,32 @@
 			transform: translateX(1px);
 		}
 		to {
-			transform: translateX(var(--running-keyframe));
+			transform: translateX(calc(var(--pl-running-text-length)));
 		}
 	}
 	.root {
-		display: flex;
-		position: relative;
-		max-width: fit-content;
-		flex-shrink: 0;
+		display: inline-flex;
 		flex-direction: row;
 		flex-wrap: nowrap;
-		white-space: nowrap;
+		overflow: hidden;
+		user-select: none;
+		width: 100%;
+
+		&:hover {
+			--pl-running-text-state: paused;
+		}
+
+		& > span {
+			margin-block-end: var(--pl-running-text-margin, 0.5rem);
+			display: block;
+			white-space: nowrap;
+			width: 100%;
+			text-align: var(--pl-running-text-align, center);
+		}
 	}
+
 	.running-animation {
-		animation: slide var(--running-duration) ease-in-out infinite alternate;
+		animation: slide var(--pl-running-text-duration) ease-in-out infinite alternate;
+		animation-play-state: var(--pl-running-text-state, running);
 	}
 </style>

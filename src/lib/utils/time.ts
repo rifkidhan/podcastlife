@@ -1,5 +1,6 @@
-export const getTime = (date: string | number) => {
+export const getTime = (date: string | number, locale: string = 'en') => {
 	let day = new Date();
+	let value = '';
 
 	if (typeof date === 'string') {
 		day = new Date(date);
@@ -7,12 +8,26 @@ export const getTime = (date: string | number) => {
 	if (typeof date === 'number') {
 		day = new Date(date * 1000);
 	}
-	const format = new Intl.DateTimeFormat(undefined, {
-		dateStyle: 'short',
-		timeStyle: 'short'
-	}).format(day);
 
-	return format;
+	const diff = (new Date().getTime() - day.getTime()) / 1000;
+	const hours = Math.floor(diff / 3600);
+	const days = Math.floor(hours / 24);
+	const weeks = Math.floor(days / 7);
+
+	const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+
+	if (weeks > 1) {
+		value = new Intl.DateTimeFormat(locale, {
+			dateStyle: 'medium'
+		}).format(day);
+	} else if (weeks > 0) {
+		value = rtf.format(0 - weeks, 'weeks');
+	} else if (days > 0) {
+		value = rtf.format(0 - days, 'days');
+	} else {
+		value = rtf.format(0 - hours, 'hours');
+	}
+	return value;
 };
 
 export const formatTime = (time: number) => {

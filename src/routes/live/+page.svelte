@@ -1,91 +1,80 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-	import { Main, Head, Cardlist } from '$lib/components';
+	import { EpisodeCard, Head } from '$lib/components';
 
-	let { data }: { data: PageServerData } = $props();
+	let { data } = $props();
 
-	let pending_livestream = $derived.by(() => {
-		let pending = data.live.filter((v) => v.status === 'live');
-
-		return pending;
-	});
-
-	let now_livestream = $derived.by(() => {
-		let now = data.live.filter((v) => v.status === 'pending');
-
-		return now;
-	});
+	let liveNow = $derived(data.live.filter((v) => v.status === 'live'));
+	let livePending = $derived(data.live.filter((v) => v.status === 'pending'));
 </script>
 
-<Head title="Live Podcast" />
-<Main>
-	<section class="container full">
+<Head title="Live Stream" />
+<main class="page">
+	<section>
 		<h1 class="text-display">Live</h1>
 	</section>
-	<section class="live container full">
-		<h2 class="text-large">Now Livestream</h2>
-		<div role="list" class="list">
-			{#each now_livestream as item}
-				<Cardlist
-					type="live"
-					role="listitem"
-					podcast={item.feedTitle}
-					podcastId={item.feedId}
-					title={item.title}
-					enclosure={item.enclosure.url}
-					guid={item.guid ?? ''}
-					image={item.image ?? item.feedImage}
-					explicit={false}
-					start={item.start}
-					end={item.end}
-					altEnclosure={item.alternativeEnclosures}
-					status={item.status}
-					linked
-				/>
+	<section>
+		<h2 class="text-lg">Streaming Now</h2>
+		<ul class="list">
+			{#each liveNow as live}
+				<li>
+					<EpisodeCard
+						type="live"
+						title={live.title ?? 'untitled'}
+						feed={live.feedTitle}
+						feedId={live.feedId}
+						enclosure={live.enclosure.url}
+						guid={live.guid ?? ''}
+						summary={live.description}
+						image={live.image ?? live.feedImage}
+						status={live.status}
+						start={live.start}
+						end={live.end}
+						linked
+					/>
+				</li>
+			{:else}
+				No one live now
 			{/each}
-		</div>
+		</ul>
 	</section>
-	<section class="live container full">
-		<h2 class="text-large">Pending Livestream</h2>
-		<div role="list" class="list">
-			{#each pending_livestream as item}
-				<Cardlist
-					type="live"
-					role="listitem"
-					podcast={item.feedTitle}
-					podcastId={item.feedId}
-					title={item.title}
-					enclosure={item.enclosure.url}
-					guid={item.guid ?? ''}
-					image={item.image ?? item.feedImage}
-					explicit={false}
-					start={item.start}
-					end={item.end}
-					altEnclosure={item.alternativeEnclosures}
-					status={item.status}
-					linked
-				/>
+	<section>
+		<h2 class="text-lg">Pending Stream</h2>
+		<ul class="list">
+			{#each livePending as live}
+				<li>
+					<EpisodeCard
+						type="live"
+						title={live.title ?? 'untitled'}
+						feed={live.feedTitle}
+						feedId={live.feedId}
+						enclosure={live.enclosure.url}
+						guid={live.guid ?? ''}
+						summary={live.description}
+						image={live.image ?? live.feedImage}
+						status={live.status}
+						start={live.start}
+						end={live.end}
+						linked
+					/>
+				</li>
+			{:else}
+				No one live now
 			{/each}
-		</div>
+		</ul>
 	</section>
-</Main>
+</main>
 
 <style>
 	section {
-		&:is(.live) {
-			display: flex;
-			flex-direction: column;
-			gap: var(--space-10);
-		}
+		width: 90vw;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
 
-		& > :where(h2) {
-			font-weight: 700;
-			text-transform: uppercase;
-		}
-		& > .list {
-			display: flex;
-			flex-direction: column;
-			gap: var(--space-5);
-		}
+	.list {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
 	}
 </style>

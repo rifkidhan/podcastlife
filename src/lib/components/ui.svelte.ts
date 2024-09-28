@@ -1,9 +1,9 @@
-import { playerState } from '$lib/stores/player.svelte';
+import { playerDetail } from '$lib/stores/player.svelte';
 
 let menu = $state(false);
-let playerModalState = $state(false);
+let playerFull = $state(false);
 
-export function useUI() {
+export const useUI = () => {
 	return {
 		get menuOpen() {
 			return menu;
@@ -12,13 +12,13 @@ export function useUI() {
 			menu = value;
 		},
 		get player() {
-			return playerState.feed.id !== '';
+			return playerDetail().feed.id !== '';
 		},
 		get playerModal() {
-			return playerModalState;
+			return playerFull;
 		},
 		set playerModal(value) {
-			playerModalState = value;
+			playerFull = value;
 		}
 	};
-}
+};

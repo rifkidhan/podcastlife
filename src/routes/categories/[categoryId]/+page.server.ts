@@ -1,12 +1,12 @@
 import type { PageServerLoad } from './$types';
 import type { Trending, PodcastByCategory } from '$lib/types';
-import { podcastAPI } from '$lib/server/podcasts';
+import { podcastAPI } from '$lib/server/api';
 
 const getTrending = async (category: string) => {
 	const res = await podcastAPI({
 		endpoint: '/podcasts/trending',
 		query: {
-			max: String(5),
+			max: String(10),
 			cat: category
 		}
 	});
@@ -31,8 +31,8 @@ const getPodcastsByCategory = async (category: string) => {
 
 export const load: PageServerLoad = async ({ params, setHeaders }) => {
 	const [trending, feeds] = await Promise.all([
-		getTrending(params.slug),
-		getPodcastsByCategory(params.slug)
+		getTrending(params.categoryId),
+		getPodcastsByCategory(params.categoryId)
 	]);
 
 	setHeaders({

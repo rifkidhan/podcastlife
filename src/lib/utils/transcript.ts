@@ -2,9 +2,8 @@ import { convertFile, Options } from 'transcriptator';
 
 export default function transcript(data: string) {
 	Options.setOptions({
-		combineSegments: true,
-		combineSegmentsLength: 70,
 		combineEqualTimes: true,
+		combineSegmentsLength: 120,
 		speakerChange: true
 	});
 

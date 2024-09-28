@@ -77,100 +77,13 @@ const base = <TScroll extends Element | Window, TItem extends Element>(
 	};
 };
 
-const virtualBase = <TScroll extends Element | Window, TItem extends Element>(
-	opts: VirtualizerOptions<TScroll, TItem>
-) => {
-	let resolvedOptions: VirtualizerOptions<TScroll, TItem> = $state(opts);
-
-	let instanced = $state(new Virtualizer<TScroll, TItem>(opts));
-
-	let virtualItems = $state(instanced.getVirtualItems());
-	let totalSize = $state(instanced.getTotalSize());
-
-	const setOptions = (newOptions: Partial<VirtualizerOptions<TScroll, TItem>>) => {
-		resolvedOptions = {
-			...resolvedOptions,
-			...newOptions,
-			onChange: (instance: Virtualizer<TScroll, TItem>, sync: boolean) => {
-				instance._willUpdate();
-				instanced = instance;
-				virtualItems = instance.getVirtualItems();
-				totalSize = instance.getTotalSize();
-				newOptions.onChange?.(instance, sync);
-			}
-		};
-		instanced.measure();
-	};
-
-	const measureElement: Action<TItem> = (node) => {
-		instanced.measureElement(node);
-
-		return {
-			update: () => {
-				instanced.measureElement(node);
-			}
-		};
-	};
-
-	instanced = new Virtualizer<TScroll, TItem>(opts);
-	console.log('create object');
-
-	const cleanup = $effect.root(() => {
-		$effect.pre(() => {
-			console.log('update from options');
-			instanced.setOptions(resolvedOptions);
-			instanced.measure();
-
-			return () => {
-				console.log('destroy from options');
-			};
-		});
-
-		$effect.pre(() => {
-			console.log('update from willUpdate');
-			instanced._willUpdate();
-
-			return () => {
-				console.log('destroy from willupdate');
-			};
-		});
-
-		$effect.pre(() => {
-			virtualItems = instanced.getVirtualItems();
-			totalSize = instanced.getTotalSize();
-
-			return () => {
-				console.log('destroy from item');
-			};
-		});
-
-		return () => {
-			console.log('destroy from root');
-			instanced._didMount();
-		};
-	});
-
-	return {
-		setOptions,
-		get virtualItems() {
-			return virtualItems;
-		},
-		get totalSize() {
-			return totalSize;
-		},
-		instance: instanced,
-		measureElement,
-		cleanup
-	};
-};
-
 export const createVirtualizer = <T extends Element, U extends Element>(
 	opts: PartialKeys<
 		VirtualizerOptions<T, U>,
 		'observeElementRect' | 'observeElementOffset' | 'scrollToFn'
 	>
 ) => {
-	return virtualBase<T, U>({
+	return base<T, U>({
 		observeElementRect: observeElementRect,
 		observeElementOffset: observeElementOffset,
 		scrollToFn: elementScroll,

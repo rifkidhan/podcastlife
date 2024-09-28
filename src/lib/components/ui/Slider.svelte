@@ -1,137 +1,57 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import type { Snippet } from 'svelte';
+	import type { HTMLInputAttributes } from 'svelte/elements';
 
-	interface SliderProps extends HTMLAttributes<HTMLDivElement> {
+	interface SliderProps extends HTMLInputAttributes {
 		min?: number;
 		max?: number;
-		now: number;
-		orientation?: 'horizontal' | 'vertical';
-		tooltip?: Snippet;
-		disabled?: boolean;
+		step?: number;
+		value: number;
 	}
 
-	let {
-		min = 0,
-		max = 0,
-		now = $bindable(0),
-		orientation = 'horizontal',
-		class: className,
-		tooltip,
-		disabled,
-		...attrs
-	}: SliderProps = $props();
-
-	let wrapper: HTMLDivElement | undefined = $state();
-
-	let position = $derived.by(() => {
-		if (!wrapper) return now;
-
-		let { width, height } = wrapper.getBoundingClientRect();
-		if (orientation === 'horizontal') {
-			return (width / max) * now;
-		}
-		if (orientation === 'vertical') {
-			return height % (now / max);
-		}
-	});
-
-	const seek = (e: PointerEvent) => {
-		if (!wrapper) return;
-		e.preventDefault();
-		e.stopPropagation();
-
-		let { left, right, bottom, top } = wrapper.getBoundingClientRect();
-
-		let percent =
-			orientation === 'horizontal'
-				? (e.clientX - left) / (right - left)
-				: (e.clientY - bottom) / (top - bottom);
-
-		now = Math.round(percent * (max - min) - min);
-		if (now < min) now = min;
-		if (now > max) now = max;
-	};
-	const sliderMove = (e: PointerEvent) => {
-		seek(e);
-
-		window.addEventListener('pointermove', seek);
-
-		window.addEventListener(
-			'pointerup',
-			() => {
-				window.removeEventListener('pointermove', seek);
-			},
-			{ once: true }
-		);
-	};
+	let { min = 0, max = 100, step = 1, value = $bindable(), ...attrs }: SliderProps = $props();
 </script>
 
-{#if !disabled}
-	{#if tooltip}
-		<div role="tooltip">
-			{@render tooltip()}
-		</div>
-	{/if}
-
-	<div class={className} class:root={true} bind:this={wrapper} {...attrs}>
-		<div class="progress">
-			<span
-				class="fill"
-				style:transform={`translateX(${position}px)`}
-				style:left={`-${wrapper ? wrapper.getBoundingClientRect().width : 0}px`}
-			></span>
-		</div>
-		<div
-			role="slider"
-			aria-valuemin={min}
-			aria-valuemax={max}
-			aria-valuenow={now}
-			aria-orientation={orientation}
-			tabindex="0"
-			class="slider"
-			style:transform={`translateX(${position}px)`}
-			onpointerdown={sliderMove}
-		></div>
-	</div>
-{/if}
+<input
+	type="range"
+	bind:value
+	{max}
+	{min}
+	{step}
+	{...attrs}
+	style:--pl-slider-value={`${(value * 100) / max}%`}
+/>
 
 <style>
-	.root {
-		display: flex;
-		position: relative;
-		height: var(--space-3);
+	input[type='range' i] {
+		--pl-slider-thumb-scale: 0;
+		display: block;
+		appearance: none;
+		height: 0.25rem;
 		width: 100%;
-		touch-action: pan-y;
-		align-items: center;
+		cursor: pointer;
+		border: none;
+		background: linear-gradient(
+			to right,
+			hsl(var(--pl-picton)) var(--pl-slider-value),
+			hsl(var(--pl-accent-40)) var(--pl-slider-value)
+		);
 
-		& > .slider {
-			display: block;
-			position: absolute;
-			left: 0px;
-			height: var(--space-3);
-			width: var(--space-3);
-			border-radius: 99999px;
-			border: 2px solid currentColor;
-			background-color: var(--white);
+		&:hover {
+			--pl-slider-thumb-scale: 1;
 		}
 
-		& > .progress {
-			display: block;
-			height: 3px;
-			position: relative;
-			width: 100%;
-			overflow: hidden;
-			background-color: var(--accent-40);
-
-			& > .fill {
-				display: block;
-				position: absolute;
-				top: 0px;
-				height: 3px;
-				width: 100%;
-				background-color: var(--picton);
-			}
+		&::-webkit-slider-thumb,
+		&::-moz-range-thumb {
+			appearance: none;
+			width: 0.75rem;
+			height: 0.75rem;
+			background-color: hsl(var(--pl-picton));
+			border: 2px solid hsl(var(--pl-accent-95));
+			border-radius: 9999px;
+			transition-property: transform;
+			transition-duration: 50ms;
+			transition-timing-function: ease-in-out;
+			transform: scale(var(--pl-slider-thumb-scale));
 		}
 	}
 </style>

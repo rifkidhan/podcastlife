@@ -1,219 +1,307 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-	import { Main, Image, Button, Tabs, TabPanel, Head, RunningText, Icons } from '$lib/components';
-	import { getTime, formatTime } from '$lib/utils/time';
-	import { playerState } from '$lib/stores/player.svelte';
-	import { page } from '$app/stores';
+	import { Head, Image, Icon, Button, RunningText, Tab, TabPanel } from '$lib/components';
+	import { getTime } from '$lib/utils/time';
+	import { playerDetail } from '$lib/stores/player.svelte';
 
-	let { data }: { data: PageServerData } = $props();
+	let { data } = $props();
 
 	let episode = $derived(data.episode);
+	let episodeImage = $derived(
+		episode.image && episode.image !== '' ? episode.image : episode.feedImage
+	);
 
-	const tabItems = [
+	const playState = playerDetail();
+
+	let isPlayed = $derived(
+		playState.podcast.enclosure === episode.enclosure.url && !playState.paused
+	);
+
+	const setPlayer = () => {
+		playState.feed = {
+			id: episode.feedId,
+			title: episode.feedTitle
+		};
+		playState.podcast = {
+			title: episode.title ?? 'untitled',
+			guid: episode.guid ?? '',
+			enclosure: episode.enclosure.url,
+			image: episodeImage
+		};
+
+		if (playState.podcast.enclosure === episode.enclosure.url) {
+			playState.paused = !playState.paused;
+		}
+	};
+
+	let innerWidth = $state(0);
+
+	const tablist = [
 		{
 			id: 'description',
 			content: 'Description'
 		},
 		{
-			id: 'transcript',
-			content: 'Transcript'
+			id: 'chapter',
+			content: 'Chapter'
 		},
 		{
-			id: 'chapters',
-			content: 'Chapters'
+			id: 'transcript',
+			content: 'Transcript'
 		}
 	];
-
-	let active = $state(tabItems[0].id);
 </script>
 
-<Head title={episode.title} description={episode.description} />
-<Main class="container mx-auto">
-	<section class="details">
-		<div class="thumbnails" style:--tag={`episode-${episode.guid}-thumbnail`}>
+<Head title={episode.title} />
+
+<svelte:window bind:innerWidth />
+<main class="page">
+	<div class="detail">
+		<div class="img">
 			<Image
-				src={episode.image !== '' ? episode.image : episode.feedImage}
-				alt={episode.title ?? episode.feedTitle}
+				src={episodeImage}
+				loading="eager"
+				alt={`${episode.title} by ${episode.feedTitle}`}
 				full
 			/>
 		</div>
-		<div class="content">
-			<div class="title" title={episode.title ?? 'Untitled'}>
-				<RunningText class="running">
-					<h1 style:--tag={`episode-${episode.guid}-title`}>
-						{episode.title ?? 'Untitled'}
-					</h1>
-				</RunningText>
+		<div class="header">
+			<a href={`/podcast/${episode.feedId}`} class="feed-title text-md">
+				<span>
+					{episode.feedTitle}
+				</span>
+			</a>
+			<RunningText
+				as="h1"
+				class="text-lg"
+				--pl-running-text-align={innerWidth > 768 ? 'left' : 'center'}
+				title={episode.title}
+			>
+				{episode.title}
+			</RunningText>
+			<div class="author">
+				{episode.author}
 			</div>
-			<div class:explicit={episode.explicit}>
-				{episode.feedTitle}
-			</div>
-			<div>{episode.author}</div>
-			<div>Published at {getTime(episode.pubDate ?? 0)}</div>
-			<div>Duration {formatTime(episode.duration)}</div>
-			<div>
-				<Button
-					type="button"
-					size="fit"
-					variant="picton"
-					class="max-h-11"
-					title={playerState.podcast.enclosure === episode.enclosure.url && !playerState.paused
-						? 'Pause'
-						: 'Play'}
-					loading={playerState.podcast.enclosure === episode.enclosure.url && playerState.loading}
-					onclick={() => {
-						playerState.feed = {
-							id: episode.feedId,
-							title: episode.feedTitle
-						};
-						playerState.podcast = {
-							title: episode.title ?? 'Untitled',
-							image: episode.image,
-							enclosure: episode.enclosure.url,
-							guid: episode.guid ?? $page.params.guid,
-							explicit: episode.explicit,
-							altEnclosure: []
-						};
-						if (playerState.podcast.enclosure === episode.enclosure.url) {
-							playerState.paused = !playerState.paused;
-						}
-					}}
-				>
-					{#if playerState.podcast.enclosure === episode.enclosure.url && !playerState.paused}
-						<Icons icon="pause" aria-hidden="true" /> Pause this podcast
-					{:else}
-						<Icons icon="play" aria-hidden="true" /> Play this podcast
-					{/if}
-				</Button>
+			<div class="info list-with-dot text-sm">
+				{#if episode.pubDate}
+					<span>
+						{getTime(episode.pubDate)}
+					</span>
+				{/if}
+				<span>
+					{Math.floor(episode.duration / 60)} min
+				</span>
+				{#if episode.explicit}
+					<Icon name="explicit" aria-hidden="true" class="explicit" size={18} stroke="none" />
+				{/if}
 			</div>
 		</div>
-	</section>
-	<Tabs tablist={tabItems} bind:active class="tabs">
-		<TabPanel id={tabItems[0].id} {active}>
-			{#if episode.description}
-				<div class="prose">
-					{@html episode.description}
-				</div>
-			{/if}
-		</TabPanel>
-		<TabPanel id={tabItems[1].id} {active}>
-			{#await data.transcripts}
-				loading Transcript
-			{:then transcripts}
-				<div class="transcripts">
-					{#if transcripts && transcripts.length > 0}
-						{#each transcripts as script}
-							<div class="transcript">
-								<div class="speaker">{script.speaker}</div>
-								<div class="message">{script.body}</div>
-							</div>
+
+		<div class="misc">
+			<Button
+				type="button"
+				variant="cerise"
+				size="fit"
+				icon={isPlayed ? 'pause' : 'play'}
+				aria-pressed={isPlayed}
+				onclick={setPlayer}
+			>
+				{isPlayed ? 'Pause' : 'Play'}
+			</Button>
+		</div>
+	</div>
+	<section class="text-sm">
+		<Tab list={tablist} class="tabs" tabColor="cerise">
+			<TabPanel id={tablist[0].id} class="text">
+				{@html episode.description}
+			</TabPanel>
+			<TabPanel id={tablist[1].id}>
+				{#await data.chapters}
+					loading
+				{:then chapters}
+					<ul class="chapters-list">
+						{#each chapters as chap}
+							<li class="chapter-item">
+								{#if chap.img}
+									<span class="chapter-thumbnail">
+										<Image src={chap.img} alt={chap.title} full />
+									</span>
+								{/if}
+								<span>
+									{chap.title}
+								</span>
+							</li>
+						{:else}
+							No chapter
 						{/each}
-					{:else}
-						No Transcript Provide
-					{/if}
-				</div>
-			{/await}
-		</TabPanel>
-		<TabPanel id={tabItems[2].id} {active}>
-			{#await data.chapters}
-				Loading
-			{:then chapters}
-				{#if chapters}
-					{#each chapters.chapters as chap}
-						<p>{chap.title}</p>
-					{/each}
-				{:else}
-					No Chapters
-				{/if}
-			{/await}
-		</TabPanel>
-	</Tabs>
-</Main>
+					</ul>
+				{/await}
+			</TabPanel>
+			<TabPanel id={tablist[2].id}>
+				{#await data.transcripts}
+					loading
+				{:then transcripts}
+					<ul class="transcript-list">
+						{#each transcripts as script}
+							<li
+								class="transcript-item"
+								aria-current={playState.currentTime >= script.startTime &&
+									playState.currentTime <= script.endTime}
+							>
+								{#if script.speaker}
+									<span class="speaker">
+										{script.speaker}:
+									</span>
+								{/if}
+								<span>
+									{script.body}
+								</span>
+							</li>
+						{:else}
+							No transcript
+						{/each}
+					</ul>
+				{/await}
+			</TabPanel>
+		</Tab>
+	</section>
+</main>
 
 <style>
-	.details {
+	main {
+		width: 90dvw;
+		margin-inline: auto;
+	}
+	.detail {
 		display: grid;
-		grid-template-columns: repeat(1, minmax(0, 1fr));
-		gap: var(--space-10);
+		grid-template-columns: auto minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr) auto;
+		grid-template-areas:
+			'image header'
+			'image misc';
+		gap: 2rem;
 		width: 100%;
 
-		@media (min-width: 768px) {
-			grid-template-columns: repeat(4, minmax(0, 1fr));
-		}
-		& > .thumbnails {
-			display: block;
-			position: relative;
-			aspect-ratio: 1 / 1;
-			width: 100%;
-			overflow: hidden;
-			border-radius: var(--space-2);
-			border: 2px solid var(--accent-95);
-			box-shadow: var(--shadow-drop);
+		@media (max-width: 768px) {
+			grid-template-areas:
+				'image'
+				'header'
+				'misc';
 
-			@media (min-width: 768px) {
-				grid-column: span 1 / span 1;
-			}
-		}
-		& > .content {
-			display: flex;
-			flex-direction: column;
-
-			@media (min-width: 768px) {
-				grid-column: span 3 / span 3;
-			}
-
-			& > .title {
-				display: flex;
-				flex-direction: row;
-				overflow: hidden;
-
-				& > :global(.running) {
-					margin-bottom: var(--space-1);
-					font-size: var(--text-xl);
-					font-weight: 700;
-
-					@media (min-width: 1024px) {
-						font-size: var(--text-2xl);
-						margin-bottom: var(--space-2);
-						line-height: 2.5rem;
-					}
-
-					@media (min-width: 1024px) {
-						font-size: var(--text-5xl);
-					}
-				}
-			}
+			grid-template-columns: minmax(0, 1fr);
+			grid-template-rows: auto minmax(0, 1fr) auto;
+			justify-items: center;
 		}
 	}
 
-	.transcripts {
+	.img {
+		grid-area: image;
+		display: block;
+		position: relative;
+		width: 300px;
+		height: 300px;
+		border-radius: var(--pl-border-radius-md);
+		overflow: hidder;
+		border: 4px solid hsl(var(--pl-accent-95));
+	}
+
+	.header {
+		grid-area: header;
+		width: 100%;
 		display: flex;
 		flex-direction: column;
-		width: 100%;
-		gap: var(--space-5);
 
-		& > .transcript {
-			display: inherit;
-			flex-direction: inherit;
-			width: inherit;
-			gap: var(--space-3);
-
-			& > .speaker {
-				font-weight: 600;
-			}
-
-			& > .message {
-				background-color: var(--picton);
-				border: 2px solid var(--accent-95);
-				border-radius: var(--space-2);
-				padding-inline: var(--space-3);
-				padding-block: var(--space-5);
-				color: var(--black);
-			}
+		@media (max-width: 768px) {
+			align-items: center;
 		}
 	}
 
-	:global(.tabs) {
+	.feed-title {
+		color: hsl(var(--pl-cerise));
+		text-transform: uppercase;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+
+		&:hover span {
+			color: hsl(var(--pl-accent-95));
+			box-shadow: var(--pl-shadow-highlight-cerise);
+		}
+	}
+
+	.author {
+		font-weight: 500;
+		color: hsl(var(--pl-cerise));
+	}
+
+	.info {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		font-weight: 600;
+		color: hsl(var(--pl-accent-80));
+	}
+
+	.misc {
+		grid-area: misc;
+	}
+
+	section {
 		width: 100%;
+		& > :global(.tabs) {
+			width: 100%;
+		}
+	}
+
+	.chapters-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.chapter-item {
+		display: inline-flex;
+		flex-direction: row;
+		width: 100%;
+		border: 2px solid hsl(var(--pl-accent-95));
+		border-radius: var(--pl-border-radius-sm);
+		padding: 0.5rem 0.75rem;
+		align-items: center;
+		gap: 0.5rem;
+
+		& > .chapter-thumbnail {
+			display: inline-block;
+			position: relative;
+			height: 3rem;
+			width: 3rem;
+			flex-shrink: 0;
+		}
+	}
+	.transcript-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.transcript-item {
+		display: inline-flex;
+		flex-direction: column;
+		width: 100%;
+		border: 2px solid hsl(var(--pl-accent-95));
+		border-radius: var(--pl-border-radius-sm);
+		padding: 0.5rem 0.75rem;
+
+		&[aria-current='true'] {
+			color: hsl(var(--pl-white));
+			background-color: hsl(var(--pl-cerise));
+		}
+
+		.speaker {
+			font-weight: 600;
+		}
+	}
+	:global(.text) {
+		overflow-wrap: break-word;
 	}
 </style>

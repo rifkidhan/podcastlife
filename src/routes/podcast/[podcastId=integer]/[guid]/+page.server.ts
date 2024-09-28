@@ -1,8 +1,17 @@
 import type { PageServerLoad } from './$types';
-import { podcastAPI } from '$lib/server/podcasts';
+import { podcastAPI } from '$lib/server/api';
 import type { SingleEpisode } from '$lib/types';
 import sanitize from '$lib/utils/sanitize';
 import transcript from '$lib/utils/transcript';
+
+export const ssr = true;
+
+interface Chapter {
+	startTime: number;
+	title: string;
+	img?: string;
+	url?: string;
+}
 
 export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 	const guid = params.guid;
@@ -19,11 +28,11 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 	const { data: episode } = (await res.json()) as SingleEpisode;
 
 	const getTranscript = async (url?: string) => {
-		if (!url || typeof url !== 'string') return undefined;
+		if (!url || typeof url !== 'string') return [];
 
 		const data = await fetch(url);
 
-		if (!data.ok) return undefined;
+		if (!data.ok) return [];
 
 		const result = await data.text();
 
@@ -31,13 +40,14 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 	};
 
 	const getChapters = async (url?: string) => {
-		if (!url || typeof url !== 'string') return undefined;
+		if (!url || typeof url !== 'string') return [];
 
 		const data = await fetch(url);
 
-		if (!data.ok) return undefined;
+		if (!data.ok) return [];
 
-		return await data.json();
+		const result = await data.json();
+		return result.chapters as Chapter[];
 	};
 
 	setHeaders({

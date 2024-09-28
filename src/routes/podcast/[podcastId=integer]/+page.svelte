@@ -1,392 +1,299 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
-	import {
-		Image,
-		Main,
-		TabPanel,
-		Tabs,
-		Cardlist,
-		Button,
-		RunningText,
-		Head,
-		WindowVirtual
-	} from '$lib/components';
-	import { onNavigate } from '$app/navigation';
+	import { Head, Image, Icon, RunningText, Button, Truncate, EpisodeCard } from '$lib/components';
+	import { Pagination } from '$lib/utils/pagination.svelte';
+	import { afterNavigate } from '$app/navigation';
 
-	let { data }: { data: PageServerData } = $props();
+	let { data } = $props();
 
-	let episodeLength = $state(data.episodes.length > 10 ? 10 : data.episodes.length);
+	const episodePagination = new Pagination({ count: data.episodes.length, limit: 20 });
 
-	let windowSize = $state(0);
-	let episodeItemSize = $state(160);
-	let loading = $state(false);
-
+	let episodesStart = $derived(episodePagination.rangeStart);
+	let episodesEnd = $derived(episodePagination.rangeEnd);
 	let feed = $derived(data.podcast);
-
 	let episodes = $derived.by(() => {
-		let episodes = data.episodes;
-		const length = episodes.length;
+		let episodeNow = data.episodes.slice(episodesStart, episodesEnd);
 
-		if (episodeLength < length) {
-			episodes = data.episodes.slice(0, episodeLength);
-		}
-
-		return episodes;
+		return episodeNow;
 	});
-
 	let live = $derived(data.live);
+	let episodeSection: HTMLElement | undefined = $state();
 
-	onNavigate((nav) => {
-		if (nav.to?.params?.podcastId && !nav.to.params.guid) {
-			loading = true;
-			episodeLength = 10;
-			nav.complete.then(() => {
-				episodeLength = data.episodes.length > 10 ? 10 : data.episodes.length;
-				loading = false;
-			});
-		}
+	afterNavigate(() => {
+		episodePagination.count = data.episodes.length;
 	});
-
-	const list = [
-		{
-			id: 'podcast',
-			content: 'Podcast'
-		},
-		{
-			id: 'live',
-			content: 'live'
-		}
-	];
-
-	let active = $state(list[0].id);
 
 	$effect.pre(() => {
-		if (windowSize <= 412) {
-			episodeItemSize = 100;
-		}
-
-		if (windowSize > 412 && windowSize < 768) {
-			episodeItemSize = 120;
-		}
-		if (windowSize >= 768) {
-			episodeItemSize = 160;
-		}
+		if (!episodeSection) return;
+		episodePagination.rootElement = episodeSection;
 	});
 
-	const load = () => {
-		if (episodeLength > data.episodes.length) return;
-
-		if (data.episodes.length - episodeLength > 20) {
-			episodeLength += 20;
-		}
-		if (data.episodes.length - episodeLength < 20) {
-			episodeLength += data.episodes.length - episodeLength;
-		}
-	};
+	let innerWidth = $state(0);
 </script>
 
-<svelte:window bind:innerWidth={windowSize} />
+<svelte:window bind:innerWidth />
+<Head title={feed.title} />
 
 {#key feed.id}
-	<Head title={feed.title} description={feed.description} />
-	<Main class="full container">
-		<section class="meta">
-			<div class="image" style:--tag={`img-${feed.id}`}>
-				<Image src={feed.image} alt={feed.title} full />
+	<main class="page">
+		<div class="detail">
+			<div class="thumbnail">
+				<Image src={feed.image} loading="eager" alt={feed.title} full />
 			</div>
-
-			<div class="content">
-				<div class="intro">
-					<div class="author" style:--tag={`author-${feed.id}`}>
-						{feed.author}
-					</div>
-					<div class="title" title={feed.title}>
-						<RunningText class="text-display">
-							<h1 style:--tag={`feed-${feed.id}`}>
-								{feed.title}
-							</h1>
-						</RunningText>
-					</div>
-				</div>
-				<div class="tags">
-					{#each feed.tags as tag}
-						<span class="tag">
-							{tag}
-						</span>
-					{/each}
-				</div>
-			</div>
-			<div class="description prose">
-				{@html feed.description}
-			</div>
-		</section>
-
-		<section class="panels">
-			<Tabs class="tabs" bind:active tablist={list}>
-				<TabPanel id="podcast" {active}>
-					<WindowVirtual
-						count={episodes.length}
-						estimateSize={episodeItemSize}
-						gap={10}
-						overscan={10}
-						{loading}
+			<div class="header">
+				<div class="title">
+					<div class="text-md">{feed.author}</div>
+					<RunningText
+						as="h1"
+						class="text-xl"
+						title={feed.title}
+						--pl-running-text-align={innerWidth > 1024 ? 'left' : 'center'}
 					>
-						{#snippet virtualItems(item)}
-							<Cardlist
-								type="podcast"
-								podcast={feed.title}
-								podcastId={feed.id}
-								title={episodes[item.index].title}
-								enclosure={episodes[item.index].enclosure.url}
-								guid={episodes[item.index].guid ?? feed.podcastGuid}
-								image={episodes[item.index].image ?? feed.image}
-								explicit={episodes[item.index].explicit}
-								pubDate={episodes[item.index].pubDate}
-								altEnclosure={episodes[item.index].alternativeEnclosures}
-								style="height: 100%"
-							/>
-						{/snippet}
-					</WindowVirtual>
-
-					{#if data.episodes.length > episodeLength}
-						<Button
-							type="button"
-							variant="picton"
-							size="full"
-							disabled={data.episodes.length <= episodeLength}
-							onclick={load}
-						>
-							Load More
-						</Button>
-					{:else}
-						<div class="data">No More Data</div>
+						{feed.title}
+					</RunningText>
+				</div>
+				<div class="tags list-with-dot text-sm">
+					{#each feed.tags as tag}
+						<span>{tag}</span>
+					{/each}
+					{#if feed.explicit}
+						<Icon name="explicit" stroke="none" aria-hidden="true" size={18} class="explicit" />
 					{/if}
-				</TabPanel>
-				<TabPanel id="live" {active}>
-					{#if live}
-						<div class="live-list" role="list">
-							{#each live as episode}
-								<Cardlist
-									role="listitem"
-									type="live"
-									podcast={feed.title}
-									podcastId={feed.id}
-									title={episode.title}
-									enclosure={episode.enclosure.url}
-									guid={episode.guid ?? feed.podcastGuid}
-									image={episode.image ?? feed.image}
-									altEnclosure={episode.alternativeEnclosures}
-									status={episode.status}
-									start={episode.start}
-									end={episode.end}
-								/>
-							{/each}
-						</div>
-					{:else}
-						No Live Podcast
-					{/if}
-				</TabPanel>
-			</Tabs>
-			<div class="live-info">
-				<div class="stick">
-					<h2>Live Now</h2>
-					<div class="list">
-						{#if live && live.filter((v) => v.status === 'live').length > 0}
-							{#each live as item}
-								<span class="live-sign">
-									<span class="sign">
-										<span class="pulse"></span>
-										<span></span>
-									</span>
-									<span>{item.title}</span>
-								</span>
-							{/each}
-						{:else}
-							No Live Podcast
-						{/if}
-					</div>
 				</div>
 			</div>
+			<div class="description">
+				<Truncate>
+					{@html feed.description}
+				</Truncate>
+			</div>
+			<div class="misc">
+				<Button size="fit">Play latest</Button>
+				{#if feed.link}
+					<a class="homepage" href={feed.link} rel="noopener noreferrer" target="_blank">
+						<Icon name="external-link" aria-hidden="true" size={20} style="display: inline;" />
+						<span>Podcaster page</span>
+					</a>
+				{/if}
+			</div>
+		</div>
+
+		{#if live && live.length > 0}
+			<section>
+				<h2 class="text-lg">Live</h2>
+				<ul class="episode-list">
+					{#each live as eps (eps.guid)}
+						<li class="episode">
+							<EpisodeCard
+								type="live"
+								feed={feed.title}
+								feedId={feed.id}
+								title={eps.title ?? 'untitled'}
+								image={eps.image ?? feed.image}
+								summary={eps.description}
+								explicit={eps.explicit}
+								guid={eps.guid ?? feed.podcastGuid}
+								enclosure={eps.enclosure.url}
+								altEnclosure={eps.alternativeEnclosures}
+								status={eps.status}
+								start={eps.start}
+								end={eps.end}
+							/>
+						</li>
+					{/each}
+				</ul>
+			</section>
+		{/if}
+
+		<section bind:this={episodeSection}>
+			<h2 class="text-lg">Episodes</h2>
+			<ul class="episode-list">
+				{#each episodes as eps (eps.guid)}
+					<li class="episode">
+						<EpisodeCard
+							feed={feed.title}
+							feedId={feed.id}
+							title={eps.title ?? 'untitled'}
+							image={eps.image ?? feed.image}
+							summary={eps.subtitle ?? eps.summary ?? eps.description}
+							publishedDate={eps.pubDate}
+							duration={eps.duration}
+							explicit={eps.explicit}
+							guid={eps.guid ?? feed.podcastGuid}
+							enclosure={eps.enclosure.url}
+							altEnclosure={eps.alternativeEnclosures}
+							episode={eps.episode ?? eps.itunesEpisode}
+						/>
+					</li>
+				{/each}
+			</ul>
+			{#if data.episodes.length > 20}
+				<div class="pagination">
+					<Button
+						type="button"
+						icon="chevrons-left"
+						aria-label="Go to first episode page"
+						onclick={episodePagination.firstButtonHandler}
+						disabled={episodePagination.page === 1}
+					/>
+					<Button
+						type="button"
+						icon="chevron-left"
+						aria-label="Go to previous episode page"
+						onclick={episodePagination.prevButtonHandler}
+						disabled={episodePagination.page <= 1}
+					/>
+					<span>{episodePagination.page} / {episodePagination.totalPage}</span>
+					<Button
+						type="button"
+						icon="chevron-right"
+						aria-label="Go to next episode page"
+						onclick={episodePagination.nextButtonHandler}
+						disabled={episodePagination.page >= episodePagination.totalPage}
+					/>
+					<Button
+						type="button"
+						icon="chevrons-right"
+						aria-label="Go to last episode page"
+						onclick={episodePagination.lastButtonHandler}
+						disabled={episodePagination.page === episodePagination.totalPage}
+					/>
+				</div>
+			{/if}
 		</section>
-	</Main>
+	</main>
 {/key}
 
 <style>
-	.meta {
-		--meta-grid-col: 1;
-		display: grid;
-		grid-template-columns: repeat(var(--meta-grid-col), minmax(0, 1fr));
-		width: 100%;
-		gap: var(--space-10);
-
-		@media (min-width: 768px) {
-			--meta-grid-col: 4;
-		}
-
-		.image {
-			position: relative;
-			display: block;
-			width: 100%;
-			overflow: hidden;
-			border-radius: var(--space-2);
-			border: 2px solid currentColor;
-			aspect-ratio: 1 / 1;
-			box-shadow: var(--shadow-drop);
-
-			@media (min-width: 768px) {
-				grid-column: span 1 / span 1;
-			}
-		}
-
-		.content {
-			display: flex;
-			width: 100%;
-			flex-direction: column;
-			gap: var(--space-10);
-
-			@media (min-width: 768px) {
-				grid-column: span 3 / span 3;
-			}
-			.intro {
-				display: flex;
-				flex-direction: column;
-				border-left: 4px solid var(--picton);
-				padding-left: var(--space-4);
-
-				.author {
-					font-size: var(--text-base);
-					text-transform: uppercase;
-					color: var(--picton);
-					line-height: var(--space-6);
-
-					@media (min-width: 1024px) {
-						font-size: var(--text-lg);
-					}
-				}
-				.title {
-					display: block;
-					width: 100%;
-					height: 100%;
-					overflow: hidden;
-
-					& > :global(.text-display) {
-						margin-bottom: var(--space-1);
-
-						@media (min-width: 1280px) {
-							margin-bottom: var(--space-2);
-						}
-					}
-				}
-			}
-
-			.tags {
-				display: flex;
-				width: 100%;
-				flex-wrap: wrap;
-				gap: var(--space-3);
-
-				.tag {
-					background-color: var(--cerise);
-					padding: var(--space-1) var(--space-2);
-					text-transform: uppercase;
-					color: var(--white);
-					font-size: var(--text-xs);
-					border-radius: 9999px;
-
-					@media (min-width: 768px) {
-						font-size: var(--text-sm);
-					}
-				}
-			}
-		}
-		.description {
-			grid-column: 1 / -1;
-		}
+	main {
+		width: 90dvw;
+		margin-inline: auto;
 	}
-	.panels {
-		--panels-grid-col: 1;
 
+	.detail {
 		display: grid;
-		position: relative;
-		grid-template-rows: repeat(1, minmax(0, 1fr));
-		grid-template-columns: repeat(var(--panels-grid-col), minmax(0, 1fr));
+		grid-template-areas:
+			'thumbnail'
+			'title'
+			'misc'
+			'description';
+		gap: 1rem;
+		justify-items: center;
 		width: 100%;
-		gap: var(--space-10);
+		grid-template-columns: minmax(0, 1fr);
 
 		@media (min-width: 1024px) {
-			--panels-grid-col: 4;
-			grid-auto-flow: row;
-		}
-
-		& > :global(:is(.tabs)) {
-			width: 100%;
-
-			@media (min-width: 1024px) {
-				grid-column: span 3 / span 3;
-			}
+			grid-template-areas:
+				'thumbnail title title'
+				'thumbnail description description'
+				'thumbnail misc .';
+			grid-template-columns: auto 1fr auto;
+			grid-template-rows: 1fr auto auto;
+			justify-items: start;
+			gap: 2rem;
 		}
 	}
-
-	.data {
-		width: 100%;
-		background-color: var(--accent-40);
-		padding: var(--space-3) var(--space-2);
-		text-align: center;
-		border-radius: var(--space-2);
+	.thumbnail {
+		display: block;
+		position: relative;
+		overflow: hidden;
+		aspect-ratio: 1;
+		border-radius: var(--pl-border-radius-md);
+		grid-area: thumbnail;
+		width: 300px;
+		border: 4px solid hsl(var(--pl-accent-95));
+		box-shadow: var(--pl-shadow-drop);
 	}
-
-	.live-list {
+	.header {
+		grid-area: title;
+		align-self: self-start;
 		display: flex;
 		flex-direction: column;
+		gap: 0.5rem;
 		width: 100%;
-		gap: var(--space-5);
+		align-items: flex-start;
 
-		@media (min-width: 1024px) {
-			gap: var(--space-10);
+		.title {
+			border-inline-start: 4px solid hsl(var(--pl-picton));
+			padding-inline-start: 1rem;
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+
+			@media (max-width: 1024px) {
+				border-inline-start: none;
+				padding-block-start: none;
+				align-items: center;
+			}
+
+			& > .text-md {
+				text-transform: uppercase;
+				color: hsl(var(--pl-picton));
+				overflow: hidden;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+				line-clamp: 2;
+			}
 		}
 	}
 
-	.live-info {
-		grid-row-start: 1;
+	.description {
+		--pl-rotate-plus-sign: 0deg;
+		grid-area: description;
+		cursor: default;
+		align-self: flex-start;
+	}
 
-		@media (min-width: 1024px) {
-			grid-column-start: 4;
+	.tags {
+		display: inline-flex;
+		text-transform: uppercase;
+		font-weight: 600;
+		color: hsl(var(--pl-accent-80));
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+
+		@media (max-width: 1024px) {
+			margin-inline: auto;
 		}
+	}
 
-		& > .stick {
-			position: relative;
-			display: flex;
-			flex-direction: column;
-			gap: var(--space-5);
-			border-radius: var(--space-2);
-			border: 2px solid currentColor;
-			box-shadow: var(--shadow-drop);
-			padding: var(--space-3) var(--space-2);
+	.misc {
+		grid-area: misc;
+		display: flex;
+		flex-direction: row;
+		gap: 3rem;
+		align-items: center;
+	}
 
-			@media (min-width: 1024px) {
-				position: sticky;
-				top: var(--space-20);
-			}
+	.homepage {
+		display: inline-flex;
+		flex-direction: row;
+		gap: 0.2rem;
+		align-items: center;
 
-			h2 {
-				font-size: var(--text-xl);
-				font-weight: 600;
-				color: var(--picton);
-				@media (min-width: 1024px) {
-					font-size: var(--text-2xl);
-				}
-			}
-			.list {
-				display: flex;
-				flex-direction: column;
-				gap: var(--space-3);
-
-				.live-sign {
-					&:hover {
-						color: var(--picton);
-					}
-				}
-			}
+		&:hover {
+			box-shadow: var(--pl-shadow-highlight);
 		}
+	}
+
+	section {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.episode-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.pagination {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+		align-items: center;
+		justify-content: center;
 	}
 </style>

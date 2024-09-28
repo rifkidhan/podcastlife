@@ -10,7 +10,7 @@ interface PodcastPlaying {
 	title: string;
 	enclosure: string;
 	image: string;
-	explicit: boolean;
+	explicit?: boolean;
 	altEnclosure?: AlternativeEnclosure[];
 }
 
@@ -72,23 +72,3 @@ export const playerDetail = () => {
 		}
 	};
 };
-
-export class Player {
-	feed: FeedPlaying = $state({
-		title: '',
-		id: ''
-	});
-	podcast: PodcastPlaying = $state({
-		title: '',
-		image: '',
-		enclosure: '',
-		guid: '',
-		explicit: false
-	});
-	paused = $state(true);
-	loading = $state(true);
-	duration = $state(0);
-	currentTime = $state(0);
-}
-
-export const playerState = playerDetail();

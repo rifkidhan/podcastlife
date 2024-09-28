@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { playerState } from '$lib/stores/player.svelte';
+	import { playerDetail } from '$lib/stores/player.svelte';
 	import { page } from '$app/stores';
 
 	interface HeadProps {
@@ -15,6 +15,7 @@
 		description: description_props,
 		image = `${og_url}?title=podcastlife&content=${encodeURIComponent('Podcast web apps.')}`
 	}: HeadProps = $props();
+	const playerState = playerDetail();
 
 	let title = $derived.by(() => {
 		const title_base = 'podcastlife';

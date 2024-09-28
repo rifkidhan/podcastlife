@@ -35,7 +35,7 @@ COPY package.json ./
 
 USER podcastlife
 
-EXPOSE 8000
+EXPOSE 8080
 
 ENV HOST="0.0.0.0"
 ENV PORT=8080
@@ -44,4 +44,4 @@ ENV API_TOKEN=""
 ENV HOST_HEADER=""
 ENV ADDRESS_HEADER=""
 
-CMD ["node", "--env-file=.env", "build"]
+CMD ["node", "build"]

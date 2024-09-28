@@ -1,3 +1,9 @@
+<script lang="ts">
+	import type { SVGAttributes } from 'svelte/elements';
+
+	let { class: className }: SVGAttributes<SVGElement> = $props();
+</script>
+
 <!-- By Sam Herbert (@sherb), for everyone. More @ http://goo.gl/7AJzbL -->
 <svg
 	xmlns="http://www.w3.org/2000/svg"
@@ -9,6 +15,7 @@
 	stroke-linecap="round"
 	stroke-linejoin="round"
 	aria-hidden="true"
+	class={className}
 >
 	<g fill="none" fill-rule="evenodd">
 		<g transform="translate(1 1)" stroke-width="2">

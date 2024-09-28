@@ -1,31 +1,27 @@
 <script lang="ts">
-	import { Carousel, Main, Head } from '$lib/components';
+	import { Carousel, Head } from '$lib/components';
 
-	const { data } = $props();
+	let { data } = $props();
+
+	let trendings = $derived(data.trendings);
+	let recents = $derived(data.recents);
 </script>
 
 <Head />
-<Main>
+<main class="page">
 	<h1 class="sr-only">Podcastlife</h1>
-
-	<section class="container full">
-		<h2 class="text-xl">Trending now</h2>
-		<Carousel items={data.trendings} label="Trending carousel" />
+	<section>
+		<h2 class="text-lg">Trending</h2>
+		<Carousel label="trending" items={trendings} />
 	</section>
-	<section class="container full">
-		<h2 class="text-xl">Recent Update</h2>
-		<Carousel items={data.recents} label="Recent update carousel" />
+	<section>
+		<h2 class="text-lg">Recent update</h2>
+		<Carousel label="recent update" items={recents} />
 	</section>
-</Main>
+</main>
 
 <style>
 	section {
-		display: flex;
-		flex-direction: column;
-		gap: var(--space-5);
-
-		& > h2 {
-			font-weight: 600;
-		}
+		max-width: 90vw;
 	}
 </style>

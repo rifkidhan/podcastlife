@@ -24,7 +24,7 @@ export const podcastAPI = async ({
 		headers: {
 			Authorization: `Bearer ${API_TOKEN}`,
 			'Content-Type': 'application/json',
-			'Accept-Encoding': 'br'
+			'Accept-Encoding': 'br, gzip'
 		}
 	});
 

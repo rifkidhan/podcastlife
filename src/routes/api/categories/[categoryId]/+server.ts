@@ -1,17 +1,20 @@
 import type { RequestHandler } from './$types';
-import { podcastAPI } from '$lib/server/podcasts';
-import type { PodcastByCategory } from '$lib/types';
-import { json } from '@sveltejs/kit';
+import { podcastAPI } from '$lib/server/api';
+import { json, error } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ params, url }) => {
 	const cursor = url.searchParams.get('c');
 
 	const res = await podcastAPI({
-		endpoint: `/categories/${params.category}`,
+		endpoint: `/categories/${params.categoryId}`,
 		query: cursor ? { after: cursor } : undefined
 	});
 
-	const data = (await res.json()) as PodcastByCategory;
+	if (!res.ok) {
+		error(res.status, { message: res.statusText });
+	}
+
+	const data = await res.json();
 
 	return json({
 		data: data.data,

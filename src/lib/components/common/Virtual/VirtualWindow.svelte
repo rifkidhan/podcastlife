@@ -1,27 +1,18 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { onDestroy } from 'svelte';
-	import { createWindowVirtualizer } from '$lib/hooks/useVirtual.svelte';
 	import type { VirtualItem } from '@tanstack/virtual-core';
+	import { onDestroy } from 'svelte';
+	import { createWindowVirtualizer } from './useVirtual.svelte';
 
-	interface Props {
+	interface VirtualWindowProps {
 		count: number;
 		estimateSize: number;
 		overscan?: number;
 		gap?: number;
 		virtualItems: Snippet<[VirtualItem]>;
-		updateCount?: (count: number) => void;
-		loading?: boolean;
 	}
 
-	let {
-		count,
-		estimateSize,
-		overscan = 5,
-		gap = 5,
-		loading = false,
-		virtualItems
-	}: Props = $props();
+	let { count, estimateSize, overscan = 5, gap = 5, virtualItems }: VirtualWindowProps = $props();
 
 	let initialCount = $state(1);
 	let initialSize = $state(1);
@@ -66,11 +57,7 @@
 			style:transform={`translateY(${item.start}px)`}
 			data-index={item.index}
 		>
-			{#if loading}
-				<div></div>
-			{:else}
-				{@render virtualItems(item)}
-			{/if}
+			{@render virtualItems(item)}
 		</div>
 	{/each}
 </div>
@@ -79,12 +66,12 @@
 	.virtual-list {
 		position: relative;
 		width: 100%;
+	}
 
-		& > .item {
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 100%;
-		}
+	.item {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
 	}
 </style>

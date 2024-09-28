@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { Button, Icons, useUI } from '$lib/components';
-	import ThemeSwitcher from '../common/ThemeSwitcher.svelte';
+	import ThemeSwitcher from './ThemeSwitcher.svelte';
+	import { useUI, Button } from '$lib/components';
 	import { fly, fade } from 'svelte/transition';
 	import { categories } from '$lib/utils/constants';
-	// import { page } from '$app/stores';
 
 	const menuItems = [
 		{
@@ -24,64 +23,97 @@
 		}
 	];
 
-	const open = useUI();
+	const uiState = useUI();
 </script>
 
 <div
 	id="side-menu-wrapper"
-	data-sidenav-open={open.menuOpen}
-	inert={!open.menuOpen || open.playerModal}
+	data-sidenav-open={uiState.menuOpen}
+	inert={!uiState.menuOpen || uiState.playerModal}
 	class="drawer"
 >
-	{#if open.menuOpen}
-		<div class="backdrop" aria-hidden="true" transition:fade={{ duration: 250 }}></div>
-		<div id="side-menu" transition:fly={{ x: 350, opacity: 1 }} class="menu">
-			<div class="wrapper container">
+	{#if uiState.menuOpen}
+		<div
+			class="backdrop"
+			tabindex="-1"
+			aria-hidden="true"
+			transition:fade={{ duration: 250 }}
+			inert
+		></div>
+		<div id="side-navigation" transition:fly={{ x: 500, opacity: 1 }} class="side-nav">
+			<nav class="wrapper">
 				<div class="top">
 					<ThemeSwitcher />
 					<Button
 						type="button"
-						id="close-menu-button"
 						variant="picton"
-						onclick={() => (open.menuOpen = false)}
-					>
-						<Icons icon="close" />
-					</Button>
+						aria-label="Close side navigation"
+						onclick={() => (uiState.menuOpen = false)}
+						icon="close"
+					/>
 				</div>
-				<nav>
-					{#snippet list({ href, title, classes })}
-						<li class:list-item={classes}>
-							<a {href} onclick={() => (open.menuOpen = false)}>{title}</a>
+				<ul>
+					{#snippet listitem({
+						title,
+						href,
+						classAdd
+					}: {
+						title: string;
+						href: string;
+						classAdd?: boolean;
+					})}
+						<li class:sub-list={classAdd}>
+							<a {href} onclick={() => (uiState.menuOpen = false)}>
+								<span>
+									{title}
+								</span>
+							</a>
 						</li>
 					{/snippet}
-					<ul>
-						{#each menuItems as menu}
-							{#if menu.title === 'Categories'}
-								<li>
-									<details>
-										<summary>
-											{menu.title}
-										</summary>
-										<ul>
-											{@render list({ href: menu.href, title: 'All Categories', classes: true })}
 
-											{#each categories as item}
-												{@render list({
-													href: `/categories/${item.id}`,
-													title: item.title,
-													classes: true
-												})}
-											{/each}
-										</ul>
-									</details>
-								</li>
-							{:else}
-								{@render list({ href: menu.href, title: menu.title })}
-							{/if}
-						{/each}
-					</ul>
-				</nav>
-			</div>
+					{#each menuItems as menu}
+						{#if menu.title === 'Categories'}
+							<li>
+								<details>
+									<summary>
+										{menu.title}
+										<span>
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												width="24"
+												height="24"
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="2"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												aria-hidden="true"
+												class="detail"
+											>
+												<path d="M5 12h14" />
+												<path class="rotate" d="M12 5v14" />
+											</svg>
+										</span>
+									</summary>
+									<ul class="sub">
+										{@render listitem({ title: 'All Categories', href: menu.href, classAdd: true })}
+										{#each categories as cat}
+											{@render listitem({
+												title: cat.title,
+												href: `${menu.href}/${cat.id}`,
+												classAdd: true
+											})}
+										{/each}
+									</ul>
+								</details>
+							</li>
+						{:else}
+							{@render listitem({ title: menu.title, href: menu.href })}
+						{/if}
+					{/each}
+				</ul>
+			</nav>
 		</div>
 	{/if}
 </div>
@@ -93,11 +125,11 @@
 	}
 	.backdrop {
 		position: fixed;
-		inset: 0px;
+		inset: 0;
 		backdrop-filter: blur(8px);
 		background-color: hsla(var(--pl-black), 0.5);
 	}
-	.menu {
+	.side-nav {
 		position: fixed;
 		right: 0;
 		top: 0;
@@ -106,74 +138,82 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 		background-color: hsl(var(--pl-accent-5));
+		padding-block: var(--pl-header-padding);
+		border-left: 4px solid hsl(var(--pl-picton));
+		scrollbar-gutter: stable;
+	}
+	.wrapper {
+		display: flex;
+		flex-direction: column;
+		width: 90%;
+		margin-inline: auto;
+		gap: 1rem;
 
-		@media (min-width: 768px) {
-			border-left: 4px solid hsl(var(--pl-picton));
-		}
-
-		@media (min-width: 1024px) {
-			padding-inline: 2.5rem;
-		}
-
-		&:focus {
-			outline: 2px solid transparent;
-			outline-offset: 2px;
-		}
-
-		& > .wrapper {
-			margin-inline: auto;
+		& > .top {
 			display: flex;
-			flex-direction: column;
-			gap: var(--space-8);
-			padding-block: var(--pl-header-padding);
-
-			& .top {
-				display: flex;
-				flex-direction: row;
-				column-gap: var(--space-3);
-			}
-
-			& nav ul {
-				display: flex;
-				flex-direction: column;
-				row-gap: var(--space-8);
-			}
+			flex-direction: row;
+			justify-content: flex-end;
+			align-items: center;
+			gap: 0.5rem;
+			width: 100%;
 		}
 	}
 
-	li {
-		font-size: var(--text-2xl);
-		font-weight: 700;
-
-		@media (min-width: 768px) {
-			font-size: var(--text-4xl);
-		}
-
-		:where(a:hover) {
-			text-decoration: underline;
-			text-decoration-color: hsl(var(--pl-picton));
+	ul:not(.sub) {
+		display: flex;
+		flex-direction: column;
+		& > li {
+			font-size: clamp(1.8rem, 0.75rem + 2vw, 3rem);
+			font-weight: 700;
+			line-height: 1.2;
+			padding-block: min(1rem, calc(2vw + 0.5rem));
+			border-bottom: 2px solid hsl(var(--pl-accent-95));
 		}
 	}
 
-	li :where(details) {
-		& summary {
-			cursor: pointer;
+	a:hover span {
+		box-shadow: var(--pl-shadow-highlight);
+	}
+
+	details {
+		--pl-rotate-plus-sign: 0deg;
+
+		summary {
+			cursor: default;
 			list-style-type: none;
+			display: inline-flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			width: 100%;
 		}
-		& ul {
-			display: flex;
-			flex-direction: col;
-			row-gap: var(--space-2);
-			margin-block: var(--space-4);
-			margin-inline-start: var(--space-2);
 
-			@media (min-width: 768px) {
-				row-gap: var(--space-4);
-				margin-inline-start: var(--space-4);
-			}
+		&[open] {
+			--pl-rotate-plus-sign: 90deg;
 		}
 	}
-	li:is(.list-item) {
+	.sub {
+		display: flex;
+		flex-direction: column;
+		padding-inline-start: 1rem;
+		gap: calc(0.5rem - 4px);
+		padding-block: 1rem;
+	}
+
+	.detail {
+		width: 100%;
+		height: 100%;
+
+		& > .rotate {
+			transition: transform 150ms ease-in-out;
+			transform-origin: center;
+			transform: rotateZ(var(--pl-rotate-plus-sign));
+		}
+	}
+
+	.sub-list {
+		font-size: 0.75em;
+		line-height: 1.2;
 		font-weight: 500;
 	}
 </style>

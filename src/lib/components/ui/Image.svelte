@@ -41,6 +41,7 @@
 	{decoding}
 	{width}
 	{height}
+	fetchpriority={loading === 'eager' ? 'high' : 'auto'}
 	src={imgSrc}
 	{alt}
 	onload={() => (loaded = true)}

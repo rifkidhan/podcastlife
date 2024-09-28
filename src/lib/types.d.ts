@@ -90,6 +90,7 @@ interface Episode extends Items {
 	content?: string;
 	duration: number;
 	episode?: number;
+	itunesEpisode?: number;
 	episodeType?: string;
 	explicit: boolean;
 	persons?: Person[];
@@ -102,6 +103,7 @@ interface Episode extends Items {
 }
 
 interface Live extends Items {
+	explicit?: boolean;
 	end?: string;
 	link?: string;
 	persons?: [Person];

@@ -13,17 +13,18 @@
 		<link rel="icon" type="image/png" sizes="16x16" href="%sveltekit.assets%/favicon-16x16.png" />
 
 		<script>
-			const themeValue = JSON.parse(localStorage.getItem('pl:themes'))?.current;
+			const themeValue = localStorage.getItem('podcastlife-theme');
 			const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
 				? 'dark'
 				: 'light';
 
-			document.documentElement.dataset.theme = themeValue ?? systemPreferredTheme;
+			document.documentElement.dataset.theme =
+				themeValue === 'auto' ? systemPreferredTheme : themeValue;
 		</script>
 
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
+	<body data-sveltekit-preload-data="tap">
+		<div class="content">%sveltekit.body%</div>
 	</body>
 </html>
