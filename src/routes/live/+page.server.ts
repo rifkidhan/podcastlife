@@ -8,8 +8,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	const { data } = (await res.json()) as LivePodcast;
 
 	setHeaders({
-		'cache-control':
-			res.headers.get('cache-control') || 'public, max-age=1800, stale-while-revalidate=1800'
+		'cache-control': 'public, max-age=1800, stale-while-revalidate=1800'
 	});
 
 	return {
