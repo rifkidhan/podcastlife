@@ -9,7 +9,8 @@
 		LoadingIndicator,
 		useUI
 	} from '$lib/components';
-	import { navigating } from '$app/stores';
+	import { beforeNavigate } from '$app/navigation';
+	import { navigating, updated } from '$app/stores';
 
 	import '@fontsource-variable/plus-jakarta-sans';
 	import '$lib/styles/app.css';
@@ -17,6 +18,12 @@
 	let { children }: { children: Snippet } = $props();
 
 	const uiState = useUI();
+
+	beforeNavigate(({ willUnload, to }) => {
+		if ($updated && !willUnload && to?.url) {
+			location.href = to.url.href;
+		}
+	});
 </script>
 
 <Header />
