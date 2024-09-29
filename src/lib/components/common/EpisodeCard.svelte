@@ -70,10 +70,12 @@
 </script>
 
 {#snippet liveDateTime()}
-	<span>
-		{#if status === 'live'}
+	{#if status === 'live'}
+		<span>
 			<LiveSign />
-		{/if}
+		</span>
+	{/if}
+	<span>
 		{#if status === 'live' && end}
 			ended {getTime(end)}
 		{/if}

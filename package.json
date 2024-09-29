@@ -35,6 +35,7 @@
 	},
 	"dependencies": {
 		"@fontsource-variable/plus-jakarta-sans": "^5.1.0",
+		"dotenv": "^16.4.5",
 		"embla-carousel": "^8.3.0",
 		"sanitize-html": "^2.13.0",
 		"transcriptator": "^1.1.4"

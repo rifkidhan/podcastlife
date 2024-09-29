@@ -36,14 +36,10 @@ COPY package.json ./
 USER podcastlife
 
 ARG PORT
-ARG API_URL
-ARG API_TOKEN
 
 EXPOSE ${PORT:-8080}
 
 ENV HOST="0.0.0.0"
 ENV PORT=${PORT:-8080}
-ENV API_URL=${API_URL}
-ENV API_TOKEN=${API_TOKEN}
 
-CMD ["node", "build"]
+CMD ["node", "-r", "dotenv/config", "build"]
