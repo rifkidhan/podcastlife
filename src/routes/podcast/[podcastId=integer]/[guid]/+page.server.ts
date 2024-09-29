@@ -4,8 +4,6 @@ import type { SingleEpisode } from '$lib/types';
 import sanitize from '$lib/utils/sanitize';
 import transcript from '$lib/utils/transcript';
 
-export const ssr = true;
-
 interface Chapter {
 	startTime: number;
 	title: string;

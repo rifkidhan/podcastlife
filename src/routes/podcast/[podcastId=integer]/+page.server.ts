@@ -3,8 +3,6 @@ import type { Podcast } from '$lib/types';
 import { podcastAPI } from '$lib/server/api';
 import sanitize from '$lib/utils/sanitize';
 
-export const ssr = true;
-
 export const load: PageServerLoad = async ({ params, setHeaders }) => {
 	const res = await podcastAPI({ endpoint: `/podcasts/podcast/feed/${params.podcastId}` });
 

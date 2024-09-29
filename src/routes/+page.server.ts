@@ -2,8 +2,6 @@ import type { PageServerLoad } from './$types';
 import { podcastAPI } from '$lib/server/api';
 import type { Trending, RecentPodcast } from '$lib/types';
 
-export const ssr = true;
-
 const getTrending = async () => {
 	const res = await podcastAPI({ endpoint: '/podcasts/trending', query: { max: String(10) } });
 
