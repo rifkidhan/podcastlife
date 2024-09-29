@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ params, setHeaders }) => {
 	const { feed, episodes, lives } = data;
 
 	setHeaders({
-		'cache-control': 'public, max-age=1800, stale-while-revalidate=1800'
+		'cache-control': 'public, max-age=360'
 	});
 
 	return {

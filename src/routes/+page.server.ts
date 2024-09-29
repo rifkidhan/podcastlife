@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	const [trending, recent] = await Promise.all([getTrending(), getRecent()]);
 
 	setHeaders({
-		'cache-control': 'public, max-age=1800, stale-while-revalidate=1800'
+		'cache-control': 'public, max-age=360'
 	});
 
 	return {
