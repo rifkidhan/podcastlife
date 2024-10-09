@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Button, Icon, Image, LiveSign } from '$lib/components';
-	import sanitize from '$lib/utils/sanitize';
 	import { getTime } from '$lib/utils/time';
 	import { playerDetail } from '$lib/stores/player.svelte';
 	import type { AlternativeEnclosure } from '$lib/types';
@@ -132,7 +131,7 @@
 		<Image src={image} alt={`${title} by ${feed}`} full />
 	</div>
 	<div class="content">
-		<div class="time list-with-dot text-sm">
+		<div class:list-with-dot={type === 'podcast'} class="time text-sm">
 			{#if type === 'live'}
 				{@render liveDateTime()}
 			{:else}
@@ -149,7 +148,7 @@
 		{/if}
 		{#if summary}
 			<div class="summary text-sm">
-				{@html sanitize(summary, { allowedTags: [], allowedAttributes: {} })}
+				{@html summary}
 			</div>
 		{/if}
 	</div>
@@ -239,6 +238,10 @@
 		display: inline-flex;
 		flex-direction: row;
 		align-items: center;
+
+		&:has([data-is-live]) {
+			gap: 0.25rem;
+		}
 	}
 
 	.linked {

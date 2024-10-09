@@ -135,12 +135,12 @@
 		top: 0;
 		height: 100dvh;
 		width: var(--pl-nav-width);
-		overflow-y: auto;
+		overflow-y: scroll;
 		overflow-x: hidden;
 		background-color: hsl(var(--pl-accent-5));
 		padding-block: var(--pl-header-padding);
 		border-left: 4px solid hsl(var(--pl-picton));
-		scrollbar-gutter: stable;
+		scrollbar-gutter: stable both;
 	}
 	.wrapper {
 		display: flex;

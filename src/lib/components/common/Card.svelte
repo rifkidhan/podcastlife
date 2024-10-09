@@ -9,9 +9,10 @@
 		author: string;
 		loading?: boolean;
 		explicit?: boolean;
+		blurhash?: string;
 	}
 
-	let { id, image, title, author, loading, explicit }: CardProps = $props();
+	let { id, image, title, author, loading, blurhash, explicit }: CardProps = $props();
 </script>
 
 {#snippet isLoading()}
@@ -24,7 +25,7 @@
 			{#if loading}
 				{@render isLoading()}
 			{:else}
-				<Image src={image} alt={title} full />
+				<Image src={image} alt={title} blurdata={blurhash} full />
 			{/if}
 		</div>
 		<div class="content">

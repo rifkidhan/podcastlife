@@ -9,6 +9,7 @@ export interface BasicFeed {
 	title: string;
 	url: string;
 	explicit: boolean;
+	blurhash?: string;
 }
 
 export interface TrendingFeed extends BasicFeed {

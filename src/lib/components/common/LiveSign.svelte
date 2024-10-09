@@ -1,4 +1,4 @@
-<span class="sign" aria-hidden="true">
+<span data-is-live class="sign" aria-hidden="true">
 	<span class="pulse"></span>
 	<span></span>
 </span>
