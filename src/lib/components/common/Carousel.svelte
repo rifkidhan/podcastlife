@@ -59,6 +59,7 @@
 					author={item.author ?? 'untitled'}
 					loading={embla ? false : true}
 					explicit={item.explicit}
+					blurhash={item.blurhash}
 				/>
 			{/each}
 		</ul>

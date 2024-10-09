@@ -1,9 +1,9 @@
 /* styling image */
 img {
-	background-color: hsl(var(--pl-accent-20));
 	transition-property: transform, filter;
 	transition-timing-function: ease-in-out;
 	transition-duration: 150ms;
+
 	&:where(.blur) {
 		filter: blur(8px);
 	}

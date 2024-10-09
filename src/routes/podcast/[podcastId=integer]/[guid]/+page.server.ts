@@ -1,7 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { podcastAPI } from '$lib/server/api';
 import type { SingleEpisode } from '$lib/types';
-import sanitize from '$lib/utils/sanitize';
 import transcript from '$lib/utils/transcript';
 
 interface Chapter {
@@ -53,10 +52,7 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 	});
 
 	return {
-		episode: {
-			...episode,
-			description: episode.description && sanitize(episode.description)
-		},
+		episode,
 		chapters: getChapters(episode.chapters ? episode.chapters : undefined),
 		transcripts: getTranscript(episode.transcripts ? episode.transcripts[0].url : undefined)
 	};

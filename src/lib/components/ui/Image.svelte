@@ -5,6 +5,7 @@
 		src: string;
 		alt: string;
 		full?: boolean;
+		blurdata?: string;
 	}
 
 	const imageOff =
@@ -19,6 +20,7 @@
 		loading = 'lazy',
 		class: className,
 		full,
+		blurdata,
 		...attrs
 	}: ImgProps = $props();
 
@@ -47,7 +49,12 @@
 	onload={() => (loaded = true)}
 	onerror={() => (error = true)}
 	class={className}
-	class:blur={!loaded && !error}
+	class:blur={!loaded && !blurdata && !error}
 	class:full
+	style:background-image={blurdata
+		? `url(data:image/png;base64,${blurdata})`
+		: 'linear-gradient(to bottom, hsl(var(--pl-accent-20)) 20%, hsl(var(--pl-accent-20)) 100%)'}
+	style:background-size="cover"
+	style:background-repeat="no-repeat"
 	{...attrs}
 />

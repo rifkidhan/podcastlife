@@ -9,7 +9,7 @@ const config = {
 		adapter: adapter(),
 		version: {
 			name: Date.now().toString(),
-			pollInterval: 15_000
+			pollInterval: 50_000
 		}
 	}
 };

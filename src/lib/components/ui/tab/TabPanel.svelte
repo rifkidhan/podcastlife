@@ -38,5 +38,6 @@
 		overflow-y: auto;
 		overscroll-behavior-y: auto;
 		scrollbar-gutter: stable both;
+		scrollbar-width: thin;
 	}
 </style>

@@ -37,7 +37,7 @@
 	<main class="page">
 		<div class="detail">
 			<div class="thumbnail">
-				<Image src={feed.image} loading="eager" alt={feed.title} full />
+				<Image src={feed.image} loading="eager" alt={feed.title} blurdata={feed.blurhash} full />
 			</div>
 			<div class="header">
 				<div class="title">
