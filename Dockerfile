@@ -41,5 +41,6 @@ EXPOSE ${PORT:-8080}
 
 ENV HOST="0.0.0.0"
 ENV PORT=${PORT:-8080}
+ENV ORIGIN=""
 
-CMD ["node", "-r", "dotenv/config", "build"]
+ENTRYPOINT ["node", "build"]
