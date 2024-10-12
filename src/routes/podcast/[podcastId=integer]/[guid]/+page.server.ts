@@ -11,7 +11,7 @@ interface Chapter {
 }
 
 export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
-	const guid = params.guid;
+	const guid = atob(params.guid);
 	const feedId = params.podcastId;
 
 	const res = await podcastAPI({

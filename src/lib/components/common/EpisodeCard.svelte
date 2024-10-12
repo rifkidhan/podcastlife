@@ -104,7 +104,7 @@
 
 {#snippet podcastTitle()}
 	<h3 class="title">
-		<a href={`/podcast/${feedId}/${encodeURIComponent(guid)}`}>
+		<a href={`/podcast/${feedId}/${btoa(encodeURI(guid))}`}>
 			<span>
 				{title}
 			</span>
