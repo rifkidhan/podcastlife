@@ -1,0 +1,58 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import { categories } from '$lib/utils/constants';
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-revalidate=1200');
+---
+
+<BaseLayout>
+	<main class="page">
+		<section>
+			<h1 class="text-display">Categories</h1>
+		</section>
+		<section class="categories">
+			{
+				categories.map((item) => (
+					<a href={`/categories/${item.id}`} class="category text-md">
+						{item.title}
+					</a>
+				))
+			}
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	.categories {
+		--pl-categories-grid: 2;
+		--pl-categories-padding-block: 0.5rem;
+		--pl-categories-padding-inline: 1rem;
+		display: grid;
+		grid-template-columns: repeat(var(--pl-categories-grid), minmax(0, 1fr));
+		grid-auto-rows: minmax(100px, auto);
+		gap: 1rem;
+		width: 100%;
+		margin-inline: auto;
+		padding-inline: 5vw;
+
+		@media (min-width: 768px) {
+			--pl-categories-grid: 3;
+			--pl-categories-padding-block: 0.75rem;
+			--pl-categories-padding-inline: 1.25rem;
+		}
+		@media (min-width: 1280px) {
+			--pl-categories-grid: 4;
+			--pl-categories-padding-block: 1rem;
+			--pl-categories-padding-inline: 1.5rem;
+		}
+	}
+
+	.category {
+		display: block;
+		align-content: center;
+		background-color: hsl(var(--pl-picton));
+		border-radius: var(--pl-border-radius-md);
+		padding: var(--pl-categories-padding-block) var(--pl-categories-padding-inline);
+		color: hsl(var(--pl-black));
+	}
+</style>

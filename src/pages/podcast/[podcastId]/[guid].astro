@@ -1,0 +1,226 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import { podcastAPI } from '$lib/server/api';
+import type { SingleEpisode } from '$lib/types';
+import Image from '$components/ui/image';
+import RunningText from '$components/common/running-text';
+import { getTime } from '$lib/utils/time';
+import Tab from '$components/ui/Tab.astro';
+import TabPanel from '$components/ui/TabPanel.astro';
+import Icon from '$components/ui/icon';
+import PlayButton from './_components/play-button';
+import Chapters from './_components/chapters';
+import Transcript from './_components/transcripts';
+
+const { podcastId, guid } = Astro.params;
+
+if (!podcastId || !guid) {
+	return Astro.redirect('/404');
+}
+
+const res = await podcastAPI({
+	endpoint: '/episodes/single',
+	query: {
+		feedId: podcastId,
+		guid: atob(guid)
+	}
+});
+
+if (!res.ok) {
+	if (res.status === 404) {
+		return Astro.redirect('/404');
+	}
+	return Astro.redirect('/500');
+}
+
+const { data: episode } = (await res.json()) as SingleEpisode;
+
+const tablist = [
+	{
+		id: 'description',
+		content: 'Description'
+	},
+	{
+		id: 'chapter',
+		content: 'Chapter'
+	},
+	{
+		id: 'transcript',
+		content: 'Transcript'
+	}
+];
+
+const transcript = episode.transcripts ? episode.transcripts[0].url : undefined;
+
+const chapter = episode.chapters;
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-revalidate=1200');
+---
+
+<BaseLayout title={`${episode.title ?? 'untitled'} from ${episode.feedTitle}`}>
+	<main class="page">
+		<div class="detail">
+			<div class="img">
+				<Image
+					src={episode.image && episode.image !== '' ? episode.image : episode.feedImage}
+					loading="eager"
+					alt={`${episode.title} by ${episode.feedTitle}`}
+					full
+					client:idle
+				/>
+			</div>
+			<div class="header">
+				<a href={`/podcast/${episode.feedId}`} class="feed-title text-md">
+					<span>
+						{episode.feedTitle}
+					</span>
+				</a>
+				<RunningText
+					as="h1"
+					title={episode.title}
+					isTitle
+					class="text-lg"
+					maximizeChange={768}
+					client:idle
+				>
+					{episode.title}
+				</RunningText>
+				<div class="author">
+					{episode.author}
+				</div>
+				<div class="info list-with-dot text-sm">
+					{episode.pubDate && <span>{getTime(episode.pubDate)}</span>}
+					<span>
+						{Math.floor(episode.duration / 60)} min
+					</span>
+					{episode.explicit && <Icon name="explicit" size={18} />}
+				</div>
+			</div>
+			<div class="misc">
+				<PlayButton
+					feed={{ id: episode.feedId, title: episode.feedTitle }}
+					title={episode.title ?? 'untitled'}
+					guid={episode.guid ?? guid}
+					enclosure={episode.enclosure.url}
+					explicit={episode.explicit}
+					image={episode.image === '' ? episode.feedImage : episode.image}
+					client:idle
+				/>
+			</div>
+		</div>
+		<section>
+			<Tab list={tablist} tabColor="cerise" className="text-sm">
+				<TabPanel id={tablist[0].id} class="text" }>
+					<Fragment set:html={episode.description} />
+				</TabPanel>
+				<TabPanel id={tablist[1].id}>
+					{chapter ? <Chapters url={chapter} client:only="solid" /> : <span>No Chapter</span>}
+				</TabPanel>
+				<TabPanel id={tablist[2].id}>
+					{
+						transcript ? (
+							<Transcript url={transcript} client:only="solid" />
+						) : (
+							<span>No Transcript</span>
+						)
+					}
+				</TabPanel>
+			</Tab>
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	main {
+		width: 90dvw;
+		margin-inline: auto;
+	}
+	.detail {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr) auto;
+		grid-template-areas:
+			'image header'
+			'image misc';
+		gap: 2rem;
+		width: 100%;
+
+		@media (max-width: 768px) {
+			grid-template-areas:
+				'image'
+				'header'
+				'misc';
+
+			grid-template-columns: minmax(0, 1fr);
+			grid-template-rows: auto minmax(0, 1fr) auto;
+			justify-items: center;
+		}
+	}
+
+	.img {
+		grid-area: image;
+		display: block;
+		position: relative;
+		width: 300px;
+		height: 300px;
+		border-radius: var(--pl-border-radius-md);
+		overflow: hidder;
+		border: 4px solid hsl(var(--pl-accent-95));
+	}
+
+	.header {
+		grid-area: header;
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+
+		@media (max-width: 768px) {
+			align-items: center;
+		}
+	}
+
+	.feed-title {
+		color: hsl(var(--pl-cerise));
+		text-transform: uppercase;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+
+		&:hover span {
+			color: hsl(var(--pl-accent-95));
+			box-shadow: var(--pl-shadow-highlight-cerise);
+		}
+	}
+
+	.author {
+		font-weight: 500;
+		color: hsl(var(--pl-cerise));
+	}
+
+	.info {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		font-weight: 600;
+		color: hsl(var(--pl-accent-80));
+	}
+
+	.misc {
+		grid-area: misc;
+	}
+
+	section {
+		width: 100%;
+		& > :global(.tabs) {
+			width: 100%;
+		}
+	}
+
+	.chapters-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+</style>

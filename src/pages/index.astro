@@ -1,0 +1,45 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import { podcastAPI } from '$lib/server/api';
+import Carousel from '$components/common/Carousel.astro';
+import type { Trending, RecentPodcast } from '$lib/types';
+
+const getTrending = async () => {
+	const res = await podcastAPI({ endpoint: '/podcasts/trending', query: { max: String(10) } });
+
+	const data = (await res.json()) as Trending;
+
+	return data;
+};
+const getRecent = async () => {
+	const res = await podcastAPI({ endpoint: '/podcasts/recent' });
+
+	const data = (await res.json()) as RecentPodcast;
+
+	return data;
+};
+
+const [trendings, recents] = await Promise.all([getTrending(), getRecent()]);
+Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-revalidate=1200');
+---
+
+<BaseLayout>
+	<main class="page">
+		<h1 class="sr-only">Podcastlife</h1>
+
+		<section>
+			<h2 class="text-lg">Trending Now</h2>
+			<Carousel label="Trending list" data={trendings.data} />
+		</section>
+		<section>
+			<h2 class="text-lg">Recent Now</h2>
+			<Carousel label="Recent update list" data={recents.data} />
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	section {
+		max-width: 90vw;
+	}
+</style>

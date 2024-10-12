@@ -1,0 +1,18 @@
+<script is:inline>
+	const changeDocument = (doc) => {
+		const themeStore =
+			typeof localStorage !== undefined && localStorage.getItem('podcastlife-theme');
+		const preferTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+			? 'dark'
+			: 'light';
+		const theme = themeStore === 'auto' ? preferTheme : themeStore;
+
+		doc.documentElement.dataset.theme = theme;
+	};
+
+	changeDocument(document);
+
+	document.addEventListener('astro:before-swap', (e) => {
+		changeDocument(e.newDocument);
+	});
+</script>

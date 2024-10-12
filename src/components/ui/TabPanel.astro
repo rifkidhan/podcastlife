@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+type Props = HTMLAttributes<'div'>;
+
+const { id, ...attrs } = Astro.props;
+---
+
+<div id={`${id}-panel`} role="tabpanel" aria-labelledby={id} tabindex="0" {...attrs} hidden>
+	<slot />
+</div>
+
+<style>
+	[role='tabpanel'] {
+		width: 100%;
+		border-radius: var(--pl-border-radius-md);
+		border-top-left-radius: 0;
+		border: 2px solid hsl(var(--pl-accent-95));
+		background-color: hsl(var(--pl-accent-5));
+		box-shadow: var(--pl-shadow-drop);
+		height: 50lvh;
+		padding: 2rem 1.5rem;
+		overflow-y: auto;
+		overscroll-behavior-y: auto;
+		scrollbar-gutter: stable;
+
+		&:has([data-chapters], [data-transcripts]) {
+			overflow: unset;
+			padding: unset;
+			overscroll-behavior-y: unset;
+			scrollbar-gutter: unset;
+		}
+	}
+</style>

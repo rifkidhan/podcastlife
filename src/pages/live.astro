@@ -1,0 +1,92 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import EpisodeCard from '$components/common/episode-card';
+import { podcastAPI } from '$lib/server/api';
+import type { LivePodcast } from '$lib/types';
+
+const res = await podcastAPI({ endpoint: '/episodes/live' });
+
+const { data } = (await res.json()) as LivePodcast;
+
+const streamNow = data.filter((v) => v.status === 'live');
+const pendingStream = data.filter((v) => v.status === 'pending');
+---
+
+<BaseLayout title="Live Stream">
+	<main class="page">
+		<section>
+			<h1 class="text-display">Live</h1>
+		</section>
+		<section>
+			<h2 class="text-lg">Live Streaming</h2>
+			<ul class="list">
+				{
+					streamNow.length > 0
+						? streamNow.map((live) => (
+								<li>
+									<EpisodeCard
+										type="live"
+										title={live.title ?? 'untitled'}
+										feed={live.feedTitle}
+										feedId={live.feedId}
+										enclosure={live.enclosure.url}
+										guid={live.guid ?? ''}
+										summary={live.description}
+										image={live.image ?? live.feedImage}
+										status={live.status}
+										start={live.start}
+										end={live.end}
+										linked
+										client:visible={{ rootMargin: '100px' }}
+									/>
+								</li>
+							))
+						: 'No one live now'
+				}
+			</ul>
+		</section>
+		<section>
+			<h2 class="text-lg">Scheduled Streaming</h2>
+			<ul class="list">
+				{
+					pendingStream.length > 0
+						? pendingStream.map((live) => (
+								<li>
+									<EpisodeCard
+										type="live"
+										title={live.title ?? 'untitled'}
+										feed={live.feedTitle}
+										feedId={live.feedId}
+										enclosure={live.enclosure.url}
+										guid={live.guid ?? ''}
+										summary={live.description}
+										image={live.image ?? live.feedImage}
+										status={live.status}
+										start={live.start}
+										end={live.end}
+										linked
+										client:visible={{ rootMargin: '100px' }}
+									/>
+								</li>
+							))
+						: 'No one live now'
+				}
+			</ul>
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	section {
+		width: 90vw;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.list {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+</style>

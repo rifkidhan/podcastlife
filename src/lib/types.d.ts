@@ -76,6 +76,7 @@ interface Items {
 
 interface Transcript {
 	url: string;
+	type: string;
 }
 
 interface Person {
@@ -91,8 +92,11 @@ interface Episode extends Items {
 	content?: string;
 	duration: number;
 	episode?: number;
+	season?: number;
+	episodeType?: 'full' | 'bonus' | 'trailer';
 	itunesEpisode?: number;
-	episodeType?: string;
+	itunesSeason?: number;
+	itunesEpisodeType?: 'full' | 'bonus' | 'trailer';
 	explicit: boolean;
 	persons?: Person[];
 	pubDate?: string;

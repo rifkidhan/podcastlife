@@ -1,0 +1,41 @@
+---
+import type { ComponentProps } from 'astro/types';
+import Head from '$components/layout/Head.astro';
+import Footer from '$components/layout/Footer.astro';
+import ThemeProvider from '$components/ThemeProvider.astro';
+import Header from '$components/layout/header.tsx';
+import Player from '$components/layout/player';
+import LoadingIndicator from '$components/ui/LoadingIndicator.astro';
+import ScrollButton from '$components/common/scroll-button';
+
+type Props = ComponentProps<typeof Head>;
+
+const props = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<Head {...props} />
+		<slot name="head" />
+		<ThemeProvider />
+	</head>
+	<body>
+		<Header client:idle />
+		<div id="main-content" style="display: contents;">
+			<slot />
+			<LoadingIndicator />
+		</div>
+		<ScrollButton client:idle={{ timeout: 500 }} />
+		<Footer />
+		<Player client:idle transition:persist="player" />
+	</body>
+</html>
+
+<script is:inline>
+	document.addEventListener('astro:before-preparation', () => {
+		document.querySelector('#loading-indicator').classList.add('show');
+	});
+	document.addEventListener('astro:after-preparation', () => {
+		document.querySelector('#loading-indicator').classList.remove('show');
+	});
+</script>

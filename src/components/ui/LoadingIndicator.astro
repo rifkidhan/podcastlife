@@ -1,0 +1,53 @@
+---
+import { Icons } from '../Icons';
+---
+
+<div id="loading-indicator">
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="24"
+		height="24"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="none"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+		set:html={Icons['podcastlife']}
+	/>
+</div>
+
+<style>
+	@keyframes bounce {
+		0%,
+		100% {
+			transform: translateY(-25%);
+			animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+		}
+		50% {
+			transform: translateY(0);
+			animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+		}
+	}
+
+	#loading-indicator {
+		display: none;
+
+		&:where(.show) {
+			display: block;
+			position: fixed;
+			bottom: 5rem;
+			left: 5vw;
+			height: 2.5rem;
+			width: 2.5rem;
+			animation: bounce 1s infinite;
+
+			& > svg {
+				width: 100%;
+				height: 100%;
+				fill: hsl(var(--pl-picton));
+			}
+		}
+	}
+</style>

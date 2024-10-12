@@ -5,13 +5,14 @@ Dockerfile
 *.md
 .prettierrc
 .prettierignore
-.svelte-kit
 node_modules
 build
 package
 vite.config.ts.timestamp-*
 .env*
 .env.*
-tests
-test-results
 .zed
+.helix
+.astro
+dist
+biome.jsonc

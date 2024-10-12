@@ -1,0 +1,33 @@
+@keyframes slide {
+	from {
+		transform: translateX(1px);
+	}
+	to {
+		transform: translateX(calc(var(--pl-running-text-length)));
+	}
+}
+.root {
+	display: inline-flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	overflow: hidden;
+	user-select: none;
+	width: 100%;
+
+	&:hover {
+		--pl-running-text-state: paused;
+	}
+
+	& > span {
+		margin-block-end: var(--pl-running-text-margin, 0.5rem);
+		display: block;
+		white-space: nowrap;
+		width: 100%;
+		text-align: var(--pl-running-text-align, center);
+	}
+}
+
+.running-animation {
+	animation: slide var(--pl-running-text-duration) ease-in-out infinite alternate;
+	animation-play-state: var(--pl-running-text-state, running);
+}

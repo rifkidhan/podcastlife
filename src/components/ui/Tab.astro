@@ -1,0 +1,160 @@
+---
+interface Props {
+	list: { id: string; content: string }[];
+	tabColor?: 'picton' | 'cerise';
+	className?: string;
+}
+
+const { list, tabColor = 'picton', className } = Astro.props;
+
+const color = tabColor === 'picton' ? 'var(--pl-picton)' : 'var(--pl-cerise)';
+---
+
+<podcastlife-tab class={className}>
+	<div role="tablist" tabindex="0" class="tablist" aria-orientation="horizontal">
+		{
+			list.map(({ id, content }, index) => (
+				<button
+					id={id}
+					type="button"
+					role="tab"
+					aria-selected={index === 0 ? true : false}
+					aria-controls={`${id}-panel`}
+					tabindex="0"
+					class="tab"
+				>
+					<span class="backdrop" />
+					<span>{content}</span>
+				</button>
+			))
+		}
+	</div>
+	<slot />
+</podcastlife-tab>
+
+<style define:vars={{ color }}>
+	podcastlife-tab {
+		display: block;
+		width: 100%;
+	}
+	.tablist {
+		display: flex;
+		flex-direction: row;
+		overflow: hidden;
+		border-top-left-radius: var(--pl-border-radius-md);
+		border-top-right-radius: var(--pl-border-radius-md);
+		border: 2px solid hsl(var(--pl-accent-95));
+		border-bottom: none;
+		box-shadow: var(--pl-shadow-drop);
+		max-width: max-content;
+	}
+
+	.tab {
+		display: block;
+		position: relative;
+		min-width: 10%;
+		padding: 0.75rem 1rem;
+		font-weight: 600;
+
+		&[aria-selected='true'] {
+			color: hsl(var(--pl-black));
+
+			.backdrop {
+				transform: translateY(0px);
+			}
+		}
+
+		& > span:not(.backdrop) {
+			z-index: 2;
+			position: relative;
+		}
+
+		.backdrop {
+			position: absolute;
+			inset: 0;
+			z-index: 1;
+			width: 100%;
+			height: 100%;
+			background-color: hsl(var(--color));
+			transform: translateY(100%);
+			transition: transform 150ms ease-in-out;
+		}
+	}
+</style>
+
+<script>
+	class PodcastlifeTab extends HTMLElement {
+		tabs: HTMLButtonElement[] = [];
+		panels: HTMLElement[] = [];
+
+		constructor() {
+			super();
+
+			const tablist = this.querySelector<HTMLDivElement>('[role="tablist"]')!;
+			this.tabs = [...tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+			this.panels = [...this.querySelectorAll<HTMLElement>(':scope > [role="tabpanel"]')];
+
+			this.panels[0].hidden = false;
+
+			for (const [index, tab] of this.tabs.entries()) {
+				tab.addEventListener('click', (e) => {
+					e.preventDefault();
+
+					const currentTab = tablist.querySelector('[aria-selected="true"]');
+
+					if (e.currentTarget !== currentTab) {
+						this.switch(e.currentTarget as HTMLButtonElement, index);
+					}
+				});
+			}
+
+			let tabFocus = 0;
+
+			tablist.addEventListener('keydown', (e) => {
+				if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+					this.tabs[tabFocus].setAttribute('tabindex', '-1');
+
+					if (e.key === 'ArrowRight') {
+						tabFocus++;
+
+						if (tabFocus >= this.tabs.length) {
+							tabFocus = 0;
+						}
+					}
+					if (e.key === 'ArrowLeft') {
+						tabFocus--;
+
+						if (tabFocus < 0) {
+							tabFocus = this.tabs.length - 1;
+						}
+					}
+
+					this.tabs[tabFocus].setAttribute('tabindex', '0');
+					this.tabs[tabFocus].focus();
+				}
+			});
+		}
+
+		private switch = (newTab: HTMLButtonElement | null | undefined, index: number) => {
+			if (!newTab) return;
+
+			for (const tab of this.tabs) {
+				tab.setAttribute('aria-selected', 'false');
+				tab.setAttribute('tabindex', '-1');
+			}
+
+			for (const panel of this.panels) {
+				panel.hidden = true;
+			}
+
+			const newPanel = this.panels[index];
+
+			if (newPanel) newPanel.hidden = false;
+
+			newTab.setAttribute('tabindex', '0');
+			newTab.setAttribute('aria-selected', 'true');
+		};
+	}
+
+	customElements.define('podcastlife-tab', PodcastlifeTab);
+</script>

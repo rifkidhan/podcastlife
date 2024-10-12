@@ -1,3 +1,3 @@
 # Podcastlife
 
-Podcast web apps
+Free and opensource podcast webapps.

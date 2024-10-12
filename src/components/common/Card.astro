@@ -1,0 +1,103 @@
+---
+import Image from '$components/ui/image';
+import Icon from '$components/ui/icon';
+
+interface Props {
+	id: string;
+	image: string;
+	title: string;
+	author: string;
+	loading?: boolean;
+	explicit?: boolean;
+	blurhash?: string;
+}
+
+const { id, image, title, author, explicit, blurhash } = Astro.props;
+---
+
+<li class="card">
+	<a href={`/podcast/${id}`} aria-label={`${title} by ${author}`} draggable>
+		<div class="thumbnail">
+			<Image src={image} alt={`${title} by ${author}`} blurdata={blurhash} full client:idle />
+		</div>
+		<div class="content">
+			<div class="author text-sm">{author}</div>
+			<h3 class="title">
+				{explicit && <Icon name="explicit" size={20} />}
+				<span>
+					{title}
+				</span>
+			</h3>
+		</div>
+	</a>
+</li>
+
+<style>
+	.card {
+		display: flex;
+		position: relative;
+		flex-direction: column;
+		border-radius: var(--pl-border-radius-md);
+		overflow: hidden;
+		border: 2px solid hsl(var(--pl-accent-95));
+		transition-property: box-shadow, transform;
+		transition-duration: 150ms;
+		transition-timing-function: ease-in-out;
+		user-select: none;
+
+		&:hover {
+			transform: translate(-0.25rem, -0.25rem);
+			box-shadow: var(--pl-shadow-drop);
+		}
+
+		& > a {
+			position: relative;
+		}
+	}
+
+	.thumbnail {
+		display: block;
+		position: relative;
+		overflow: hidden;
+		aspect-ratio: 1 / 1;
+		border-bottom: 2px solid hsl(var(--pl-accent-95));
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+		padding-block: 1rem;
+		padding-inline: 0.75rem;
+	}
+	.author {
+		text-transform: uppercase;
+		color: hsl(var(--pl-picton));
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.title {
+		font-weight: 700;
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+	}
+
+	.skeleton {
+		animation: var(--pl-animation-pulse);
+	}
+
+	.pulse-img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		aspect-ratio: 1 / 1;
+		background-color: hsl(var(--pl-accent-50));
+		position: absolute;
+		inset: 0;
+	}
+</style>

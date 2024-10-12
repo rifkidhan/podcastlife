@@ -1,0 +1,161 @@
+---
+import Card from './Card.astro';
+import type { BasicFeed } from '$lib/types';
+import Button from '$components/ui/Button.astro';
+
+interface Props {
+	label: string;
+	data: BasicFeed[];
+}
+
+const { label, data } = Astro.props;
+---
+
+<podcastlife-carousel class="carousel">
+	<div class="viewport">
+		<ul class="container" aria-label={label}>
+			{
+				data.map((item) => (
+					<Card
+						id={item.id}
+						title={item.title}
+						image={item.image}
+						author={item.author ?? item.title}
+						explicit={item.explicit}
+						blurhash={item.blurhash}
+					/>
+				))
+			}
+		</ul>
+	</div>
+	<div class="control">
+		<Button
+			as="button"
+			variant="picton"
+			icon="chevron-left"
+			type="button"
+			aria-label="previous slide"
+			id="prev-button"
+		/>
+		<Button
+			as="button"
+			variant="picton"
+			icon="chevron-right"
+			type="button"
+			aria-label="next slide"
+			id="next-button"
+		/>
+	</div>
+</podcastlife-carousel>
+
+<style>
+	.carousel {
+		--pl-carousel-column-width: 38%;
+		--pl-carousel-gap: 0.25rem;
+		--pl-carousel-container-gap: calc(var(--pl-carousel-gap) * 2);
+		display: flex;
+		flex-direction: column;
+		gap: var(--pl-carousel-gap);
+
+		@media (min-width: 768px) {
+			--pl-carousel-column-width: 33%;
+			--pl-carousel-gap: 0.5rem;
+		}
+		@media (min-width: 1024px) {
+			--pl-carousel-column-width: 25%;
+		}
+		@media (min-width: 1280px) {
+			--pl-carousel-column-width: 20%;
+		}
+	}
+	.viewport {
+		overflow: hidden;
+	}
+
+	.container {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: calc(var(--pl-carousel-column-width) - var(--pl-carousel-container-gap));
+		column-gap: var(--pl-carousel-container-gap);
+		touch-action: pan-y pinch-zoom;
+		padding-block: var(--pl-carousel-container-gap);
+		padding-inline: var(--pl-carousel-container-gap);
+	}
+
+	.control {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+
+		@media (max-width: 768px) {
+			gap: 0.5rem;
+		}
+	}
+</style>
+
+<script>
+	import EmblaCarousel from 'embla-carousel';
+	import type { EmblaCarouselType } from 'embla-carousel';
+
+	class Carousel extends HTMLElement {
+		connectedCallback() {
+			this.setup();
+
+			document.addEventListener('astro:before-swap', () => {
+				this.carousel()?.destroy();
+			});
+		}
+
+		private get viewport() {
+			return this.querySelector<HTMLElement>('.viewport');
+		}
+		private get nextButton() {
+			return this.querySelector<HTMLButtonElement>('#next-button');
+		}
+		private get prevButton() {
+			return this.querySelector<HTMLButtonElement>('#prev-button');
+		}
+		private carousel() {
+			if (!this.viewport) return;
+			const embla = EmblaCarousel(this.viewport, { loop: false, align: 'start' });
+
+			return embla;
+		}
+
+		private setupButtons(api: EmblaCarouselType) {
+			if (!this.prevButton || !this.nextButton) return;
+			const setButtonState = () => {
+				if (api.canScrollPrev()) this.prevButton?.removeAttribute('disabled');
+				else this.prevButton?.setAttribute('disabled', '');
+
+				if (api.canScrollNext()) this.nextButton?.removeAttribute('disabled');
+				else this.nextButton?.setAttribute('disabled', '');
+			};
+
+			const scrollPrev = () => api.scrollPrev();
+			const scrollNext = () => api.scrollNext();
+
+			this.prevButton?.addEventListener('click', scrollPrev, false);
+			this.nextButton?.addEventListener('click', scrollNext, false);
+
+			api.on('select', setButtonState).on('init', setButtonState).on('reInit', setButtonState);
+
+			return () => {
+				this.prevButton?.removeAttribute('disabled');
+				this.nextButton?.removeAttribute('disabled');
+				this.prevButton?.removeEventListener('click', scrollPrev, false);
+				this.nextButton?.removeEventListener('click', scrollNext, false);
+			};
+		}
+
+		private setup() {
+			const api = this.carousel();
+
+			if (api) {
+				this.setupButtons(api);
+			}
+		}
+	}
+
+	customElements.define('podcastlife-carousel', Carousel);
+</script>

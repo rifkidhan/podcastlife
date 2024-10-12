@@ -1,7 +1,6 @@
 FROM node:lts-alpine AS base
-
-# all dependencies
 RUN apk add --no-cache libc6-compat
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -16,31 +15,31 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 # builder
 FROM base AS builder
 WORKDIR /app
+ARG ORIGIN
 COPY . ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm run build
+
+RUN pnpm run astro telemetry disable
+RUN ORIGIN=${ORIGIN} pnpm run build
 
 # runner
 FROM base AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 podcastlife
 
 COPY --from=prod-deps --chown=podcastlife:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=podcastlife:nodejs /app/build ./build
+COPY --from=builder --chown=podcastlife:nodejs /app/dist ./dist
 COPY package.json ./
 
-USER podcastlife
-
 ARG PORT
+USER podcastlife
 
 EXPOSE ${PORT:-8080}
 
 ENV HOST="0.0.0.0"
 ENV PORT=${PORT:-8080}
-ENV ORIGIN=""
 
-ENTRYPOINT ["node", "build"]
+ENTRYPOINT ["node", "./dist/server/entry.mjs"]

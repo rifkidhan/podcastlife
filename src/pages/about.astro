@@ -1,0 +1,50 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import Tab from '$components/ui/Tab.astro';
+import TabPanel from '$components/ui/TabPanel.astro';
+
+const tablist = [
+	{
+		id: 'description',
+		content: 'Description'
+	},
+	{
+		id: 'chapter',
+		content: 'Chapter'
+	},
+	{
+		id: 'transcript',
+		content: 'Transcript'
+	}
+];
+---
+
+<BaseLayout title="about">
+	<main class="page">
+		<section>
+			<h1 class="text-display">about</h1>
+		</section>
+		<Tab list={tablist}>
+			<TabPanel id={tablist[0].id}>
+				{tablist[0].content}
+			</TabPanel>
+			<TabPanel id={tablist[1].id}>
+				{tablist[1].content}
+			</TabPanel>
+			<TabPanel id={tablist[2].id}>
+				{tablist[2].content}
+			</TabPanel>
+		</Tab>
+	</main>
+</BaseLayout>
+
+<style>
+	main {
+		width: 90dvw;
+		margin-inline: auto;
+	}
+
+	section {
+		width: 100%;
+	}
+</style>

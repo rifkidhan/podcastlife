@@ -1,0 +1,80 @@
+---
+import BaseLayout from '$layouts/BaseLayout.astro';
+import type { Trending } from '$lib/types';
+import { podcastAPI } from '$lib/server/api';
+import Carousel from '$components/common/Carousel.astro';
+import AnotherCategory from './_components/another-category';
+import { categories } from '$lib/utils/constants';
+
+const { category } = Astro.params;
+
+const thisCategory = categories.find((item) => item.id === category);
+
+if (!category || !thisCategory) {
+	return Astro.redirect('/400');
+}
+
+const getTrending = async () => {
+	const res = await podcastAPI({
+		endpoint: '/podcasts/trending',
+		query: {
+			max: String(10),
+			cat: category ? category : ''
+		}
+	});
+
+	const data = (await res.json()) as Trending;
+
+	return data;
+};
+
+const trendings = await getTrending();
+
+Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-revalidate=1200');
+---
+
+<BaseLayout title={`${thisCategory.title} category`}>
+	<main class="page">
+		<section class="hero">
+			<h1 class="text-display">{thisCategory.title}</h1>
+		</section>
+		<section>
+			<h2 class="text-xl">
+				Trending on {thisCategory.title}
+			</h2>
+			<Carousel label="Trending Carousel" data={trendings.data} />
+		</section>
+		<section>
+			<h2 class="text-xl">
+				Another on {thisCategory.title}
+			</h2>
+			<AnotherCategory category={category} client:idle />
+		</section>
+	</main>
+</BaseLayout>
+
+<style>
+	main {
+		width: 90dvw;
+		margin-inline: auto;
+	}
+
+	section {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+
+		&:where(.hero) {
+			height: 50lvh;
+			background-color: hsl(var(--pl-picton));
+		}
+
+		& > h2 {
+			text-transform: capitalize;
+		}
+	}
+	h1 {
+		text-transform: uppercase;
+	}
+</style>

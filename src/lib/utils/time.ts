@@ -1,4 +1,4 @@
-export const getTime = (date: string | number, locale: string = 'en') => {
+export const getTime = (date: string | number, locale = 'en') => {
 	let day = new Date();
 	let value = '';
 

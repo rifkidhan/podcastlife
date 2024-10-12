@@ -1,0 +1,25 @@
+.root {
+	display: block;
+}
+
+.truncate {
+	overflow-wrap: break-word;
+
+	&[data-open-more='false'] {
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: var(--pl-description-truncate);
+		line-clamp: var(--pl-description-truncate);
+	}
+}
+.mask {
+	&[data-open-more='false'] {
+		mask-image: linear-gradient(
+			to top,
+			transparent 0%,
+			hsla(var(--pl-accent-95)) 90%,
+			transparent 100%
+		);
+	}
+}

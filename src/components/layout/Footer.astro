@@ -1,0 +1,25 @@
+---
+const years = new Date().getFullYear();
+---
+
+<footer>
+	<div class="text-sm">
+		<span id="year">{years},</span>
+		<span>Podcastlife.</span>
+		<div>Created by Rifkidhan.</div>
+	</div>
+</footer>
+
+<style>
+	footer {
+		padding-inline: 5vw;
+		border-top: 2px solid hsl(var(--pl-accent-95));
+		padding-block: var(--pl-header-padding);
+	}
+</style>
+
+<script>
+	const footer = document.querySelector('footer') as HTMLElement;
+	const year = footer.querySelector('#year') as HTMLElement;
+	year.textContent = `${new Date().getFullYear()},`;
+</script>

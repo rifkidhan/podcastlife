@@ -1,0 +1,41 @@
+.root {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+}
+
+.header {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	align-items: center;
+	justify-content: space-between;
+
+	& > h2 {
+		text-decoration: underline solid;
+	}
+}
+
+.episode-list {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.pagination {
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	align-items: center;
+	justify-content: center;
+}
+
+.select {
+	appearance: none;
+	display: block;
+	min-width: 10ch;
+	padding: 0.15rem 0.25rem;
+	background-color: hsl(var(--pl-accent-5));
+	border-radius: var(--pl-border-radius-sm);
+}
