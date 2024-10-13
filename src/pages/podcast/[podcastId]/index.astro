@@ -20,8 +20,6 @@ if (res.status === 404) {
 const { data } = (await res.json()) as Podcast;
 
 const { feed, episodes, lives: live } = data;
-
-Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-revalidate=1200');
 ---
 
 <BaseLayout title={feed.title}>

@@ -36,14 +36,63 @@ export default function Player() {
 
 	const playerReady = createMemo(() => playNow().feed.id !== '');
 
+	const updateNavigatorMetadata = () => {
+		navigator.mediaSession.metadata = new MediaMetadata({
+			title: playNow().podcast.title,
+			artist: playNow().feed.title,
+			artwork: [
+				{
+					src: playNow().podcast.image
+				}
+			]
+		});
+	};
+
+	// update position navigator
+	const updateNavigatorState = () => {
+		if ('setPositionState' in navigator.mediaSession) {
+			navigator.mediaSession.setPositionState({
+				duration: duration(),
+				playbackRate: audio.playbackRate,
+				position: audio.currentTime
+			});
+		}
+	};
+
+	// effect for play and pause audio
 	createEffect(() => {
 		if (playerReady()) {
 			if (paused()) {
 				audio.pause();
+				navigator.mediaSession.playbackState = 'paused';
 			} else {
 				audio.play();
+				navigator.mediaSession.playbackState = 'playing';
 			}
 		}
+	});
+
+	createEffect(() => {
+		if (!playerReady) return;
+
+		navigator.mediaSession.setActionHandler('play', () => {
+			setPaused(false);
+		});
+		navigator.mediaSession.setActionHandler('pause', () => {
+			setPaused(true);
+		});
+	});
+	createEffect(() => {
+		if (!playerReady) return;
+
+		navigator.mediaSession.setActionHandler('seekbackward', () => {
+			audio.currentTime = Math.max(currentTime() - 10, 0);
+			updateNavigatorState();
+		});
+		navigator.mediaSession.setActionHandler('seekforward', () => {
+			audio.currentTime = Math.min(currentTime() + 10, duration());
+			updateNavigatorState();
+		});
 	});
 
 	const fullPlayerState = {
@@ -70,15 +119,7 @@ export default function Player() {
 						setCurrentTime(0);
 						setLoadStart(true);
 						setLoading(true);
-						navigator.mediaSession.metadata = new MediaMetadata({
-							title: playNow().podcast.title,
-							artist: playNow().feed.title,
-							artwork: [
-								{
-									src: playNow().podcast.image
-								}
-							]
-						});
+						updateNavigatorMetadata();
 					}}
 					ondurationchange={() => {
 						setDuration(Math.round(audio.duration));
@@ -90,6 +131,7 @@ export default function Player() {
 					oncanplaythrough={() => {
 						setLoading(false);
 						audio.play();
+						updateNavigatorState();
 					}}
 					ontimeupdate={() => {
 						setCurrentTime(Math.trunc(audio.currentTime));
@@ -143,7 +185,7 @@ export default function Player() {
 								aria-label="skip 10 second backward"
 								icon="skip-backward"
 								onClick={() => {
-									audio.currentTime = currentTime() - 10;
+									audio.currentTime = Math.max(currentTime() - 10, 0);
 								}}
 							/>
 						</span>
@@ -164,7 +206,7 @@ export default function Player() {
 								aria-label="skip 10 second forward"
 								icon="skip-forward"
 								onClick={() => {
-									audio.currentTime = currentTime() + 10;
+									audio.currentTime = Math.min(currentTime() + 10, duration());
 								}}
 							/>
 						</span>
@@ -222,7 +264,9 @@ export default function Player() {
 
 							<div class={s['player-modal-detail']}>
 								<div class="text-lg">
-									<RunningText textAlign="center">{playNow().podcast.title}</RunningText>
+									<RunningText textAlign="center" title={playNow().podcast.title}>
+										{playNow().podcast.title}
+									</RunningText>
 								</div>
 								<div class={s['player-modal-feed-title']}>{playNow().feed.title}</div>
 							</div>

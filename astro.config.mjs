@@ -1,12 +1,14 @@
 import node from '@astrojs/node';
 import solidJs from '@astrojs/solid-js';
-import { defineConfig, envField } from 'astro/config';
+import { defineConfig, envField, passthroughImageService } from 'astro/config';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
 
+const ORIGIN = process.env.ORIGIN;
+
 /** @type {import('astro').AstroUserConfig} */
 export default defineConfig({
-	site: 'https://podcastlife.koyeb.app',
+	site: ORIGIN || 'https://podcastlife.koyeb.app',
 	integrations: [solidJs()],
 	output: 'server',
 	adapter: node({
@@ -26,6 +28,9 @@ export default defineConfig({
 	scopedStyleStrategy: 'where',
 	prefetch: {
 		defaultStrategy: 'tap'
+	},
+	image: {
+		service: passthroughImageService()
 	},
 	redirects: {
 		'/podcast': {

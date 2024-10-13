@@ -1,15 +1,15 @@
 {
 	"name": "podcastlife",
 	"type": "module",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"scripts": {
 		"dev": "astro dev",
-		"start": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
 		"check": "astro check && biome check .",
 		"format": "biome format --write . && prettier --write .",
-		"astro": "astro"
+		"astro": "astro",
+		"start": "node ./dist/server/entry.mjs"
 	},
 	"dependencies": {
 		"@astrojs/node": "^8.3.4",

@@ -117,7 +117,11 @@ const { label, data } = Astro.props;
 		}
 		private carousel() {
 			if (!this.viewport) return;
-			const embla = EmblaCarousel(this.viewport, { loop: false, align: 'start' });
+			const embla = EmblaCarousel(this.viewport, {
+				loop: false,
+				align: 'start',
+				slidesToScroll: 'auto'
+			});
 
 			return embla;
 		}

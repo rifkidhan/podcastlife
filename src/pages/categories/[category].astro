@@ -29,8 +29,6 @@ const getTrending = async () => {
 };
 
 const trendings = await getTrending();
-
-Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-revalidate=1200');
 ---
 
 <BaseLayout title={`${thisCategory.title} category`}>
@@ -48,7 +46,7 @@ Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-re
 			<h2 class="text-xl">
 				Another on {thisCategory.title}
 			</h2>
-			<AnotherCategory category={category} client:idle />
+			<AnotherCategory category={category} client:load />
 		</section>
 	</main>
 </BaseLayout>

@@ -53,8 +53,6 @@ const tablist = [
 const transcript = episode.transcripts ? episode.transcripts[0].url : undefined;
 
 const chapter = episode.chapters;
-
-Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-revalidate=1200');
 ---
 
 <BaseLayout title={`${episode.title ?? 'untitled'} from ${episode.feedTitle}`}>

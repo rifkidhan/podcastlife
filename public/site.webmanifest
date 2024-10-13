@@ -1,13 +1,35 @@
 {
-	"name": "Podcastlife",
-	"short_name": "Podcastlife",
-	"icons": [
-		{ "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
-		{ "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
-	],
-	"theme_color": "#0087d4",
-	"start_url": "/",
-	"background_color": "#f5f5f6",
-	"display": "standalone",
-	"description": "Podcast web application."
+  "name": "Podcastlife",
+  "short_name": "Podcastlife",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "hsl(240, 5%, 98%)",
+  "theme_color": "hsl(202, 100%, 42%)",
+  "description": "Podcast web apps."
 }

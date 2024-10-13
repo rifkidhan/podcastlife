@@ -1,8 +1,6 @@
 ---
 import BaseLayout from '$layouts/BaseLayout.astro';
 import { categories } from '$lib/utils/constants';
-
-Astro.response.headers.set('Cache-Control', 'public, max-age=360, stale-while-revalidate=1200');
 ---
 
 <BaseLayout>

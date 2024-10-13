@@ -19,9 +19,11 @@ const { id, ...attrs } = Astro.props;
 		box-shadow: var(--pl-shadow-drop);
 		height: 50lvh;
 		padding: 2rem 1.5rem;
-		overflow-y: auto;
+		overflow: hidden auto;
 		overscroll-behavior-y: auto;
 		scrollbar-gutter: stable;
+		text-wrap: wrap;
+		overflow-wrap: break-word;
 
 		&:has([data-chapters], [data-transcripts]) {
 			overflow: unset;
