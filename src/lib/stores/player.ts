@@ -1,5 +1,6 @@
 import type { AlternativeEnclosure } from '$lib/types';
 import { createSignal } from 'solid-js';
+import { createStore } from 'solid-js/store';
 
 export interface FeedPlaying {
 	id: string;
@@ -20,18 +21,36 @@ interface PlayNow {
 	podcast: PodcastPlaying;
 }
 
-const [playNow, setPlayNow] = createSignal<PlayNow>({
-	feed: {
-		title: '',
-		id: ''
+const [queue, setQueue] = createStore<{ now: PlayNow; next: Array<PlayNow> }>({
+	now: {
+		feed: {
+			title: '',
+			id: ''
+		},
+		podcast: {
+			title: '',
+			image: '',
+			enclosure: '',
+			guid: ''
+		}
 	},
-	podcast: {
-		title: '',
-		image: '',
-		enclosure: '',
-		guid: ''
-	}
+	next: []
 });
+
+const setDefaultPlayNow = () => {
+	setQueue('now', {
+		feed: {
+			title: '',
+			id: ''
+		},
+		podcast: {
+			title: '',
+			image: '',
+			enclosure: '',
+			guid: ''
+		}
+	});
+};
 
 const [paused, setPaused] = createSignal(true);
 const [loading, setLoading] = createSignal(true);
@@ -40,8 +59,6 @@ const [currentTime, setCurrentTime] = createSignal(0);
 
 export const playerDetail = () => {
 	return {
-		playNow,
-		setPlayNow,
 		paused,
 		setPaused,
 		loading,
@@ -49,6 +66,9 @@ export const playerDetail = () => {
 		duration,
 		setDuration,
 		currentTime,
-		setCurrentTime
+		setCurrentTime,
+		setDefaultPlayNow,
+		queue,
+		setQueue
 	};
 };

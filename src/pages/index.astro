@@ -20,6 +20,8 @@ const getRecent = async () => {
 };
 
 const [trendings, recents] = await Promise.all([getTrending(), getRecent()]);
+
+Astro.response.headers.set('Cache-Control', 'private, max-age=360');
 ---
 
 <BaseLayout>

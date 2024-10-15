@@ -18,11 +18,12 @@ export default function Player() {
 		setDuration,
 		setLoading,
 		setPaused,
-		playNow,
 		currentTime,
 		paused,
 		loading,
-		duration
+		duration,
+		queue,
+		setDefaultPlayNow
 	} = playerDetail();
 	const uiState = useUI();
 	const [loadStart, setLoadStart] = createSignal(true);
@@ -34,15 +35,15 @@ export default function Player() {
 
 	let playerFull!: HTMLDialogElement;
 
-	const playerReady = createMemo(() => playNow().feed.id !== '');
+	const playerReady = createMemo(() => queue.now.feed.id !== '');
 
 	const updateNavigatorMetadata = () => {
 		navigator.mediaSession.metadata = new MediaMetadata({
-			title: playNow().podcast.title,
-			artist: playNow().feed.title,
+			title: queue.now.podcast.title,
+			artist: queue.now.feed.title,
 			artwork: [
 				{
-					src: playNow().podcast.image
+					src: queue.now.podcast.image
 				}
 			]
 		});
@@ -82,6 +83,7 @@ export default function Player() {
 			setPaused(true);
 		});
 	});
+
 	createEffect(() => {
 		if (!playerReady) return;
 
@@ -113,7 +115,7 @@ export default function Player() {
 			<div class={s.player} inert={uiState.menuOpen()}>
 				<audio
 					ref={audio}
-					src={playNow().podcast.enclosure}
+					src={queue.now.podcast.enclosure}
 					preload="metadata"
 					onloadstart={() => {
 						setCurrentTime(0);
@@ -143,10 +145,11 @@ export default function Player() {
 					onended={() => {
 						setPaused(true);
 						setCurrentTime(0);
+						setDefaultPlayNow();
 					}}
 				>
-					<Show when={playNow().podcast.altEnclosure}>
-						<For each={playNow().podcast.altEnclosure}>
+					<Show when={queue.now.podcast.altEnclosure}>
+						<For each={queue.now.podcast.altEnclosure}>
 							{(item) => (
 								<Switch>
 									<Match when={item.default}>
@@ -231,16 +234,16 @@ export default function Player() {
 					</div>
 					<div class={s.info}>
 						<div class={s.thumbnail}>
-							<Image src={playNow().podcast.image} alt={playNow().podcast.title} full />
+							<Image src={queue.now.podcast.image} alt={queue.now.podcast.title} full />
 						</div>
 						<div class={`${s.title} text-sm`}>
 							<div class={s.running}>
-								<RunningText title={playNow().podcast.title} marginBottom="0.25rem">
-									{playNow().podcast.title}
+								<RunningText title={queue.now.podcast.title} marginBottom="0.25rem">
+									{queue.now.podcast.title}
 								</RunningText>
 							</div>
-							<a href={`/podcast/${playNow().feed.id}`} class={s.feed}>
-								<span>{playNow().feed.title}</span>
+							<a href={`/podcast/${queue.now.feed.id}`} class={s.feed}>
+								<span>{queue.now.feed.title}</span>
 							</a>
 						</div>
 					</div>
@@ -259,16 +262,16 @@ export default function Player() {
 					<Show when={fullPlayerOpen()}>
 						<div class={s['player-modal-wrapper']}>
 							<div class={s['player-modal-img']}>
-								<Image src={playNow().podcast.image} alt={playNow().podcast.title} full />
+								<Image src={queue.now.podcast.image} alt={queue.now.podcast.title} full />
 							</div>
 
 							<div class={s['player-modal-detail']}>
 								<div class="text-lg">
-									<RunningText textAlign="center" title={playNow().podcast.title}>
-										{playNow().podcast.title}
+									<RunningText textAlign="center" title={queue.now.podcast.title}>
+										{queue.now.podcast.title}
 									</RunningText>
 								</div>
-								<div class={s['player-modal-feed-title']}>{playNow().feed.title}</div>
+								<div class={s['player-modal-feed-title']}>{queue.now.feed.title}</div>
 							</div>
 							<div class={s['player-modal-controls']}>
 								<div class={`${s['player-modal-seeker']} text-sm`}>

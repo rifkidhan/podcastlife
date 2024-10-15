@@ -1,7 +1,7 @@
 {
 	"name": "podcastlife",
 	"type": "module",
-	"version": "0.2.1",
+	"version": "0.3.1",
 	"scripts": {
 		"dev": "astro dev",
 		"build": "astro build",
@@ -16,7 +16,7 @@
 		"@astrojs/solid-js": "^4.4.2",
 		"@fontsource-variable/plus-jakarta-sans": "^5.1.0",
 		"@tanstack/solid-virtual": "^3.10.8",
-		"astro": "^4.16.2",
+		"astro": "^4.16.5",
 		"embla-carousel": "^8.3.0",
 		"solid-js": "^1.9.2",
 		"transcriptator": "^1.1.4"

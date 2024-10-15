@@ -5,7 +5,7 @@
 		"indentStyle": "tab",
 		"indentWidth": 2,
 		"lineWidth": 100,
-		"ignore": ["*.astro"]
+		"ignore": ["*.astro", "pnpm-lock.yaml"]
 	},
 	"organizeImports": {
 		"enabled": true
@@ -18,21 +18,17 @@
 				"useMediaCaption": "off"
 			},
 			"style": {
-				"useImportType": "off"
+				"useImportType": "warn"
 			}
 		}
 	},
 	"javascript": {
 		"formatter": {
 			"jsxQuoteStyle": "double",
-			"quoteProperties": "asNeeded",
 			"trailingCommas": "none",
 			"semicolons": "asNeeded",
 			"arrowParentheses": "always",
-			"bracketSpacing": true,
-			"bracketSameLine": false,
-			"quoteStyle": "single",
-			"attributePosition": "auto"
+			"quoteStyle": "single"
 		}
 	},
 	"json": {
@@ -43,6 +39,11 @@
 		"formatter": {
 			"trailingCommas": "none"
 		}
+	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
 	},
 	"overrides": [
 		{

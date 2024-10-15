@@ -9,17 +9,17 @@ type PlayButtonProps = PodcastPlaying & {
 };
 
 export default function PlayButton(props: PlayButtonProps) {
-	const { setPlayNow, playNow, setPaused, loading, paused } = playerDetail();
+	const { setPaused, loading, paused, queue, setQueue } = playerDetail();
 
-	const isThisPodcast = createMemo(() => playNow().podcast.enclosure === props.enclosure);
+	const isThisPodcast = createMemo(() => queue.now.podcast.enclosure === props.enclosure);
 
 	const isPlaying = createMemo(() => isThisPodcast() && !paused());
 
-	const isLoading = () => isThisPodcast() && loading();
+	const isLoading = createMemo(() => isThisPodcast() && loading());
 
 	const setPlaying = () => {
 		if (!isThisPodcast()) {
-			setPlayNow({
+			setQueue('now', {
 				feed: props.feed,
 				podcast: {
 					guid: props.guid,
@@ -30,9 +30,7 @@ export default function PlayButton(props: PlayButtonProps) {
 					altEnclosure: props.altEnclosure
 				}
 			});
-		}
-
-		if (isThisPodcast()) {
+		} else {
 			setPaused(!paused());
 		}
 	};

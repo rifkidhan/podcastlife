@@ -95,7 +95,7 @@ const PodcastTitle = (props: Pick<EpisodeCardProps, 'feedId' | 'guid' | 'title'>
 };
 
 export default function EpisodeCard(props: EpisodeCardProps) {
-	const { setPlayNow, playNow, paused, setPaused, loading } = playerDetail();
+	const { queue, paused, setPaused, loading, setQueue } = playerDetail();
 	const mergedProps = mergeProps(
 		{
 			type: 'podcast'
@@ -108,7 +108,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
 		['end', 'start', 'status', 'linked']
 	);
 	const buttonPlay = () => {
-		setPlayNow({
+		setQueue('now', {
 			feed: {
 				id: feed.feedId,
 				title: feed.feed
@@ -122,7 +122,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
 			}
 		});
 
-		if (playNow().podcast.enclosure === podcast.enclosure) {
+		if (queue.now.podcast.enclosure === podcast.enclosure) {
 			setPaused(!paused());
 		}
 	};
@@ -169,12 +169,12 @@ export default function EpisodeCard(props: EpisodeCardProps) {
 
 			<Button
 				aria-label="Play podcast"
-				icon={playNow().podcast.enclosure === podcast.enclosure && !paused() ? 'pause' : 'play'}
-				aria-pressed={playNow().podcast.enclosure === podcast.enclosure && !paused()}
+				icon={queue.now.podcast.enclosure === podcast.enclosure && !paused() ? 'pause' : 'play'}
+				aria-pressed={queue.now.podcast.enclosure === podcast.enclosure && !paused()}
 				variant="picton"
 				class={s.play}
 				onClick={buttonPlay}
-				loading={playNow().podcast.enclosure === podcast.enclosure && loading()}
+				loading={queue.now.podcast.enclosure === podcast.enclosure && loading()}
 			/>
 		</div>
 	);

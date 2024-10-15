@@ -11,6 +11,7 @@ import Icon from '$components/ui/icon';
 import PlayButton from './_components/play-button';
 import Chapters from './_components/chapters';
 import Transcript from './_components/transcripts';
+import Button from '$components/ui/Button.astro';
 
 const { podcastId, guid } = Astro.params;
 
@@ -53,6 +54,8 @@ const tablist = [
 const transcript = episode.transcripts ? episode.transcripts[0].url : undefined;
 
 const chapter = episode.chapters;
+
+Astro.response.headers.set('Cache-Control', 'private, max-age=360');
 ---
 
 <BaseLayout title={`${episode.title ?? 'untitled'} from ${episode.feedTitle}`}>
@@ -104,6 +107,17 @@ const chapter = episode.chapters;
 					image={episode.image === '' ? episode.feedImage : episode.image}
 					client:idle
 				/>
+				<Button
+					as="button"
+					id="episode-options"
+					type="button"
+					icon="options"
+					aria-label="options"
+					popovertarget="episode-options-popover"
+				/>
+				<div id="episode-options-popover" popover>
+					<Button as="button" type="button" variant="text" size="fit"> add Next </Button>
+				</div>
 			</div>
 		</div>
 		<section>
@@ -207,6 +221,10 @@ const chapter = episode.chapters;
 
 	.misc {
 		grid-area: misc;
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+		position: relative;
 	}
 
 	section {
