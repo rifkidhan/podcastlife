@@ -67,7 +67,7 @@
 	}
 }
 
-[data-theme='dark'] {
+[data-theme="dark"] {
 	--pl-picton: 199, 100%, 49%;
 
 	--pl-accent-5: 240, 5%, 8%;

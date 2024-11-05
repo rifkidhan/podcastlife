@@ -1,21 +1,21 @@
-import Button from '$components/ui/button';
-import { playerDetail } from '$lib/stores/player';
-import type { FeedPlaying, PodcastPlaying } from '$lib/stores/player';
-import { createMemo } from 'solid-js';
+import Button from '$components/ui/button'
+import { playerDetail } from '$lib/stores/player'
+import type { FeedPlaying, PodcastPlaying } from '$lib/stores/player'
+import { createMemo } from 'solid-js'
 
 type PlayButtonProps = PodcastPlaying & {
-	feed: FeedPlaying;
-	feedImage?: string;
-};
+	feed: FeedPlaying
+	feedImage?: string
+}
 
 export default function PlayButton(props: PlayButtonProps) {
-	const { setPaused, loading, paused, queue, setQueue } = playerDetail();
+	const { setPaused, loading, paused, queue, setQueue } = playerDetail()
 
-	const isThisPodcast = createMemo(() => queue.now.podcast.enclosure === props.enclosure);
+	const isThisPodcast = createMemo(() => queue.now.podcast.enclosure === props.enclosure)
 
-	const isPlaying = createMemo(() => isThisPodcast() && !paused());
+	const isPlaying = createMemo(() => isThisPodcast() && !paused())
 
-	const isLoading = createMemo(() => isThisPodcast() && loading());
+	const isLoading = createMemo(() => isThisPodcast() && loading())
 
 	const setPlaying = () => {
 		if (!isThisPodcast()) {
@@ -29,11 +29,11 @@ export default function PlayButton(props: PlayButtonProps) {
 					enclosure: props.enclosure,
 					altEnclosure: props.altEnclosure
 				}
-			});
+			})
 		} else {
-			setPaused(!paused());
+			setPaused(!paused())
 		}
-	};
+	}
 	return (
 		<Button
 			type="button"
@@ -46,5 +46,5 @@ export default function PlayButton(props: PlayButtonProps) {
 		>
 			{isPlaying() ? 'Pause' : 'Play'}
 		</Button>
-	);
+	)
 }

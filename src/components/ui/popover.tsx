@@ -1,9 +1,9 @@
-import { Show, type JSXElement } from 'solid-js';
+import { Show, type JSXElement } from 'solid-js'
 
 interface PopoverProps {
-	children?: JSXElement;
-	condition: boolean;
-	target: HTMLElement;
+	children?: JSXElement
+	condition: boolean
+	target: HTMLElement
 }
 
 export default function Popover(props: PopoverProps) {
@@ -11,5 +11,5 @@ export default function Popover(props: PopoverProps) {
 		<Show when={props.condition}>
 			<div>{props.children}</div>
 		</Show>
-	);
+	)
 }

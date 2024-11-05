@@ -8,11 +8,6 @@
 			"$lib/*": ["src/lib/*"],
 			"$layouts/*": ["src/layouts/*"]
 		},
-		"plugins": [
-			{
-				"name": "@astrojs/ts-plugin"
-			}
-		],
 		"jsx": "preserve",
 		"jsxImportSource": "solid-js"
 	},

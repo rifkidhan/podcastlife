@@ -27,3 +27,5 @@ pnpm-debug.log*
 .zed/
 .helix
 notes.md
+.wrangler
+.dev.vars

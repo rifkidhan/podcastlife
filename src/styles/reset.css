@@ -13,7 +13,7 @@ html,
 :host {
 	line-height: 1.5;
 	-webkit-text-size-adjust: 100%;
-	font-family: 'Plus Jakarta Sans Variable', system-ui;
+	font-family: "Plus Jakarta Sans Variable", system-ui;
 	tab-size: 4;
 	font-feature-settings: normal;
 	font-variation-settings: normal;
@@ -83,14 +83,14 @@ textarea,
 	background: transparent;
 }
 
-input:where(:not([type='button'], [type='reset'], [type='submit'])),
+input:where(:not([type="button"], [type="reset"], [type="submit"])),
 select,
 textarea {
 	border: 1px solid;
 }
 
 button,
-input:where([type='button'], [type='reset'], [type='submit']),
+input:where([type="button"], [type="reset"], [type="submit"]),
 ::file-selector-button {
 	appearance: button;
 }
@@ -150,7 +150,7 @@ video {
 }
 
 button,
-[role='button'] {
+[role="button"] {
 	cursor: pointer;
 }
 

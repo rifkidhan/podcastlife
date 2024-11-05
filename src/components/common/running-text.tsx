@@ -1,25 +1,18 @@
-import {
-	createEffect,
-	createSignal,
-	splitProps,
-	createMemo,
-	mergeProps,
-	onCleanup
-} from 'solid-js';
-import type { JSXElement } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
-import s from './running-text.module.css';
-import { getWindowSize } from '$lib/utils/helper';
+import { createEffect, createSignal, splitProps, createMemo, mergeProps, onCleanup } from 'solid-js'
+import type { JSXElement } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
+import s from './running-text.module.css'
+import { getWindowSize } from '$lib/utils/helper'
 
 interface RunningTextProps {
-	as?: 'h1' | 'div' | 'span';
-	class?: string;
-	children: JSXElement;
-	marginBottom?: string;
-	isTitle?: boolean;
-	title?: string;
-	maximizeChange?: number;
-	textAlign?: 'left' | 'center';
+	as?: 'h1' | 'div' | 'span'
+	class?: string
+	children: JSXElement
+	marginBottom?: string
+	isTitle?: boolean
+	title?: string
+	maximizeChange?: number
+	textAlign?: 'left' | 'center'
 }
 
 export default function RunningText(props: RunningTextProps) {
@@ -28,49 +21,49 @@ export default function RunningText(props: RunningTextProps) {
 			maximizeChange: 1024
 		},
 		props
-	);
+	)
 	const [local, attrs] = splitProps(mergedProps, [
 		'marginBottom',
 		'isTitle',
 		'maximizeChange',
 		'textAlign'
-	]);
-	const [scrollWidth, setScrollWidth] = createSignal(0);
-	const [parentWidth, setParentWidth] = createSignal(0);
-	const [windowSize] = getWindowSize();
+	])
+	const [scrollWidth, setScrollWidth] = createSignal(0)
+	const [parentWidth, setParentWidth] = createSignal(0)
+	const [windowSize] = getWindowSize()
 
 	const textAlignTitle = createMemo(() => {
 		if (local.isTitle) {
-			return windowSize() > local.maximizeChange ? 'left' : 'center';
+			return windowSize() > local.maximizeChange ? 'left' : 'center'
 		}
 		if (local.textAlign) {
-			return local.textAlign;
+			return local.textAlign
 		}
 
-		return 'left';
-	});
+		return 'left'
+	})
 
-	let runningText!: HTMLSpanElement;
+	let runningText!: HTMLSpanElement
 
-	const move = createMemo(() => scrollWidth() > parentWidth());
-	const sumWidth = createMemo(() => scrollWidth() - parentWidth());
+	const move = createMemo(() => scrollWidth() > parentWidth())
+	const sumWidth = createMemo(() => scrollWidth() - parentWidth())
 
 	const handleResize = () => {
 		if (runningText.parentElement && attrs.title) {
-			setScrollWidth(runningText.scrollWidth);
-			setParentWidth(runningText.parentElement.clientWidth);
+			setScrollWidth(runningText.scrollWidth)
+			setParentWidth(runningText.parentElement.clientWidth)
 		}
-	};
+	}
 
-	createEffect(handleResize);
+	createEffect(handleResize)
 
 	createEffect(() => {
-		window.addEventListener('resize', handleResize);
+		window.addEventListener('resize', handleResize)
 
 		onCleanup(() => {
-			window.removeEventListener('resize', handleResize);
-		});
-	});
+			window.removeEventListener('resize', handleResize)
+		})
+	})
 
 	return (
 		<Dynamic
@@ -88,5 +81,5 @@ export default function RunningText(props: RunningTextProps) {
 				{attrs.children}
 			</span>
 		</Dynamic>
-	);
+	)
 }

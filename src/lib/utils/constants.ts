@@ -18,4 +18,4 @@ export const categories = [
 	{ id: 'technology', title: 'Technology' },
 	{ id: 'true-crime', title: 'True Crime' },
 	{ id: 'tv-film', title: 'TV & Film' }
-];
+]

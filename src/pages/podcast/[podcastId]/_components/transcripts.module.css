@@ -29,7 +29,7 @@
 	padding: 0.5rem 0.75rem;
 	margin-block: 0.5rem;
 
-	&[aria-current='true'] {
+	&[aria-current="true"] {
 		color: hsl(var(--pl-white));
 		background-color: hsl(var(--pl-cerise));
 	}

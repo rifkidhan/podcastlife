@@ -30,7 +30,7 @@ const getTrending = async () => {
 
 const trendings = await getTrending();
 
-Astro.response.headers.set('Cache-Control', 'private, max-age=360');
+Astro.response.headers.set('Cache-Control', 'public, max-age=360');
 ---
 
 <BaseLayout title={`${thisCategory.title} category`}>

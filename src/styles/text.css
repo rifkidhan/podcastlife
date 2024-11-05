@@ -20,31 +20,31 @@
 	margin-block: var(--pl-text-space-3);
 	padding-inline-start: var(--pl-text-space-4);
 }
-.text :where(ol[type='A']) {
+.text :where(ol[type="A"]) {
 	list-style-type: upper-alpha;
 }
-.text :where(ol[type='a']) {
+.text :where(ol[type="a"]) {
 	list-style-type: lower-alpha;
 }
-.text :where(ol[type='A' s]) {
+.text :where(ol[type="A" s]) {
 	list-style-type: upper-alpha;
 }
-.text :where(ol[type='a' s]) {
+.text :where(ol[type="a" s]) {
 	list-style-type: lower-alpha;
 }
-.text :where(ol[type='I']) {
+.text :where(ol[type="I"]) {
 	list-style-type: upper-roman;
 }
-.text :where(ol[type='i']) {
+.text :where(ol[type="i"]) {
 	list-style-type: lower-roman;
 }
-.text :where(ol[type='I' s]) {
+.text :where(ol[type="I" s]) {
 	list-style-type: upper-roman;
 }
-.text :where(ol[type='i' s]) {
+.text :where(ol[type="i" s]) {
 	list-style-type: lower-roman;
 }
-.text :where(ol[type='1']) {
+.text :where(ol[type="1"]) {
 	list-style-type: decimal;
 }
 .text :where(ul) {

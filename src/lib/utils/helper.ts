@@ -1,39 +1,39 @@
-import { createEffect, createSignal, onCleanup } from 'solid-js';
+import { createEffect, createSignal, onCleanup } from 'solid-js'
 
 export const getWindowScroll = () => {
-	const [windowScroll, setWindowScroll] = createSignal(0);
+	const [windowScroll, setWindowScroll] = createSignal(0)
 
 	createEffect(() => {
 		const setScroll = () => {
-			setWindowScroll(window.scrollY);
-		};
+			setWindowScroll(window.scrollY)
+		}
 
-		window.addEventListener('scroll', setScroll);
+		window.addEventListener('scroll', setScroll)
 
 		onCleanup(() => {
-			window.removeEventListener('scroll', setScroll);
-		});
-	});
+			window.removeEventListener('scroll', setScroll)
+		})
+	})
 
-	return [windowScroll];
-};
+	return [windowScroll]
+}
 
 export const getWindowSize = () => {
-	const [windowWidth, setWindowWidth] = createSignal(0);
+	const [windowWidth, setWindowWidth] = createSignal(0)
 
 	const setWidth = () => {
-		setWindowWidth(window.innerWidth);
-	};
+		setWindowWidth(window.innerWidth)
+	}
 
-	createEffect(setWidth);
+	createEffect(setWidth)
 
 	createEffect(() => {
-		window.addEventListener('resize', setWidth);
+		window.addEventListener('resize', setWidth)
 
 		onCleanup(() => {
-			window.removeEventListener('resize', setWidth);
-		});
-	});
+			window.removeEventListener('resize', setWidth)
+		})
+	})
 
-	return [windowWidth];
-};
+	return [windowWidth]
+}

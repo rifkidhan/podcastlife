@@ -1,12 +1,11 @@
 ---
-import '@fontsource-variable/plus-jakarta-sans';
-import '@fontsource-variable/plus-jakarta-sans/wght-italic.css';
-import '$styles/app.css';
-import { ViewTransitions } from 'astro:transitions';
-import { ORIGIN } from 'astro:env/client';
+import "@fontsource-variable/plus-jakarta-sans";
+import "@fontsource-variable/plus-jakarta-sans/wght-italic.css";
+import "$styles/app.css";
+import { ViewTransitions } from "astro:transitions";
 
-import plusJakartaSans from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
-import plusJakartaSansItalic from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-italic.woff2?url';
+import plusJakartaSansItalic from "@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-italic.woff2?url";
+import plusJakartaSans from "@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url";
 
 interface Props {
 	title?: string;
@@ -14,12 +13,12 @@ interface Props {
 	image?: string;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, ORIGIN);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const {
-	title = 'podcastlife',
-	description = 'Podcast Web Apps.',
-	image = '/default-open-graph'
+	title = "podcastlife",
+	description = "Podcast Web Apps.",
+	image = "/default-open-graph",
 } = Astro.props;
 ---
 
@@ -60,19 +59,19 @@ const {
 <meta property="og:url" content={canonicalURL.href} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image, ORIGIN)} />
+<meta property="og:image" content={new URL(image, Astro.site)} />
 
 {/* Twitter */}
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={canonicalURL.href} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image, ORIGIN)} />
+<meta property="twitter:image" content={new URL(image, Astro.site)} />
 
 <ViewTransitions />
 
 <script is:inline>
-	document.addEventListener('astro:before-swap', (e) => {
-		e.newDocument.head.querySelectorAll('link[as="font"]').forEach((link) => link.remove());
-	});
+document.addEventListener("astro:before-swap", (e) => {
+	e.newDocument.head.querySelectorAll("link[as=\"font\"]").forEach((link) => link.remove());
+});
 </script>

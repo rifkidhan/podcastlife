@@ -61,7 +61,7 @@
 	flex-wrap: wrap;
 	width: 100%;
 
-	& > input[type='range'] {
+	& > input[type="range"] {
 		width: 100%;
 		flex-shrink: 0;
 	}
@@ -102,7 +102,7 @@
 	max-width: 90vw;
 	margin-inline: auto;
 	grid-template-columns: auto auto minmax(0, 1fr) auto;
-	grid-template-areas: 'controls duration detail misc';
+	grid-template-areas: "controls duration detail misc";
 	align-items: center;
 	justify-items: start;
 	padding-block: 0.5rem;
@@ -193,7 +193,7 @@
 		--pl-player-gap: 1rem;
 	}
 	.wrapper {
-		grid-template-areas: 'detail controls misc';
+		grid-template-areas: "detail controls misc";
 		grid-template-columns: minmax(0, 1fr) auto auto;
 	}
 	.duration {

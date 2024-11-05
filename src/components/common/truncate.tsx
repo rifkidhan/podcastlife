@@ -1,31 +1,31 @@
-import Button from '$components/ui/button';
-import { Show, createMemo, createSignal, onMount } from 'solid-js';
-import type { JSXElement } from 'solid-js';
-import s from './truncate.module.css';
+import Button from '$components/ui/button'
+import { Show, createMemo, createSignal, onMount } from 'solid-js'
+import type { JSXElement } from 'solid-js'
+import s from './truncate.module.css'
 
 interface TruncateProps {
-	truncate?: number;
-	children: JSXElement;
+	truncate?: number
+	children: JSXElement
 }
 
 export default function Truncate(props: TruncateProps) {
-	const [open, setOpen] = createSignal(false);
-	const [scrollHeight, setScrollHeight] = createSignal(1000);
-	const [parentHeight, setParentHeight] = createSignal(0);
+	const [open, setOpen] = createSignal(false)
+	const [scrollHeight, setScrollHeight] = createSignal(1000)
+	const [parentHeight, setParentHeight] = createSignal(0)
 
-	let rootElement!: HTMLDivElement;
-	let element!: HTMLDivElement;
+	let rootElement!: HTMLDivElement
+	let element!: HTMLDivElement
 
 	onMount(() => {
-		setScrollHeight(element.scrollHeight);
-		setParentHeight(rootElement.getBoundingClientRect().height);
-	});
+		setScrollHeight(element.scrollHeight)
+		setParentHeight(rootElement.getBoundingClientRect().height)
+	})
 
 	const isTruncate = createMemo(() => {
-		if (parentHeight() === 0) return false;
+		if (parentHeight() === 0) return false
 
-		return scrollHeight() > parentHeight();
-	});
+		return scrollHeight() > parentHeight()
+	})
 
 	return (
 		<div
@@ -47,5 +47,5 @@ export default function Truncate(props: TruncateProps) {
 				</Button>
 			</Show>
 		</div>
-	);
+	)
 }

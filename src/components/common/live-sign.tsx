@@ -4,5 +4,5 @@ export default function LiveSign() {
 			<span class="pulse" />
 			<span />
 		</span>
-	);
+	)
 }

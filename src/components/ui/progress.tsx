@@ -1,8 +1,8 @@
-import { mergeProps, splitProps, type ComponentProps } from 'solid-js';
+import { mergeProps, splitProps, type ComponentProps } from 'solid-js'
 
 interface ProgressProps extends ComponentProps<'progress'> {
-	value: number;
-	max: number;
+	value: number
+	max: number
 }
 export default function Progress(props: ProgressProps) {
 	const mergedProps = mergeProps(
@@ -10,9 +10,9 @@ export default function Progress(props: ProgressProps) {
 			max: 100
 		},
 		props
-	);
+	)
 
-	const [local, attrs] = splitProps(mergedProps, ['max', 'value']);
+	const [local, attrs] = splitProps(mergedProps, ['max', 'value'])
 	return (
 		<progress
 			max={local.max}
@@ -20,5 +20,5 @@ export default function Progress(props: ProgressProps) {
 			class={`progress ${attrs.class && attrs.class}`}
 			{...attrs}
 		/>
-	);
+	)
 }

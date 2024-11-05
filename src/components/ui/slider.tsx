@@ -1,10 +1,10 @@
-import { mergeProps, splitProps, type ComponentProps } from 'solid-js';
+import { mergeProps, splitProps, type ComponentProps } from 'solid-js'
 
 interface SliderProps extends ComponentProps<'input'> {
-	value: number;
-	max?: number;
-	min?: number;
-	step?: number;
+	value: number
+	max?: number
+	min?: number
+	step?: number
 }
 
 export default function Slider(props: SliderProps) {
@@ -15,9 +15,9 @@ export default function Slider(props: SliderProps) {
 			step: 1
 		},
 		props
-	);
+	)
 
-	const [local, attrs] = splitProps(mergedProps, ['value', 'min', 'max', 'step']);
+	const [local, attrs] = splitProps(mergedProps, ['value', 'min', 'max', 'step'])
 	return (
 		<input
 			type="range"
@@ -29,5 +29,5 @@ export default function Slider(props: SliderProps) {
 			class={`slider ${attrs.class ? attrs.class : ''}`}
 			{...attrs}
 		/>
-	);
+	)
 }

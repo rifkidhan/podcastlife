@@ -1,6 +1,6 @@
 ---
-import Image from '$components/ui/image';
-import Icon from '$components/ui/icon';
+import Icon from "$components/ui/icon";
+import Image from "$components/ui/image";
 
 interface Props {
 	id: string;
@@ -33,71 +33,71 @@ const { id, image, title, author, explicit, blurhash } = Astro.props;
 </li>
 
 <style>
-	.card {
-		display: flex;
+.card {
+	display: flex;
+	position: relative;
+	flex-direction: column;
+	border-radius: var(--pl-border-radius-md);
+	overflow: hidden;
+	border: 2px solid hsl(var(--pl-accent-95));
+	transition-property: box-shadow, transform;
+	transition-duration: 150ms;
+	transition-timing-function: ease-in-out;
+	user-select: none;
+
+	&:hover {
+		transform: translate(-0.25rem, -0.25rem);
+		box-shadow: var(--pl-shadow-drop);
+	}
+
+	& > a {
 		position: relative;
-		flex-direction: column;
-		border-radius: var(--pl-border-radius-md);
-		overflow: hidden;
-		border: 2px solid hsl(var(--pl-accent-95));
-		transition-property: box-shadow, transform;
-		transition-duration: 150ms;
-		transition-timing-function: ease-in-out;
-		user-select: none;
-
-		&:hover {
-			transform: translate(-0.25rem, -0.25rem);
-			box-shadow: var(--pl-shadow-drop);
-		}
-
-		& > a {
-			position: relative;
-		}
 	}
+}
 
-	.thumbnail {
-		display: block;
-		position: relative;
-		overflow: hidden;
-		aspect-ratio: 1 / 1;
-		border-bottom: 2px solid hsl(var(--pl-accent-95));
-	}
+.thumbnail {
+	display: block;
+	position: relative;
+	overflow: hidden;
+	aspect-ratio: 1 / 1;
+	border-bottom: 2px solid hsl(var(--pl-accent-95));
+}
 
-	.content {
-		display: flex;
-		flex-direction: column;
-		padding-block: 1rem;
-		padding-inline: 0.75rem;
-	}
-	.author {
-		text-transform: uppercase;
-		color: hsl(var(--pl-picton));
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
+.content {
+	display: flex;
+	flex-direction: column;
+	padding-block: 1rem;
+	padding-inline: 0.75rem;
+}
+.author {
+	text-transform: uppercase;
+	color: hsl(var(--pl-picton));
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 
-	.title {
-		font-weight: 700;
-		overflow: hidden;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-	}
+.title {
+	font-weight: 700;
+	overflow: hidden;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+}
 
-	.skeleton {
-		animation: var(--pl-animation-pulse);
-	}
+.skeleton {
+	animation: var(--pl-animation-pulse);
+}
 
-	.pulse-img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: center;
-		aspect-ratio: 1 / 1;
-		background-color: hsl(var(--pl-accent-50));
-		position: absolute;
-		inset: 0;
-	}
+.pulse-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	aspect-ratio: 1 / 1;
+	background-color: hsl(var(--pl-accent-50));
+	position: absolute;
+	inset: 0;
+}
 </style>

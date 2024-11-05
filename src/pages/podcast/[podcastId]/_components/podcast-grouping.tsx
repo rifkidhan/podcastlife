@@ -1,16 +1,16 @@
-import EpisodeCard from '$components/common/episode-card';
-import Button from '$components/ui/button';
-import type { Episode, Feed } from '$lib/types';
-import { For, Show, createMemo, createSignal, onCleanup } from 'solid-js';
-import s from './podcast-grouping.module.css';
-import { groupBy } from '$lib/utils/group';
+import EpisodeCard from '$components/common/episode-card'
+import Button from '$components/ui/button'
+import type { Episode, Feed } from '$lib/types'
+import { For, Show, createMemo, createSignal, onCleanup } from 'solid-js'
+import s from './podcast-grouping.module.css'
+import { groupBy } from '$lib/utils/group'
 
 interface PaginationProps<T> {
-	data: T[];
-	feed: Feed;
-	limit?: number;
-	start?: number;
-	title: string;
+	data: T[]
+	feed: Feed
+	limit?: number
+	start?: number
+	title: string
 }
 
 export default function Pagination<T extends Episode>({
@@ -24,69 +24,69 @@ export default function Pagination<T extends Episode>({
 	 * Grouping by season if available.
 	 * If season undefined, season start with 0.
 	 */
-	const episodesGroup = groupBy(data, (item) => (item.season ? item.season : 0));
-	const keys = Array.from(episodesGroup.keys()).sort((a, b) => b - a);
+	const episodesGroup = groupBy(data, (item) => (item.season ? item.season : 0))
+	const keys = Array.from(episodesGroup.keys()).sort((a, b) => b - a)
 
-	const [season, setSeason] = createSignal(keys[0]);
+	const [season, setSeason] = createSignal(keys[0])
 
-	const episodesPerSeason = createMemo(() => episodesGroup.get(season()));
+	const episodesPerSeason = createMemo(() => episodesGroup.get(season()))
 
 	/**
 	 * Set pagination.
 	 */
-	const [page, setPage] = createSignal(start);
+	const [page, setPage] = createSignal(start)
 
 	const episodesLength = createMemo(() => {
 		if (typeof episodesPerSeason() === 'undefined') {
-			return 1;
+			return 1
 		}
 
-		return episodesPerSeason().length;
-	});
+		return episodesPerSeason().length
+	})
 
-	const totalPage = createMemo(() => Math.ceil(episodesLength() / limit));
-	const rangeStart = createMemo(() => (page() - 1) * limit);
-	const rangeEnd = createMemo(() => Math.min(rangeStart() + limit, episodesLength()));
+	const totalPage = createMemo(() => Math.ceil(episodesLength() / limit))
+	const rangeStart = createMemo(() => (page() - 1) * limit)
+	const rangeEnd = createMemo(() => Math.min(rangeStart() + limit, episodesLength()))
 
-	const episodes = createMemo(() => episodesPerSeason()?.slice(rangeStart(), rangeEnd()));
+	const episodes = createMemo(() => episodesPerSeason()?.slice(rangeStart(), rangeEnd()))
 
-	let rootElement!: HTMLElement;
+	let rootElement!: HTMLElement
 
 	const jumpToRootElement = () => {
-		rootElement.scrollIntoView();
-	};
+		rootElement.scrollIntoView()
+	}
 
 	const jumpToFirst = () => {
-		if (page() === 1) return;
+		if (page() === 1) return
 
-		setPage(1);
-		jumpToRootElement();
-	};
+		setPage(1)
+		jumpToRootElement()
+	}
 
 	const previousPage = () => {
-		if (page() <= 1) return;
+		if (page() <= 1) return
 
-		setPage(page() - 1);
-		jumpToRootElement();
-	};
+		setPage(page() - 1)
+		jumpToRootElement()
+	}
 
 	const nextPage = () => {
-		if (page() >= totalPage()) return;
+		if (page() >= totalPage()) return
 
-		setPage(page() + 1);
-		jumpToRootElement();
-	};
+		setPage(page() + 1)
+		jumpToRootElement()
+	}
 
 	const jumpToLast = () => {
-		if (page() === totalPage()) return;
+		if (page() === totalPage()) return
 
-		setPage(totalPage());
-		jumpToRootElement();
-	};
+		setPage(totalPage())
+		jumpToRootElement()
+	}
 
 	onCleanup(() => {
-		episodesGroup.clear();
-	});
+		episodesGroup.clear()
+	})
 
 	return (
 		<section ref={rootElement} class={s.root}>
@@ -97,9 +97,9 @@ export default function Pagination<T extends Episode>({
 						id="season-select"
 						aria-label="Choose season"
 						onChange={(e) => {
-							e.preventDefault();
-							setSeason(Number(e.target.value));
-							setPage(1);
+							e.preventDefault()
+							setSeason(Number(e.target.value))
+							setPage(1)
 						}}
 						class={s.select}
 					>
@@ -161,5 +161,5 @@ export default function Pagination<T extends Episode>({
 				</div>
 			</Show>
 		</section>
-	);
+	)
 }

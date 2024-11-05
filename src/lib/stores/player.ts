@@ -1,24 +1,24 @@
-import type { AlternativeEnclosure } from '$lib/types';
-import { createSignal } from 'solid-js';
-import { createStore } from 'solid-js/store';
+import type { AlternativeEnclosure } from '$lib/types'
+import { createSignal } from 'solid-js'
+import { createStore } from 'solid-js/store'
 
 export interface FeedPlaying {
-	id: string;
-	title: string;
+	id: string
+	title: string
 }
 
 export interface PodcastPlaying {
-	guid: string;
-	title: string;
-	enclosure: string;
-	image: string;
-	explicit?: boolean;
-	altEnclosure?: AlternativeEnclosure[];
+	guid: string
+	title: string
+	enclosure: string
+	image: string
+	explicit?: boolean
+	altEnclosure?: AlternativeEnclosure[]
 }
 
 interface PlayNow {
-	feed: FeedPlaying;
-	podcast: PodcastPlaying;
+	feed: FeedPlaying
+	podcast: PodcastPlaying
 }
 
 const [queue, setQueue] = createStore<{ now: PlayNow; next: Array<PlayNow> }>({
@@ -35,7 +35,7 @@ const [queue, setQueue] = createStore<{ now: PlayNow; next: Array<PlayNow> }>({
 		}
 	},
 	next: []
-});
+})
 
 const setDefaultPlayNow = () => {
 	setQueue('now', {
@@ -49,13 +49,13 @@ const setDefaultPlayNow = () => {
 			enclosure: '',
 			guid: ''
 		}
-	});
-};
+	})
+}
 
-const [paused, setPaused] = createSignal(true);
-const [loading, setLoading] = createSignal(true);
-const [duration, setDuration] = createSignal(0);
-const [currentTime, setCurrentTime] = createSignal(0);
+const [paused, setPaused] = createSignal(true)
+const [loading, setLoading] = createSignal(true)
+const [duration, setDuration] = createSignal(0)
+const [currentTime, setCurrentTime] = createSignal(0)
 
 export const playerDetail = () => {
 	return {
@@ -70,5 +70,5 @@ export const playerDetail = () => {
 		setDefaultPlayNow,
 		queue,
 		setQueue
-	};
-};
+	}
+}

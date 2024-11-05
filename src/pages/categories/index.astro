@@ -2,7 +2,7 @@
 import BaseLayout from '$layouts/BaseLayout.astro';
 import { categories } from '$lib/utils/constants';
 
-Astro.response.headers.set('Cache-Control', 'private, max-age=86400');
+Astro.response.headers.set('Cache-Control', 'public, max-age=86400');
 ---
 
 <BaseLayout>

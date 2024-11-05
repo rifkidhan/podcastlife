@@ -1,30 +1,30 @@
-import Button from '$components/ui/button';
-import { useUI } from '$lib/stores/ui';
-import throttle from '$lib/utils/throttle';
-import { Show, createEffect, createSignal, onCleanup } from 'solid-js';
-import s from './header.module.css';
-import SideNav from './side-nav';
+import Button from '$components/ui/button'
+import { useUI } from '$lib/stores/ui'
+import throttle from '$lib/utils/throttle'
+import { Show, createEffect, createSignal, onCleanup } from 'solid-js'
+import s from './header.module.css'
+import SideNav from './side-nav'
 
 export default function Header() {
-	const [visible, setVisible] = createSignal(true);
-	const [scroll, setScroll] = createSignal(0);
-	const [lastScroll, setLastScroll] = createSignal(0);
+	const [visible, setVisible] = createSignal(true)
+	const [scroll, setScroll] = createSignal(0)
+	const [lastScroll, setLastScroll] = createSignal(0)
 
-	const { setMenuOpen, menuOpen } = useUI();
+	const { setMenuOpen, menuOpen } = useUI()
 
 	createEffect(() => {
 		const handleScroll = throttle(() => {
-			setScroll(window.scrollY);
-			setVisible((lastScroll() > scroll() && lastScroll() - scroll() > 70) || scroll() < 500);
-			setLastScroll(scroll());
-		}, 100);
+			setScroll(window.scrollY)
+			setVisible((lastScroll() > scroll() && lastScroll() - scroll() > 70) || scroll() < 500)
+			setLastScroll(scroll())
+		}, 100)
 
-		window.addEventListener('scroll', handleScroll);
+		window.addEventListener('scroll', handleScroll)
 
 		onCleanup(() => {
-			window.removeEventListener('scroll', handleScroll);
-		});
-	});
+			window.removeEventListener('scroll', handleScroll)
+		})
+	})
 
 	return (
 		<>
@@ -53,5 +53,5 @@ export default function Header() {
 				<SideNav />
 			</Show>
 		</>
-	);
+	)
 }

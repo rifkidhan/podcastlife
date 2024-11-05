@@ -1,12 +1,12 @@
 @layer theme, base, component;
 
-@import 'theme.css' layer(theme);
-@import 'reset.css' layer(base);
-@import 'component.css' layer(component);
-@import 'text.css' layer(component);
+@import "theme.css" layer(theme);
+@import "reset.css" layer(base);
+@import "component.css" layer(component);
+@import "text.css" layer(component);
 
 @layer base {
-	html:has([data-sidenav-open='true'], dialog[open]) {
+	html:has([data-sidenav-open="true"], dialog[open]) {
 		overflow: hidden;
 	}
 

@@ -1,16 +1,16 @@
-import RunningText from '$components/common/running-text';
-import Button from '$components/ui/button';
-import Image from '$components/ui/image';
-import Progress from '$components/ui/progress';
-import Slider from '$components/ui/slider';
-import Icon from '$components/ui/icon';
-import { playerDetail } from '$lib/stores/player';
-import { useUI } from '$lib/stores/ui';
-import { formatTime } from '$lib/utils/time';
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js';
-import LiveSign from '$components/common/live-sign';
-import { getWindowSize } from '$lib/utils/helper';
-import s from './player.module.css';
+import RunningText from '$components/common/running-text'
+import Button from '$components/ui/button'
+import Image from '$components/ui/image'
+import Progress from '$components/ui/progress'
+import Slider from '$components/ui/slider'
+import Icon from '$components/ui/icon'
+import { playerDetail } from '$lib/stores/player'
+import { useUI } from '$lib/stores/ui'
+import { formatTime } from '$lib/utils/time'
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from 'solid-js'
+import LiveSign from '$components/common/live-sign'
+import { getWindowSize } from '$lib/utils/helper'
+import s from './player.module.css'
 
 export default function Player() {
 	const {
@@ -24,18 +24,18 @@ export default function Player() {
 		duration,
 		queue,
 		setDefaultPlayNow
-	} = playerDetail();
-	const uiState = useUI();
-	const [loadStart, setLoadStart] = createSignal(true);
-	const [fullPlayerOpen, setFullPlayerOpen] = createSignal(false);
-	const [volume, setVolume] = createSignal(1);
-	const [windowSize] = getWindowSize();
+	} = playerDetail()
+	const uiState = useUI()
+	const [loadStart, setLoadStart] = createSignal(true)
+	const [fullPlayerOpen, setFullPlayerOpen] = createSignal(false)
+	const [volume, setVolume] = createSignal(1)
+	const [windowSize] = getWindowSize()
 
-	let audio!: HTMLAudioElement;
+	let audio!: HTMLAudioElement
 
-	let playerFull!: HTMLDialogElement;
+	let playerFull!: HTMLDialogElement
 
-	const playerReady = createMemo(() => queue.now.feed.id !== '');
+	const playerReady = createMemo(() => queue.now.feed.id !== '')
 
 	const updateNavigatorMetadata = () => {
 		navigator.mediaSession.metadata = new MediaMetadata({
@@ -46,8 +46,8 @@ export default function Player() {
 					src: queue.now.podcast.image
 				}
 			]
-		});
-	};
+		})
+	}
 
 	// update position navigator
 	const updateNavigatorState = () => {
@@ -56,59 +56,59 @@ export default function Player() {
 				duration: duration(),
 				playbackRate: audio.playbackRate,
 				position: audio.currentTime
-			});
+			})
 		}
-	};
+	}
 
 	// effect for play and pause audio
 	createEffect(() => {
 		if (playerReady()) {
 			if (paused()) {
-				audio.pause();
-				navigator.mediaSession.playbackState = 'paused';
+				audio.pause()
+				navigator.mediaSession.playbackState = 'paused'
 			} else {
-				audio.play();
-				navigator.mediaSession.playbackState = 'playing';
+				audio.play()
+				navigator.mediaSession.playbackState = 'playing'
 			}
 		}
-	});
+	})
 
 	createEffect(() => {
-		if (!playerReady) return;
+		if (!playerReady) return
 
 		navigator.mediaSession.setActionHandler('play', () => {
-			setPaused(false);
-		});
+			setPaused(false)
+		})
 		navigator.mediaSession.setActionHandler('pause', () => {
-			setPaused(true);
-		});
-	});
+			setPaused(true)
+		})
+	})
 
 	createEffect(() => {
-		if (!playerReady) return;
+		if (!playerReady) return
 
 		navigator.mediaSession.setActionHandler('seekbackward', () => {
-			audio.currentTime = Math.max(currentTime() - 10, 0);
-			updateNavigatorState();
-		});
+			audio.currentTime = Math.max(currentTime() - 10, 0)
+			updateNavigatorState()
+		})
 		navigator.mediaSession.setActionHandler('seekforward', () => {
-			audio.currentTime = Math.min(currentTime() + 10, duration());
-			updateNavigatorState();
-		});
-	});
+			audio.currentTime = Math.min(currentTime() + 10, duration())
+			updateNavigatorState()
+		})
+	})
 
 	const fullPlayerState = {
 		open: () => {
-			if (!playerFull) return;
-			playerFull.showModal();
-			setFullPlayerOpen(true);
+			if (!playerFull) return
+			playerFull.showModal()
+			setFullPlayerOpen(true)
 		},
 		close: () => {
-			if (!playerFull) return;
-			playerFull.close();
-			setFullPlayerOpen(false);
+			if (!playerFull) return
+			playerFull.close()
+			setFullPlayerOpen(false)
 		}
-	};
+	}
 
 	return (
 		<Show when={playerReady()}>
@@ -118,34 +118,34 @@ export default function Player() {
 					src={queue.now.podcast.enclosure}
 					preload="metadata"
 					onloadstart={() => {
-						setCurrentTime(0);
-						setLoadStart(true);
-						setLoading(true);
-						updateNavigatorMetadata();
+						setCurrentTime(0)
+						setLoadStart(true)
+						setLoading(true)
+						updateNavigatorMetadata()
 					}}
 					ondurationchange={() => {
-						setDuration(Math.round(audio.duration));
+						setDuration(Math.round(audio.duration))
 					}}
 					onloadeddata={() => {
-						setPaused(false);
-						setLoadStart(false);
+						setPaused(false)
+						setLoadStart(false)
 					}}
 					oncanplaythrough={() => {
-						setLoading(false);
-						audio.play();
-						updateNavigatorState();
+						setLoading(false)
+						audio.play()
+						updateNavigatorState()
 					}}
 					ontimeupdate={() => {
-						setCurrentTime(Math.trunc(audio.currentTime));
+						setCurrentTime(Math.trunc(audio.currentTime))
 					}}
 					onseeking={() => {
-						setLoadStart(false);
-						setLoading(true);
+						setLoadStart(false)
+						setLoading(true)
 					}}
 					onended={() => {
-						setPaused(true);
-						setCurrentTime(0);
-						setDefaultPlayNow();
+						setPaused(true)
+						setCurrentTime(0)
+						setDefaultPlayNow()
 					}}
 				>
 					<Show when={queue.now.podcast.altEnclosure}>
@@ -174,8 +174,8 @@ export default function Player() {
 							value={currentTime()}
 							max={Math.round(duration())}
 							onInput={(e) => {
-								setCurrentTime(Number(e.target.value));
-								audio.currentTime = currentTime();
+								setCurrentTime(Number(e.target.value))
+								audio.currentTime = currentTime()
 							}}
 						/>
 					</Show>
@@ -188,7 +188,7 @@ export default function Player() {
 								aria-label="skip 10 second backward"
 								icon="skip-backward"
 								onClick={() => {
-									audio.currentTime = Math.max(currentTime() - 10, 0);
+									audio.currentTime = Math.max(currentTime() - 10, 0)
 								}}
 							/>
 						</span>
@@ -209,7 +209,7 @@ export default function Player() {
 								aria-label="skip 10 second forward"
 								icon="skip-forward"
 								onClick={() => {
-									audio.currentTime = Math.min(currentTime() + 10, duration());
+									audio.currentTime = Math.min(currentTime() + 10, duration())
 								}}
 							/>
 						</span>
@@ -290,8 +290,8 @@ export default function Player() {
 											min={0}
 											max={duration()}
 											onInput={(e) => {
-												setCurrentTime(Number(e.target.value));
-												audio.currentTime = currentTime();
+												setCurrentTime(Number(e.target.value))
+												audio.currentTime = currentTime()
 											}}
 										/>
 										<div>{formatTime(currentTime())}</div>
@@ -305,7 +305,7 @@ export default function Player() {
 										aria-label="skip 10 second backward"
 										icon="skip-backward"
 										onClick={() => {
-											audio.currentTime = currentTime() - 10;
+											audio.currentTime = currentTime() - 10
 										}}
 									/>
 									<Button
@@ -324,7 +324,7 @@ export default function Player() {
 										aria-label="skip 10 second forward"
 										icon="skip-forward"
 										onClick={() => {
-											audio.currentTime = currentTime() + 10;
+											audio.currentTime = currentTime() + 10
 										}}
 									/>
 								</div>
@@ -339,8 +339,8 @@ export default function Player() {
 										min={0}
 										max={1}
 										onInput={(e) => {
-											setVolume(Number(e.target.value));
-											audio.volume = volume();
+											setVolume(Number(e.target.value))
+											audio.volume = volume()
 										}}
 									/>
 									<span>
@@ -360,5 +360,5 @@ export default function Player() {
 				</dialog>
 			</div>
 		</Show>
-	);
+	)
 }

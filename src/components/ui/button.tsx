@@ -1,8 +1,8 @@
-import { Icons } from '$components/Icons';
-import type { ComponentProps } from 'solid-js';
-import Icon from './icon';
-import { splitProps, Show, mergeProps } from 'solid-js';
-import s from './button.module.css';
+import { Icons } from '$components/Icons'
+import type { ComponentProps } from 'solid-js'
+import Icon from './icon'
+import { splitProps, Show, mergeProps } from 'solid-js'
+import s from './button.module.css'
 
 const Spinner = () => {
 	return (
@@ -23,16 +23,16 @@ const Spinner = () => {
 				<path d="M21 12a9 9 0 1 1-6.219-8.56" />
 			</svg>
 		</span>
-	);
-};
+	)
+}
 
 interface Props extends ComponentProps<'button'> {
-	variant?: 'primary' | 'picton' | 'cerise' | 'text';
-	size?: 'sm' | 'md' | 'lg' | 'fit' | 'full';
-	circle?: boolean;
-	disabled?: boolean;
-	loading?: boolean;
-	icon?: keyof typeof Icons;
+	variant?: 'primary' | 'picton' | 'cerise' | 'text'
+	size?: 'sm' | 'md' | 'lg' | 'fit' | 'full'
+	circle?: boolean
+	disabled?: boolean
+	loading?: boolean
+	icon?: keyof typeof Icons
 }
 
 export default function Button(props: Props) {
@@ -43,7 +43,7 @@ export default function Button(props: Props) {
 			circle: false
 		},
 		props
-	);
+	)
 
 	const [theme, attrs] = splitProps(mergedProps, [
 		'variant',
@@ -52,7 +52,7 @@ export default function Button(props: Props) {
 		'disabled',
 		'loading',
 		'icon'
-	]);
+	])
 	return (
 		<button
 			type={attrs.type ?? 'button'}
@@ -82,5 +82,5 @@ export default function Button(props: Props) {
 			</Show>
 			{attrs.children}
 		</button>
-	);
+	)
 }

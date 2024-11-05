@@ -117,7 +117,7 @@ img {
 
 .list-with-dot {
 	& > *:not(:last-child)::after {
-		content: '•';
+		content: "•";
 		margin-inline: 0.25rem;
 	}
 }

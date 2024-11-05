@@ -39,7 +39,7 @@
 		color: hsl(var(--pl-accent-95));
 	}
 
-	&[data-loading='true'] {
+	&[data-loading="true"] {
 		cursor: not-allowed;
 		transform: none;
 		box-shadow: none;

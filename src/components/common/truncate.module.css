@@ -5,7 +5,7 @@
 .truncate {
 	overflow-wrap: break-word;
 
-	&[data-open-more='false'] {
+	&[data-open-more="false"] {
 		overflow: hidden;
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
@@ -14,7 +14,7 @@
 	}
 }
 .mask {
-	&[data-open-more='false'] {
+	&[data-open-more="false"] {
 		mask-image: linear-gradient(
 			to top,
 			transparent 0%,

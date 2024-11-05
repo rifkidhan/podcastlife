@@ -26,7 +26,7 @@
 	transition-duration: 200ms;
 	transition-timing-function: ease-in-out;
 
-	&[data-sidenav-open='false'] {
+	&[data-sidenav-open="false"] {
 		transform: translateX(200px);
 		opacity: 0;
 	}

@@ -1,34 +1,34 @@
-import Button from '$components/ui/button';
-import Image from '$components/ui/image';
-import Icon from '$components/ui/icon';
-import LiveSign from './live-sign';
-import { playerDetail } from '$lib/stores/player';
-import type { AlternativeEnclosure } from '$lib/types';
-import { getTime } from '$lib/utils/time';
-import { Match, mergeProps, Show, splitProps, Switch } from 'solid-js';
-import s from './episode-card.module.css';
+import Button from '$components/ui/button'
+import Image from '$components/ui/image'
+import Icon from '$components/ui/icon'
+import LiveSign from './live-sign'
+import { playerDetail } from '$lib/stores/player'
+import type { AlternativeEnclosure } from '$lib/types'
+import { getTime } from '$lib/utils/time'
+import { Match, mergeProps, Show, splitProps, Switch } from 'solid-js'
+import s from './episode-card.module.css'
 
 interface EpisodeCardProps {
-	type?: 'podcast' | 'live';
-	feed: string;
-	feedId: string;
-	title: string;
-	image: string;
-	summary?: string;
-	explicit?: boolean;
-	guid: string;
-	enclosure: string;
-	altEnclosure?: AlternativeEnclosure[];
+	type?: 'podcast' | 'live'
+	feed: string
+	feedId: string
+	title: string
+	image: string
+	summary?: string
+	explicit?: boolean
+	guid: string
+	enclosure: string
+	altEnclosure?: AlternativeEnclosure[]
 	// podcast
-	episode?: number;
-	publishedDate?: string;
-	duration?: number;
+	episode?: number
+	publishedDate?: string
+	duration?: number
 	// live
-	status?: 'live' | 'ended' | 'pending';
-	start?: string;
-	end?: string;
+	status?: 'live' | 'ended' | 'pending'
+	start?: string
+	end?: string
 	// linked to feed
-	linked?: boolean;
+	linked?: boolean
 }
 
 const LiveDateTime = (props: Pick<EpisodeCardProps, 'status' | 'start' | 'end'>) => {
@@ -51,8 +51,8 @@ const LiveDateTime = (props: Pick<EpisodeCardProps, 'status' | 'start' | 'end'>)
 				</Switch>
 			</span>
 		</>
-	);
-};
+	)
+}
 
 const LiveTitle = (props: Pick<EpisodeCardProps, 'linked' | 'feedId' | 'title' | 'feed'>) => {
 	return (
@@ -66,13 +66,13 @@ const LiveTitle = (props: Pick<EpisodeCardProps, 'linked' | 'feedId' | 'title' |
 				<span>{props.title}</span>
 			</h3>
 		</>
-	);
-};
+	)
+}
 
 const PodcastDateTime = (
 	props: Pick<EpisodeCardProps, 'duration' | 'publishedDate' | 'episode'>
 ) => {
-	const duration = props.duration ? props.duration : 0;
+	const duration = props.duration ? props.duration : 0
 	return (
 		<>
 			<Show when={props.episode}>
@@ -81,8 +81,8 @@ const PodcastDateTime = (
 			<span>{getTime(props.publishedDate ? props.publishedDate : 0)}</span>
 			<span>{Math.floor(duration / 60)} min</span>
 		</>
-	);
-};
+	)
+}
 
 const PodcastTitle = (props: Pick<EpisodeCardProps, 'feedId' | 'guid' | 'title'>) => {
 	return (
@@ -91,22 +91,22 @@ const PodcastTitle = (props: Pick<EpisodeCardProps, 'feedId' | 'guid' | 'title'>
 				<span>{props.title}</span>
 			</a>
 		</h3>
-	);
-};
+	)
+}
 
 export default function EpisodeCard(props: EpisodeCardProps) {
-	const { queue, paused, setPaused, loading, setQueue } = playerDetail();
+	const { queue, paused, setPaused, loading, setQueue } = playerDetail()
 	const mergedProps = mergeProps(
 		{
 			type: 'podcast'
 		},
 		props
-	);
+	)
 	const [feed, live, podcast] = splitProps(
 		mergedProps,
 		['feed', 'feedId'],
 		['end', 'start', 'status', 'linked']
-	);
+	)
 	const buttonPlay = () => {
 		setQueue('now', {
 			feed: {
@@ -120,12 +120,12 @@ export default function EpisodeCard(props: EpisodeCardProps) {
 				guid: podcast.guid,
 				altEnclosure: podcast.altEnclosure
 			}
-		});
+		})
 
 		if (queue.now.podcast.enclosure === podcast.enclosure) {
-			setPaused(!paused());
+			setPaused(!paused())
 		}
-	};
+	}
 
 	return (
 		<div class={s['episode-card']}>
@@ -177,5 +177,5 @@ export default function EpisodeCard(props: EpisodeCardProps) {
 				loading={queue.now.podcast.enclosure === podcast.enclosure && loading()}
 			/>
 		</div>
-	);
+	)
 }

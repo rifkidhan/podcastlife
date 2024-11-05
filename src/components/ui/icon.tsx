@@ -1,9 +1,9 @@
-import { Icons } from '$components/Icons';
+import { Icons } from '$components/Icons'
 
 interface IconProps {
-	name: keyof typeof Icons;
-	class?: string;
-	size?: number;
+	name: keyof typeof Icons
+	class?: string
+	size?: number
 }
 export default function Icon(props: IconProps) {
 	return (
@@ -22,5 +22,5 @@ export default function Icon(props: IconProps) {
 			classList={{ explicit: props.name === 'explicit' }}
 			innerHTML={Icons[props.name]}
 		/>
-	);
+	)
 }
