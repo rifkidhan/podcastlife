@@ -1,0 +1,131 @@
+/* styling image */
+img {
+	transition-property: transform, filter;
+	transition-timing-function: ease-in-out;
+	transition-duration: 150ms;
+
+	&:where(.blur) {
+		filter: blur(8px);
+	}
+	&:where(.full) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		position: absolute;
+		inset: 0;
+	}
+}
+
+.tab-panel {
+	width: 100%;
+	border-radius: var(--pl-border-radius-md);
+	border-top-left-radius: 0;
+	border: 2px solid hsl(var(--pl-accent-95));
+	background-color: hsl(var(--pl-accent-5));
+	box-shadow: var(--pl-shadow-drop);
+	padding: 2rem 1.5rem;
+	height: 50lvh;
+	overflow-y: auto;
+	overscroll-behavior-y: auto;
+	scrollbar-gutter: stable;
+	scrollbar-width: thin;
+	text-wrap: wrap;
+	overflow-wrap: break-word;
+
+	&:has([data-chapters], [data-transcripts]) {
+		overflow: unset;
+		padding: unset;
+		overscroll-behavior-y: unset;
+		scrollbar-gutter: unset;
+	}
+}
+
+.explicit {
+	fill: hsl(var(--pl-cinnabar));
+	display: inline;
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border-width: 0;
+}
+
+.list-with-dot {
+	& > *:not(:last-child)::after {
+		content: "•";
+		margin-inline: 0.25rem;
+	}
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.animate-spin {
+	animation: spin 1s linear infinite;
+}
+
+/* skeleton */
+@keyframes pulse {
+	50% {
+		opacity: 0.5;
+	}
+}
+
+.pulse {
+	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* live sign */
+@keyframes ping {
+	75%,
+	100% {
+		transform: scale(2);
+		opacity: 0;
+	}
+}
+
+/* text */
+
+.text-display {
+	font-size: clamp(3.5rem, 0.75rem + 5vw, 4.5rem);
+	font-weight: 800;
+	text-transform: uppercase;
+	line-height: 1;
+}
+
+.text-xl {
+	font-size: clamp(2.25rem, 0.75rem + 3vw, 3.5rem);
+	font-weight: 700;
+	line-height: 1;
+}
+
+.text-lg {
+	font-size: clamp(1.5rem, 0.25rem + 2vw, 2.25rem);
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.text-md {
+	font-size: clamp(1.125rem, 0.25rem + 1.7vw, 1.5rem);
+	font-weight: 500;
+	line-height: 1.2;
+}
+
+.text-sm {
+	font-size: clamp(0.75rem, 0.12rem + 2vw, 0.875rem);
+	line-height: 1.7;
+}

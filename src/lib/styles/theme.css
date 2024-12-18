@@ -1,0 +1,92 @@
+:root {
+	/* color */
+	--pl-picton: 202, 100%, 42%;
+	--pl-cerise: 326, 93%, 50%;
+	--pl-golden: 64, 97%, 54%;
+	--pl-cinnabar: 360, 84%, 51%;
+	--pl-apple: 131, 73%, 40%;
+	--pl-flamingo: 13, 94%, 57%;
+
+	--pl-white: 240, 5%, 98%;
+	--pl-black: 240, 5%, 8%;
+
+	--pl-accent-5: 240, 5%, 98%;
+	--pl-accent-10: 240, 5%, 89%;
+	--pl-accent-20: 240, 5%, 80%;
+	--pl-accent-30: 240, 5%, 71%;
+	--pl-accent-40: 240, 5%, 62%;
+	--pl-accent-50: 240, 5%, 53%;
+	--pl-accent-60: 240, 5%, 44%;
+	--pl-accent-70: 240, 5%, 35%;
+	--pl-accent-80: 240, 5%, 26%;
+	--pl-accent-90: 240, 5%, 17%;
+	--pl-accent-95: 240, 5%, 8%;
+
+	--pl-selection-background: hsl(var(--pl-golden));
+	--pl-selection-color: hsl(var(--pl-accent-95));
+
+	color-scheme: light;
+
+	/* shadow */
+	--pl-shadow-drop-sm: 2px 2px 0 0 hsl(var(--pl-accent-95));
+	--pl-shadow-drop: 5px 5px 0 0 hsl(var(--pl-accent-95));
+	--pl-shadow-highlight: inset 0 -0.5em 0 0 hsl(var(--pl-picton));
+	--pl-shadow-highlight-cerise: inset 0 -0.5em 0 0 hsl(var(--pl-cerise));
+
+	--pl-border-radius-sm: 0.25rem;
+	--pl-border-radius-md: 0.375rem;
+
+	--pl-animation-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+	/* component */
+
+	--pl-header-height: 3rem;
+	--pl-header-padding: 0.5rem;
+	--pl-nav-width: 100%;
+	--pl-scroll-button-right: 1rem;
+	--pl-scroll-button-bottom: 2.5rem;
+	--pl-player-height: 4rem;
+}
+
+@media (min-width: 768px) {
+	:root {
+		--pl-border-radius-sm: 0.375rem;
+		--pl-border-radius-md: 0.5rem;
+
+		--pl-header-padding: 0.75rem;
+		--pl-header-height: 4rem;
+		--pl-nav-width: 32rem;
+		--pl-scroll-button-right: 2rem;
+		--pl-player-height: 4rem;
+	}
+}
+
+@media (min-width: 1024px) {
+	:root {
+		--pl-nav-width: 28rem;
+		--pl-scroll-button-right: 3rem;
+	}
+}
+
+@media (min-width: 1280px) {
+}
+
+[data-theme="dark"] {
+	--pl-picton: 199, 100%, 49%;
+
+	--pl-accent-5: 240, 5%, 8%;
+	--pl-accent-10: 240, 5%, 17%;
+	--pl-accent-20: 240, 5%, 26%;
+	--pl-accent-30: 240, 5%, 35%;
+	--pl-accent-40: 240, 5%, 44%;
+	--pl-accent-50: 240, 5%, 53%;
+	--pl-accent-60: 240, 5%, 62%;
+	--pl-accent-70: 240, 5%, 71%;
+	--pl-accent-80: 240, 5%, 80%;
+	--pl-accent-90: 240, 5%, 89%;
+	--pl-accent-95: 240, 5%, 98%;
+
+	--pl-selection-background: hsl(var(--pl-flamingo));
+
+	color-scheme: dark;
+}

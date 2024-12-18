@@ -1,0 +1,159 @@
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	border: 0 solid;
+}
+
+html,
+:host {
+	line-height: 1.5;
+	-webkit-text-size-adjust: 100%;
+	font-family: "Plus Jakarta Sans Variable", system-ui;
+	tab-size: 4;
+	font-feature-settings: normal;
+	font-variation-settings: normal;
+	-webkit-tap-highlight-color: transparent;
+
+	@supports (scrollbar-width: auto) {
+		scrollbar-width: thin;
+		scrollbar-color: hsl(var(--pl-picton)) transparent;
+		scrollbar-gutter: stable;
+	}
+}
+
+body {
+	line-height: inherit;
+	color: hsl(var(--pl-accent-95));
+	background-color: hsl(var(--pl-accent-5));
+	font-size: clamp(0.875rem, 0.15rem + 2vw, 1.125rem);
+
+	&::selection {
+		background-color: var(--pl-selection-background);
+		color: var(--pl-selection-color);
+	}
+}
+
+hr {
+	height: 0;
+	color: inherit;
+	border-top-width: 1px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-size: inherit;
+	font-weight: inherit;
+}
+
+a {
+	color: inherit;
+	-webkit-text-decoration: inherit;
+	text-decoration: inherit;
+}
+
+b,
+strong {
+	font-weight: bolder;
+}
+
+small {
+	font-size: 80%;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea,
+::file-selector-button {
+	font: inherit;
+	font-feature-settings: inherit;
+	font-variation-settings: inherit;
+	letter-spacing: inherit;
+	color: inherit;
+	background: transparent;
+}
+
+input:where(:not([type="button"], [type="reset"], [type="submit"])),
+select,
+textarea {
+	border: 1px solid;
+}
+
+button,
+input:where([type="button"], [type="reset"], [type="submit"]),
+::file-selector-button {
+	appearance: button;
+}
+
+:-moz-focusring {
+	outline: auto;
+}
+
+progress {
+	vertical-align: baseline;
+}
+
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+	height: auto;
+}
+
+::-webkit-search-decoration {
+	-webkit-appearance: none;
+}
+
+summary {
+	display: list-item;
+}
+
+ol,
+ul {
+	list-style: none;
+}
+
+dialog {
+	padding: 0;
+}
+
+::placeholder {
+	opacity: 1; /* 1 */
+	color: color-mix(in srgb, currentColor 50%, transparent); /* 2 */
+}
+
+img,
+svg,
+video,
+canvas,
+audio {
+	display: block; /* 1 */
+	vertical-align: middle; /* 2 */
+}
+
+img,
+video {
+	max-width: 100%;
+	height: auto;
+}
+
+[hidden] {
+	display: none !important;
+}
+
+button,
+[role="button"] {
+	cursor: pointer;
+}
+
+:disabled {
+	cursor: default;
+}

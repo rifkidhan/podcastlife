@@ -1,0 +1,96 @@
+.text {
+	--pl-text-space-1: clamp(0.25rem, 0.1rem + 2vw, 0.5rem);
+	--pl-text-space-2: clamp(0.5rem, 0.1rem + 2vw, 0.75rem);
+	--pl-text-space-3: clamp(0.75rem, 0.2rem + 2vw, 1.2rem);
+	--pl-text-space-4: clamp(1rem, 0.2rem + 2vw, 1.7rem);
+
+	font-size: 1em;
+	color: hsl(var(--pl-accent-80));
+}
+.text :where(p) {
+	margin-block: var(--pl-text-space-3);
+}
+
+.text :where(strong) {
+	font-weight: 600;
+}
+
+.text :where(ol) {
+	list-style-type: decimal;
+	margin-block: var(--pl-text-space-3);
+	padding-inline-start: var(--pl-text-space-4);
+}
+.text :where(ol[type="A"]) {
+	list-style-type: upper-alpha;
+}
+.text :where(ol[type="a"]) {
+	list-style-type: lower-alpha;
+}
+.text :where(ol[type="A" s]) {
+	list-style-type: upper-alpha;
+}
+.text :where(ol[type="a" s]) {
+	list-style-type: lower-alpha;
+}
+.text :where(ol[type="I"]) {
+	list-style-type: upper-roman;
+}
+.text :where(ol[type="i"]) {
+	list-style-type: lower-roman;
+}
+.text :where(ol[type="I" s]) {
+	list-style-type: upper-roman;
+}
+.text :where(ol[type="i" s]) {
+	list-style-type: lower-roman;
+}
+.text :where(ol[type="1"]) {
+	list-style-type: decimal;
+}
+.text :where(ul) {
+	list-style-type: disc;
+	margin-block: var(--pl-text-space-3);
+	padding-inline-start: var(--pl-text-space-4);
+}
+.text :where(ol > li)::marker {
+	font-weight: 400;
+	color: hsl(var(--pl-cerise));
+}
+.text :where(ul > li)::marker {
+	color: hsl(var(--pl-cerise));
+}
+
+.text :where(li) {
+	margin-block: var(--pl-text-space-2);
+}
+.text :where(ol > li) {
+	padding-inline-start: var(--pl-text-space-1);
+}
+.text :where(ul > li) {
+	padding-inline-start: var(--pl-text-space-1);
+}
+.text :where(.text > ul > li p) {
+	margin-block: var(--pl-text-space-3);
+}
+.text :where(.text > ul > li > p:first-child) {
+	margin-top: var(--pl-text-space-3);
+}
+.text :where(.text > ul > li > p:last-child) {
+	margin-bottom: var(--pl-text-space-3);
+}
+.text :where(.text > ol > li > p:first-child) {
+	margin-top: var(--pl-text-space-3);
+}
+.text :where(.text > ol > li > p:last-child) {
+	margin-bottom: var(--pl-text-space-3);
+}
+.text :where(ul ul, ul ol, ol ul, ol ol) {
+	margin-block: var(--pl-text-space-3);
+}
+
+.text :where(.text > :first-child) {
+	margin-top: 0;
+}
+.text :where(.text > :last-child) {
+	margin-bottom: 0;
+}
