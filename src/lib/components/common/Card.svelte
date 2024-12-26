@@ -19,7 +19,7 @@
 	<span class="pulse-img" transition:fade></span>
 {/snippet}
 
-<li class="card" class:skeleton={loading}>
+<li class={["card", { skeleton: loading }]}>
 	<a href={`/podcast/${id}`} aria-label={title + " by " + author} draggable="true">
 		<div class="thumbnail">
 			{#if loading}

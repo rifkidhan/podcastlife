@@ -78,9 +78,11 @@
 					<span
 						in:send={{ key: "tab" }}
 						out:receive={{ key: "tab" }}
-						class="backdrop"
-						class:backdrop-picton={tabColor === "picton"}
-						class:backdrop-cerise={tabColor === "cerise"}
+						class={[
+							"backdrop",
+							{ "backdrop-picton": tabColor === "picton" },
+							{ "backdrop-cerise": tabColor === "cerise" }
+						]}
 					></span>
 				{/if}
 				<span>

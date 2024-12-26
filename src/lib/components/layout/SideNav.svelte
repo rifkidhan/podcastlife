@@ -79,7 +79,7 @@
 						href: string;
 						classAdd?: boolean;
 					})}
-						<li class:sub-list={classAdd}>
+						<li class={{ "sub-list": classAdd }}>
 							<a {href} onclick={() => (uiState.menuOpen = false)}>
 								<span>
 									{title}

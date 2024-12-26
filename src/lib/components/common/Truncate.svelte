@@ -9,7 +9,13 @@
 		children: Snippet;
 		truncate?: number;
 	}
-	let { as = "span", children, truncate = 3, ...attrs }: DescriptionProps = $props();
+	let {
+		as = "span",
+		children,
+		truncate = 3,
+		class: className,
+		...attrs
+	}: DescriptionProps = $props();
 
 	let open = $state(false);
 	let parentHeight = $state(0);
@@ -28,7 +34,7 @@
 </script>
 
 <div
-	class:root={true}
+	class={["root", className]}
 	bind:clientHeight={parentHeight}
 	style:--pl-description-truncate={truncate}
 	{...attrs}
@@ -37,8 +43,7 @@
 		this={as}
 		bind:this={element}
 		data-open-more={open}
-		class="truncate"
-		class:mask={isTruncate}
+		class={["truncate", { mask: isTruncate }]}
 	>
 		{@render children()}
 	</svelte:element>

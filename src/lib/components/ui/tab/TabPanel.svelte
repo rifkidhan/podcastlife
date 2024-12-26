@@ -8,7 +8,7 @@
 		children: Snippet;
 	}
 
-	let { id, children, ...attrs }: TabPanel = $props();
+	let { id, children, class: className, ...attrs }: TabPanel = $props();
 
 	const tabs = getContext<{ readonly active: string }>("tab-active");
 </script>
@@ -19,7 +19,7 @@
 	aria-labelledby={id}
 	tabindex="0"
 	hidden={tabs.active !== id}
-	class:tab-panel={true}
+	class={["tab-panel", className]}
 	{...attrs}
 >
 	{@render children()}

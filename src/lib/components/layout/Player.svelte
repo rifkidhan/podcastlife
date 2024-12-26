@@ -40,6 +40,7 @@
 
 		return false;
 	});
+	$inspect(duration);
 </script>
 
 {#if ui.player}
@@ -48,7 +49,11 @@
 			<audio
 				src={podcast.enclosure}
 				preload="metadata"
-				bind:duration={null, (v) => (playState.duration = Math.round(v))}
+				bind:duration={null,
+				(v) => {
+					playState.duration = Math.round(v);
+					playState.duration = Math.round(v);
+				}}
 				bind:currentTime={playState.currentTime}
 				bind:paused={playState.paused}
 				bind:volume

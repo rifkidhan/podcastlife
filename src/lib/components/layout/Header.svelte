@@ -16,7 +16,7 @@
 
 <svelte:window bind:scrollY={scroll} onscroll={handleScroll} />
 
-<header inert={uiState.menuOpen} class:border={scroll > 70} class:invisible={!visible}>
+<header class={[{ border: scroll > 70 }, { invisible: !visible }]} inert={uiState.menuOpen}>
 	<nav class="navigation">
 		<a href="/" class="title">
 			<span> podcastlife </span>

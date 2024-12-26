@@ -17,12 +17,6 @@
 	let { children }: { children: Snippet } = $props();
 
 	const uiState = useUI();
-
-	// beforeNavigate(({ willUnload, to }) => {
-	// 	if ($updated && !willUnload && to?.url) {
-	// 		location.href = to.url.href;
-	// 	}
-	// });
 </script>
 
 <Header />

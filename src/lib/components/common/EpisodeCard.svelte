@@ -131,7 +131,7 @@
 		<Image src={image} alt={`${title} by ${feed}`} full />
 	</div>
 	<div class="content">
-		<div class:list-with-dot={type === "podcast"} class="time text-sm">
+		<div class={["time", "text-sm", { "list-with-dot": type === "podcast" }]}>
 			{#if type === "live"}
 				{@render liveDateTime()}
 			{:else}

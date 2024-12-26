@@ -24,22 +24,14 @@
 		disabled,
 		loading,
 		icon,
+		class: className,
 		...attrs
 	}: ButtonProps = $props();
 </script>
 
 <button
 	{type}
-	class:primary={variant === "primary"}
-	class:picton={variant === "picton"}
-	class:text={variant === "text"}
-	class:cerise={variant === "cerise"}
-	class:sm={size === "sm"}
-	class:md={size === "md"}
-	class:lg={size === "lg"}
-	class:fit={size === "fit"}
-	class:full={size === "full"}
-	class:circle
+	class={[variant, size, { circle }, className]}
 	{disabled}
 	data-loading={loading}
 	{...attrs}

@@ -27,13 +27,12 @@
 
 <svelte:element
 	this={as}
-	class={className}
-	class:root={true}
+	class={["root", className]}
 	style:--pl-running-text-length={`-${Math.round(sumWidth + 20)}px`}
 	style:--pl-running-text-duration={`${Math.floor((sumWidth * 3) / 100 + 3)}s`}
 	{...attrs}
 >
-	<span bind:this={runningText} class:running-animation={move}>
+	<span bind:this={runningText} class={{ "running-animation": move }}>
 		{@render children()}
 	</span>
 </svelte:element>
