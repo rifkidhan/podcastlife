@@ -14,21 +14,9 @@
 		<meta name="theme-color" content="hsl(199, 100%, 49%)" media="(prefers-color-scheme: dark)" />
 		<meta name="color-scheme" content="dark light" />
 
-		<script>
-			const themeValue = localStorage.getItem("podcastlife-theme");
-			const systemPreferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-				? "dark"
-				: "light";
-
-			document.documentElement.dataset.theme = themeValue
-				? themeValue === "auto"
-					? systemPreferredTheme
-					: themeValue
-				: "light";
-		</script>
-
 		%sveltekit.head%
 	</head>
+
 	<body data-sveltekit-preload-data="tap">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>

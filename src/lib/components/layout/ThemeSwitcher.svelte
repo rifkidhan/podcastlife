@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { Icon } from "$lib/components";
-	import { Themes } from "./theme.svelte";
+	import { theme } from "./theme.svelte";
 	import { crossfade } from "svelte/transition";
 
-	const themes = new Themes();
-	let theme = $derived(themes.theme);
+	const update = () => {
+		theme.current = theme.current === "light" ? "dark" : "light";
+	};
 
 	const [send, receive] = crossfade({
 		duration: 300
@@ -15,25 +16,19 @@
 	id="theme-selector"
 	type="button"
 	class="theme-selector"
-	data-selected={theme}
+	data-selected={theme.current}
 	aria-label="Theme Switcher"
-	onclick={themes.update}
+	onclick={update}
 	title="Theme Switcher"
 >
-	<span class="theme-icon" aria-hidden="true" data-selected={theme === "auto"}>
-		{#if theme === "auto"}
-			<span in:send={{ key: "trigger" }} out:receive={{ key: "trigger" }} class="selected"></span>
-		{/if}
-		<Icon name="computer" />
-	</span>
-	<span class="theme-icon" aria-hidden="true" data-selected={theme === "light"}>
-		{#if theme === "light"}
+	<span class="theme-icon" aria-hidden="true" data-selected={theme.current === "light"}>
+		{#if theme.current === "light"}
 			<span in:send={{ key: "trigger" }} out:receive={{ key: "trigger" }} class="selected"></span>
 		{/if}
 		<Icon name="sun" />
 	</span>
-	<span class="theme-icon" aria-hidden="true" data-selected={theme === "dark"}>
-		{#if theme === "dark"}
+	<span class="theme-icon" aria-hidden="true" data-selected={theme.current === "dark"}>
+		{#if theme.current === "dark"}
 			<span in:send={{ key: "trigger" }} out:receive={{ key: "trigger" }} class="selected"></span>
 		{/if}
 		<Icon name="moon" />

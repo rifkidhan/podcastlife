@@ -9,20 +9,40 @@
 		LoadingIndicator,
 		useUI
 	} from "$lib/components";
-	import { navigating } from "$app/stores";
+	import { theme } from "$lib/components/layout/theme.svelte";
+	import { navigating } from "$app/state";
 
 	import "@fontsource-variable/plus-jakarta-sans";
 	import "$lib/styles/app.css";
 
 	let { children }: { children: Snippet } = $props();
 
+	$effect(() => {
+		document.documentElement.dataset.theme = theme.current;
+	});
+
 	const uiState = useUI();
 </script>
+
+<svelte:head>
+	<script>
+		{
+			const themeValue = localStorage.getItem("podcastlife-theme");
+
+			document.documentElement.dataset.theme =
+				themeValue === "system"
+					? window.matchMedia("(prefers-color-sceheme: dark)").matches
+						? "dark"
+						: "light"
+					: themeValue;
+		}
+	</script>
+</svelte:head>
 
 <Header />
 <div inert={uiState.menuOpen} class="content">
 	{@render children()}
-	{#if $navigating}
+	{#if navigating.from}
 		<LoadingIndicator />
 	{/if}
 </div>

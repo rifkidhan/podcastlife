@@ -4,9 +4,8 @@ import { podcastAPI } from "$lib/server/api";
 
 const getTrending = async (category: string) => {
 	const res = await podcastAPI({
-		endpoint: "/podcasts/trending",
+		endpoint: "/trending",
 		query: {
-			max: String(10),
 			cat: category
 		}
 	});
@@ -30,17 +29,14 @@ const getPodcastsByCategory = async (category: string) => {
 };
 
 export const load: PageServerLoad = async ({ params, setHeaders }) => {
-	const [trending, feeds] = await Promise.all([
-		getTrending(params.categoryId),
-		getPodcastsByCategory(params.categoryId)
-	]);
+	const trending = await getTrending(params.categoryId);
 
 	setHeaders({
-		"cache-control": "private, max-age=360"
+		"cache-control": "private, max-age=7200"
 	});
 
 	return {
-		trending: trending.data,
-		feeds
+		feeds: getPodcastsByCategory(params.categoryId),
+		trending: trending.data
 	};
 };

@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 	const feedId = params.podcastId;
 
 	const res = await podcastAPI({
-		endpoint: "/episodes/single",
+		endpoint: `/feed/${feedId}/${guid}`,
 		query: {
 			feedId,
 			guid
@@ -48,7 +48,7 @@ export const load: PageServerLoad = async ({ params, fetch, setHeaders }) => {
 	};
 
 	setHeaders({
-		"cache-control": "private, max-age=360"
+		"cache-control": "private, max-age=7200"
 	});
 
 	return {

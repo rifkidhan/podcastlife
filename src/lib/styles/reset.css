@@ -32,8 +32,8 @@ body {
 	background-color: hsl(var(--pl-accent-5));
 	font-size: clamp(0.875rem, 0.15rem + 2vw, 1.125rem);
 
-	&::selection {
-		background-color: var(--pl-selection-background);
+	::selection {
+		background: var(--pl-selection-background);
 		color: var(--pl-selection-color);
 	}
 }

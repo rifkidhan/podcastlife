@@ -3,14 +3,14 @@ import { podcastAPI } from "$lib/server/api";
 import type { Trending, RecentPodcast } from "$lib/types";
 
 const getTrending = async () => {
-	const res = await podcastAPI({ endpoint: "/podcasts/trending", query: { max: String(10) } });
+	const res = await podcastAPI({ endpoint: "/trending" });
 
 	const data = (await res.json()) as Trending;
 
 	return data;
 };
 const getRecent = async () => {
-	const res = await podcastAPI({ endpoint: "/podcasts/recent" });
+	const res = await podcastAPI({ endpoint: "/recent" });
 
 	const data = (await res.json()) as RecentPodcast;
 
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ setHeaders }) => {
 	const [trending, recent] = await Promise.all([getTrending(), getRecent()]);
 
 	setHeaders({
-		"cache-control": "private, max-age=360"
+		"cache-control": "private, max-age=7200"
 	});
 
 	return {

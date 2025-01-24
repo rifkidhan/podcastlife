@@ -48,8 +48,8 @@
 	{alt}
 	onload={() => (loaded = true)}
 	onerror={() => (error = true)}
-	class={[className, { blur: !error && !loaded && !blurdata }, full]}
-	style:background-image={blurdata
+	class={[className, { blur: !error && !loaded && !blurdata }, { full }]}
+	style:background-image={blurdata && !error
 		? `url(data:image/png;base64,${blurdata})`
 		: "linear-gradient(to bottom, hsl(var(--pl-accent-20)) 20%, hsl(var(--pl-accent-20)) 100%)"}
 	style:background-size="cover"

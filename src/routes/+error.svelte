@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { page } from "$app/stores";
+	import { page } from "$app/state";
 	import { Head } from "$lib/components";
 </script>
 
-<Head title={$page.error?.message} />
+<Head title={page.error?.message} />
 <main class="page">
 	<h1 class="text-display">
 		<span class="status">
-			{$page.status}
+			{page.status}
 		</span>
 		<span class="message">
-			{$page.error?.message}
+			{page.error?.message}
 		</span>
 	</h1>
 </main>

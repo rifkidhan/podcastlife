@@ -1,58 +1,55 @@
-import { browser } from "$app/environment";
+import { on } from "svelte/events";
+import { createSubscriber, MediaQuery } from "svelte/reactivity";
 
-type Theme = "auto" | "light" | "dark";
+class Persisted<T extends string = string> {
+	#key: string;
+	#storage: Storage | undefined;
+	#fallback: T;
+	#version = $state(0);
 
-const THEMES: Theme[] = ["auto", "light", "dark"];
+	#subscribe = createSubscriber((update) => {
+		return on(window, "storage", (e) => {
+			if (e.key === this.#key) {
+				update();
+			}
+		});
+	});
 
-export class Themes {
-	private themeIndex = $state(0);
-	theme: Theme = $derived(THEMES[this.themeIndex]);
-	private key = "podcastlife-theme";
-
-	constructor() {
-		this.matchMedia();
-		this.sync();
+	constructor(
+		key: string,
+		fallback: T,
+		storage = typeof localStorage === "undefined" ? undefined : localStorage
+	) {
+		this.#key = key;
+		this.#fallback = fallback;
+		this.#storage = storage;
 	}
 
-	private sync = () => {
-		const stored = typeof localStorage !== "undefined" && localStorage.getItem(this.key);
+	get current() {
+		this.#subscribe();
+		this.#version;
 
-		if (stored === "undefined") {
-			this.storeTheme(this.theme);
-		} else {
-			this.themeIndex = THEMES.findIndex((v) => v === stored);
-		}
-	};
+		return (this.#storage?.getItem(this.#key) as T) ?? this.#fallback;
+	}
 
-	private matchMedia = () => {
-		if (browser) {
-			window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-				this.themeIndex = e.matches ? 2 : 1;
-			});
-			window.addEventListener("storage", (e) => {
-				if (e.key === this.key) this.sync();
-			});
-		}
-	};
-
-	update = () => {
-		this.themeIndex = (this.themeIndex + 1) % THEMES.length;
-
-		this.storeTheme(this.theme);
-		document.documentElement.dataset.theme =
-			this.theme === "auto" ? this.preferColor() : (this.theme as string);
-	};
-
-	private storeTheme = (theme: Theme) => {
-		if (typeof localStorage !== "undefined") {
-			localStorage.setItem(this.key, theme);
-		}
-	};
-
-	private preferColor = () =>
-		browser
-			? window.matchMedia("(prefers-color-scheme: dark)").matches
-				? "dark"
-				: "light"
-			: "light";
+	set current(v: T) {
+		this.#storage?.setItem(this.#key, v);
+		this.#version += 1;
+	}
 }
+
+class Theme {
+	#preference = new Persisted<"system" | "light" | "dark">("podcastlife-theme", "system");
+	#query = new MediaQuery("prefers-color-scheme: dark");
+	#system = $derived<"light" | "dark">(this.#query.current ? "dark" : "light");
+
+	get current() {
+		return this.#preference.current === "system" ? this.#system : this.#preference.current;
+	}
+
+	set current(v: "system" | "light" | "dark") {
+		this.#preference.current = v === this.#system ? "system" : v;
+	}
+}
+
+export const theme = new Theme();

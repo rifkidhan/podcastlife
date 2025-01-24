@@ -1,12 +1,13 @@
 {
 	"name": "podcastlife",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "wrangler pages dev .svelte-kit/cloudflare",
+		"prepare": "svelte-kit sync",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
@@ -14,29 +15,30 @@
 		"wrangler": "wrangler"
 	},
 	"devDependencies": {
-		"@fontsource-variable/plus-jakarta-sans": "^5.1.0",
-		"@sveltejs/adapter-cloudflare": "^4.9.0",
-		"@sveltejs/kit": "^2.15.0",
+		"@eslint/compat": "^1.2.5",
+		"@eslint/js": "^9.18.0",
+		"@fontsource-variable/plus-jakarta-sans": "^5.1.1",
+		"@sveltejs/adapter-cloudflare": "^5.0.1",
+		"@sveltejs/kit": "^2.16.1",
 		"@sveltejs/vite-plugin-svelte": "5.0.3",
-		"@types/eslint": "^9.6.1",
-		"browserslist": "^4.24.3",
-		"embla-carousel": "^8.5.1",
-		"eslint": "^9.17.0",
-		"eslint-config-prettier": "^9.1.0",
+		"browserslist": "^4.24.4",
+		"embla-carousel": "^8.5.2",
+		"eslint": "^9.18.0",
+		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^2.46.1",
 		"globals": "^15.14.0",
-		"lightningcss": "^1.28.2",
+		"lightningcss": "^1.29.1",
 		"prettier": "^3.4.2",
-		"prettier-plugin-svelte": "^3.3.2",
-		"svelte": "5.16.0",
-		"svelte-check": "^4.1.1",
-		"typescript": "^5.7.2",
-		"typescript-eslint": "^8.18.2",
-		"vite": "^6.0.6",
-		"wrangler": "^3.99.0"
+		"prettier-plugin-svelte": "^3.3.3",
+		"svelte": "5.19.2",
+		"svelte-check": "^4.1.4",
+		"typescript": "^5.7.3",
+		"typescript-eslint": "^8.21.0",
+		"vite": "^6.0.11",
+		"wrangler": "^3.105.0"
 	},
 	"dependencies": {
 		"transcriptator": "^1.1.4",
-		"virtua": "^0.39.2"
+		"virtua": "^0.39.3"
 	}
 }

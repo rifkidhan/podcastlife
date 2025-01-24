@@ -40,7 +40,6 @@
 
 		return false;
 	});
-	$inspect(duration);
 </script>
 
 {#if ui.player}
