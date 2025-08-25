@@ -1,30 +1,76 @@
-@layer theme, base, component;
+@layer theme, base, components, utilities;
 
 @import "theme.css" layer(theme);
+@import "font.css" layer(theme);
 @import "reset.css" layer(base);
-@import "component.css" layer(component);
-@import "text.css" layer(component);
+@import "component.css" layer(components);
+@import "text.css" layer(components);
+
+@keyframes circle-in-top-right {
+	from {
+		clip-path: circle(0%);
+	}
+	to {
+		clip-path: circle(150% at top right);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	[style*="--tag"] {
+		view-transition-name: var(--tag);
+	}
+
+	@media (width <= 1600px) {
+		::view-transition-old(theme) {
+			animation: none;
+		}
+
+		::view-transition-new(theme) {
+			animation: 2s cubic-bezier(0.25, 1, 0.3, 1) circle-in-top-right forwards;
+		}
+	}
+}
 
 @layer base {
-	html:has([data-sidenav-open="true"], dialog[open]) {
+	html:has([role="dialog"], dialog[open]) {
 		overflow: hidden;
 	}
 
-	.content {
-		display: contents;
-	}
-
-	main {
-		position: relative;
-		margin-block: clamp(1rem, 0.5rem + 1.7vw, 2.5rem);
-		min-height: calc(100dvh - var(--pl-header-height) - 5rem);
-		width: 100%;
-	}
-
-	.page {
+	:where(main) {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: clamp(2rem, 1rem + 5vw, 4rem);
+		justify-content: center;
+		gap: 3rem;
+		inline-size: 100%;
+		margin-block-end: 3rem;
+		min-block-size: calc(100dvh - var(--pl-header-height) * 2);
+	}
+
+	:where(section) {
+		display: flex;
+		flex-direction: column;
+		inline-size: 100%;
+		max-inline-size: 92dvw;
+		margin-inline: auto;
+		gap: 2rem;
+		scroll-margin-top: var(--pl-header-height);
+	}
+}
+
+@layer utilities {
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border-width: 0;
+	}
+
+	.font-lancip {
+		font-feature-settings: "ss01", "ss02", "ss03";
 	}
 }

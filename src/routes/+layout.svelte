@@ -1,52 +1,73 @@
 <script lang="ts">
-	import type { Snippet } from "svelte";
-	import {
-		Header,
-		Footer,
-		SideNav,
-		ScrollTop,
-		Player,
-		LoadingIndicator,
-		useUI
-	} from "$lib/components";
-	import { theme } from "$lib/components/layout/theme.svelte";
-	import { navigating } from "$app/state";
-
-	import "@fontsource-variable/plus-jakarta-sans";
+	import type { LayoutProps } from "./$types";
+	import { SvelteURL } from "svelte/reactivity";
+	import { page, navigating } from "$app/state";
+	import { asset } from "$app/paths";
+	import { TITLE_SITE, DESCRIPTION_SITE } from "$lib/utils/constants";
+	import { audiometadata } from "$lib/state/player.svelte";
+	import { theme } from "$lib/state/theme.svelte";
+	import { useUI } from "$lib/state/ui.svelte";
+	import Header from "$lib/components/Header.svelte";
+	import Sidenav from "$lib/components/Sidenav.svelte";
+	import Player from "$lib/components/Player.svelte";
+	import LoadingIndicator from "$lib/components/LoadingIndicator.svelte";
+	import FullPlayer from "$lib/components/FullPlayer.svelte";
 	import "$lib/styles/app.css";
 
-	let { children }: { children: Snippet } = $props();
+	let { children }: LayoutProps = $props();
+
+	let meta = $derived(page.data.meta);
+
+	let title = $derived.by(() => {
+		if (audiometadata.track.enclosure !== "" && !audiometadata.paused) {
+			return `${audiometadata.track.title} | ${TITLE_SITE}`;
+		}
+		if (meta) {
+			return `${meta.title} | ${TITLE_SITE}`;
+		}
+
+		return TITLE_SITE;
+	});
+	let description = $derived(meta?.description ?? DESCRIPTION_SITE);
+
+	let image = asset("/default-open-graph.png");
 
 	$effect(() => {
 		document.documentElement.dataset.theme = theme.current;
 	});
-
-	const uiState = useUI();
 </script>
 
 <svelte:head>
-	<script>
-		{
-			const themeValue = localStorage.getItem("podcastlife-theme");
+	<title>{title}</title>
+	<meta name="title" content={title} />
+	<meta name="description" content={description} />
+	<link rel="canonical" href={page.url.href} />
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={page.url.href} />
+	<meta property="og:title" content={title} />
+	<meta property="og:description" content={description} />
+	<meta property="og:image" content={image} />
 
-			document.documentElement.dataset.theme =
-				themeValue === "system"
-					? window.matchMedia("(prefers-color-sceheme: dark)").matches
-						? "dark"
-						: "light"
-					: themeValue;
-		}
-	</script>
+	<meta property="twitter:card" content="summary_large_image" />
+	<meta property="twitter:url" content={page.url.href} />
+	<meta property="twitter:title" content={title} />
+	<meta property="twitter:description" content={description} />
+	<meta property="twitter:image" content={image} />
 </svelte:head>
 
 <Header />
-<div inert={uiState.menuOpen} class="content">
+<main inert={useUI.inert}>
 	{@render children()}
 	{#if navigating.from}
 		<LoadingIndicator />
 	{/if}
-</div>
-<SideNav />
-<ScrollTop />
-<Footer inert={uiState.menuOpen} />
-<Player />
+</main>
+{#if useUI.menuOpen}
+	<Sidenav />
+{/if}
+{#if useUI.playerShown}
+	<Player />
+{/if}
+{#if page.state.fullPlayer}
+	<FullPlayer />
+{/if}

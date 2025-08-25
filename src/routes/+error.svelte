@@ -1,26 +1,29 @@
 <script lang="ts">
 	import { page } from "$app/state";
-	import { Head } from "$lib/components";
 </script>
 
-<Head title={page.error?.message} />
-<main class="page">
+<div class="error">
 	<h1 class="text-display">
 		<span class="status">
 			{page.status}
 		</span>
-		<span class="message">
+		<span class="message font-lancip">
 			{page.error?.message}
 		</span>
 	</h1>
-</main>
+</div>
 
 <style>
-	main {
-		width: 90vw;
-		justify-content: center;
+	.error {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		inline-size: 100%;
+		max-inline-size: 92dvw;
 		margin-inline: auto;
+		gap: 2rem;
 	}
+
 	h1 {
 		width: max-content;
 		position: relative;
@@ -36,7 +39,7 @@
 	}
 
 	.status {
-		color: hsl(var(--pl-picton));
+		color: var(--pl-primary);
 		font-size: 2.35em;
 		top: 0;
 	}

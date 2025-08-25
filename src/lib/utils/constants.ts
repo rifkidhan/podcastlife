@@ -1,4 +1,7 @@
-export const categories = [
+export const TITLE_SITE = "podcastlife";
+export const DESCRIPTION_SITE = "Podcast Web Apps.";
+
+export const CATEGORIES = [
 	{ id: "arts", title: "Arts" },
 	{ id: "business", title: "Business" },
 	{ id: "comedy", title: "Comedy" },

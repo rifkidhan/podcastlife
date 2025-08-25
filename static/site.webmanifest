@@ -29,7 +29,7 @@
 	],
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "hsl(240, 5%, 98%)",
-	"theme_color": "hsl(202, 100%, 42%)",
+	"theme_color": "#2e8adc",
+	"background_color": "#f2f2f3",
 	"description": "Podcast web apps."
 }
