@@ -18,8 +18,7 @@ export const load: PageServerLoad = async ({ setHeaders, params }) => {
 		episodes,
 		live: lives,
 		meta: {
-			title: feed.title,
-			description: feed.description
+			title: feed.title
 		}
 	};
 };

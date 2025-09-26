@@ -13,7 +13,7 @@
 		onPageChange?: (v: number) => void;
 	}
 
-	let { data, page = $bindable(1), limit = 50, rootElement, children }: PaginationProps = $props();
+	let { data, page = $bindable(1), limit = 30, rootElement, children }: PaginationProps = $props();
 
 	let totalPage = $derived(Math.ceil(data.length / limit));
 

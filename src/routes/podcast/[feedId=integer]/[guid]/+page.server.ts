@@ -19,8 +19,7 @@ export const load: PageServerLoad = async ({ params, setHeaders }) => {
 	return {
 		episode: data,
 		meta: {
-			title: title,
-			description: data.description
+			title: title
 		}
 	};
 };

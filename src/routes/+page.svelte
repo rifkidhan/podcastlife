@@ -25,6 +25,7 @@
 		{/each}
 	</Carousel>
 </section>
+
 <section>
 	<h2 class="text-lg">Recent update</h2>
 	<Carousel>

@@ -9,6 +9,7 @@
 		display: inline-flex;
 		inline-size: calc(var(--pl-spacing) * 2);
 		block-size: calc(var(--pl-spacing) * 2);
+		margin-right: var(--pl-spacing);
 
 		& > span {
 			border-radius: 9999px;

@@ -1,0 +1,2 @@
+// 9.CUznq3tr.css
+export default ".info.svelte-1k3zbu4{gap:calc(var(--pl-spacing)*4);grid-template-columns:repeat(4,minmax(0,1fr));display:grid}@media (max-width:768px){.info.svelte-1k3zbu4{grid-template-columns:repeat(2,minmax(0,1fr))}}.key.svelte-1k3zbu4{color:var(--pl-primary);font-weight:600}.value.svelte-1k3zbu4{text-transform:capitalize}\n";

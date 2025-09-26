@@ -1,0 +1,2 @@
+// 3.jlGJIhlJ.css
+export default ".author.svelte-1uha8ag{text-transform:uppercase;color:var(--pl-primary);text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.title.svelte-1uha8ag{-webkit-line-clamp:2;line-clamp:2;min-height:4ch;margin-bottom:calc(var(--pl-spacing)*2);-webkit-box-orient:vertical;font-weight:700;display:-webkit-box;overflow:hidden}\n";

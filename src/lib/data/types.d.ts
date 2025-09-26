@@ -128,7 +128,32 @@ export type Podcast = {
 };
 
 export type LivePodcast = {
-	data: Live[];
+	data: {
+		id: number;
+		guid: string;
+		title: string;
+		link: string;
+		datePublished: number;
+		datePublishedPretty: string;
+		dateCrawled: number;
+		enclosureUrl: string;
+		enclosureType: string;
+		enclosureLength: number;
+		image: string;
+		feedItunesId: number;
+		feedImage: string;
+		feedId: number;
+		feedTitle: string;
+		feedLanguage: string;
+		author?: string;
+		blurhash?: string;
+		description?: string;
+		startTime: number;
+		endTime: number;
+		status: "ended" | "live";
+		podcastGuid: string;
+		explicit: boolean;
+	}[];
 };
 
 export type PodcastByCategory = {

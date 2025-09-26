@@ -5,12 +5,12 @@
 	import { audiometadata } from "$lib/state/player.svelte";
 	import { useUI } from "$lib/state/ui.svelte";
 	import { formatTime } from "$lib/utils/time";
-	import Button from "./Button.svelte";
-	import Icon from "./Icon.svelte";
-	import Image from "./Image.svelte";
-	import Slider from "./Slider.svelte";
-	import Livesign from "./Livesign.svelte";
-	import RunningText from "./RunningText.svelte";
+	import Button from "../Button.svelte";
+	import Icon from "../Icon.svelte";
+	import Image from "../Image.svelte";
+	import Slider from "../Slider.svelte";
+	import Livesign from "../Livesign.svelte";
+	import RunningText from "../RunningText.svelte";
 
 	let track = $derived(audiometadata.track);
 
@@ -85,8 +85,10 @@
 					<span>/</span>
 					<span>--:--</span>
 				{:else if !Number.isFinite(audiometadata.duration)}
-					<Livesign />
-					<span>Live</span>
+					<span>
+						<Livesign />
+						<span>Live</span>
+					</span>
 				{:else}
 					<span>{formatTime(audiometadata.currentTime)}</span>
 					<span>/</span>
@@ -187,7 +189,7 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
-		gap: calc(var(--pl-spacing) * 2);
+		gap: calc(var(--pl-spacing) * 4);
 
 		@media (max-width: 768px) {
 			& > :where(.forward, .backward) {

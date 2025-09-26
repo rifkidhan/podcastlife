@@ -55,8 +55,9 @@
 	--pl-player-height: 4rem;
 
 	/* index */
-	--pl-loading-indicator-index: 5;
+	--pl-header-index: 2;
 	--pl-player-index: 4;
+	--pl-loading-indicator-index: 5;
 	--pl-sidenav-index: 6;
 	--pl-full-player-index: 7;
 }

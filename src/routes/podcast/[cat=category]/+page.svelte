@@ -16,7 +16,7 @@
 
 	let paginate = $derived.by(() => {
 		const pageNow = page.url.searchParams.get("page");
-		if (page) {
+		if (typeof pageNow === "string") {
 			return Number(pageNow);
 		}
 		return 1;
@@ -25,13 +25,14 @@
 	const previousPage = () => {
 		const base = `/podcast/${params.cat}`;
 		const search = new URLSearchParams();
+
 		if (paginate > 1) {
 			search.set("page", `${paginate - 1}`);
 			search.set("c", meta.cursor);
 			search.set("back", "true");
 		}
 
-		const url = base + `${paginate > 1 ? "?" + search.toString() : ""}`;
+		const url = base + `${paginate > 2 ? "?" + search.toString() : ""}`;
 
 		goto(url);
 	};
@@ -45,9 +46,8 @@
 		const url = base + `${meta.more ? "?" + search.toString() : ""}`;
 		goto(url);
 	};
+	$inspect(paginate);
 </script>
-
-<h1 class="text-display">{data.meta.title}</h1>
 
 <section>
 	<ul class="categories">
@@ -84,11 +84,16 @@
 			</Card>
 		{/each}
 		<div class="page-control">
-			<Button variant="theme" title="Previous page" onclick={previousPage} disabled={paginate < 1}>
+			<Button
+				variant="theme"
+				title="Previous page"
+				onclick={() => previousPage()}
+				disabled={paginate <= 1}
+			>
 				<Icon name="chevron-left" isHidden />
 				<span>Prev</span>
 			</Button>
-			<Button variant="theme" title="Next page" onclick={nextPage} disabled={!meta.more}>
+			<Button variant="theme" title="Next page" onclick={() => nextPage()} disabled={!meta.more}>
 				<Icon name="chevron-right" isHidden />
 				<span>Next</span>
 			</Button>

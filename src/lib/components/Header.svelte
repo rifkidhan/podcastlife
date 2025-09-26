@@ -1,11 +1,23 @@
 <script lang="ts">
 	import { TITLE_SITE } from "$lib/utils/constants";
 	import { useUI } from "$lib/state/ui.svelte";
+	import throttle from "$lib/utils/throttle";
 	import Button from "./Button.svelte";
 	import Icon from "./Icon.svelte";
+
+	let visible = $state(true);
+	let lastScroll = $state(0);
+
+	const handleScroll = throttle(() => {
+		const scroll = window.scrollY;
+		visible = (lastScroll > scroll && lastScroll - scroll > 80) || scroll < 200;
+		lastScroll = scroll;
+	}, 100);
 </script>
 
-<header inert={useUI.inert}>
+<svelte:window onscroll={handleScroll} />
+
+<header class={["pl-header", { invisible: !visible }]} inert={useUI.inert}>
 	<div class="wrapper">
 		<a href="/" class="home font-lancip" title="Home">{TITLE_SITE}</a>
 		<Button
@@ -22,14 +34,19 @@
 </header>
 
 <style>
-	header {
+	.pl-header {
 		position: sticky;
 		top: 0;
 		inline-size: 100%;
 		block-size: var(--pl-header-height);
-		z-index: 2;
+		z-index: var(--pl-header-index);
 		background-color: var(--pl-accent-1);
 		border-bottom: solid 1px var(--pl-accent-6);
+		transition: transform ease-in-out 200ms;
+
+		&:is(.invisible) {
+			transform: translateY(-4rem);
+		}
 	}
 
 	.wrapper {

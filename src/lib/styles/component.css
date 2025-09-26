@@ -19,13 +19,13 @@ img {
 
 .tab-panel {
 	width: 100%;
-	border-radius: var(--pl-border-radius-md);
+	border-radius: var(--pl-radius-md);
 	border-top-left-radius: 0;
-	border: 2px solid hsl(var(--pl-accent-95));
-	background-color: hsl(var(--pl-accent-5));
-	box-shadow: var(--pl-shadow-drop);
-	padding: 2rem 1.5rem;
-	height: 50lvh;
+	border-top-right-radius: 0;
+	border: solid 1px;
+	background-color: var(--pl-accent-1);
+	padding: calc(var(--pl-spacing) * 2);
+	block-size: calc(70dvh + 2rem);
 	overflow-y: auto;
 	overscroll-behavior-y: auto;
 	scrollbar-gutter: stable;
@@ -33,7 +33,7 @@ img {
 	text-wrap: wrap;
 	overflow-wrap: break-word;
 
-	&:has([data-chapters], [data-transcripts]) {
+	&:has(.virtual-list-container) {
 		overflow: unset;
 		padding: unset;
 		overscroll-behavior-y: unset;

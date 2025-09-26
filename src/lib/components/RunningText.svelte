@@ -8,17 +8,19 @@
 	let { textAlign = "left", class: className, children, ...attrs }: RunningTextProps = $props();
 
 	let runningTextElement: HTMLSpanElement | undefined = $state();
-	let move = $state(false);
-	let calcWidth = $state(0);
 	let parentWidth = $state(0);
 
-	const resizeHandler = () => {
-		if (!runningTextElement) return;
-		move = runningTextElement.scrollWidth > parentWidth;
-		calcWidth = runningTextElement.scrollWidth - parentWidth;
-	};
+	let move = $derived.by(() => {
+		if (!runningTextElement) return false;
 
-	$effect.pre(resizeHandler);
+		return runningTextElement.scrollWidth > parentWidth;
+	});
+
+	let calcWidth = $derived.by(() => {
+		if (!runningTextElement) return 0;
+
+		return runningTextElement.scrollWidth - parentWidth;
+	});
 </script>
 
 <span

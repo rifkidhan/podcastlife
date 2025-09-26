@@ -28,7 +28,6 @@
 			}
 		}
 	};
-	$inspect(episodes);
 </script>
 
 {#key feed.id}
@@ -59,7 +58,11 @@
 				{#each live as item}
 					<Card>
 						{#snippet thumbnail()}
-							<Image src={item.image ?? feed.image} blurdata={feed.hash} />
+							<Image
+								src={item.image ?? feed.image}
+								alt={item.title ?? feed.title}
+								blurdata={feed.hash}
+							/>
 						{/snippet}
 						<div class="time text-sm">
 							{#if item.status === "live"}
@@ -69,13 +72,13 @@
 							{/if}
 							<span>
 								{#if item.status === "live" && item.end}
-									Ended at {getTime(item.end)}
+									Ended {getTime(item.end)}
 								{/if}
 								{#if item.status === "pending" && item.start}
-									Start at {getTime(item.start)}
+									Start {getTime(item.start)}
 								{/if}
 								{#if item.status === "ended" && item.end}
-									Ended at {getTime(item.end)}
+									Ended {getTime(item.end)}
 								{/if}
 							</span>
 						</div>
@@ -142,7 +145,11 @@
 			{#snippet children(item)}
 				<Card>
 					{#snippet thumbnail()}
-						<Image src={item.image ?? feed.image} blurdata={feed.hash} />
+						<Image
+							src={item.image ?? feed.image}
+							alt={item.title ?? feed.title}
+							blurdata={feed.hash}
+						/>
 					{/snippet}
 					<div class="time text-sm list-with-dot">
 						{#if item.episode}

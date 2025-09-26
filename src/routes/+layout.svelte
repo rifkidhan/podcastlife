@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { LayoutProps } from "./$types";
-	import { SvelteURL } from "svelte/reactivity";
 	import { page, navigating } from "$app/state";
 	import { asset } from "$app/paths";
 	import { TITLE_SITE, DESCRIPTION_SITE } from "$lib/utils/constants";
@@ -9,9 +8,9 @@
 	import { useUI } from "$lib/state/ui.svelte";
 	import Header from "$lib/components/Header.svelte";
 	import Sidenav from "$lib/components/Sidenav.svelte";
-	import Player from "$lib/components/Player.svelte";
+	import Player from "$lib/components/player/Player.svelte";
 	import LoadingIndicator from "$lib/components/LoadingIndicator.svelte";
-	import FullPlayer from "$lib/components/FullPlayer.svelte";
+	import FullPlayer from "$lib/components/player/FullPlayer.svelte";
 	import "$lib/styles/app.css";
 
 	let { children }: LayoutProps = $props();

@@ -13,7 +13,7 @@ html,
 :host {
 	line-height: 1.5;
 	-webkit-text-size-adjust: 100%;
-	font-family: "Plus Jakarta Sans", system-ui;
+	font-family: "Plus Jakarta Sans", "Plus Jakarta Sans Fallback", system-ui;
 	tab-size: 4;
 	font-variation-settings: normal;
 	font-variant-ligatures: no-historical-ligatures;

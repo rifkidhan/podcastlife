@@ -93,15 +93,15 @@ export const getCategory = async (category: string, cursor?: string, previous?: 
 		perPage: String(50)
 	};
 
-	if (cursor) {
-		query = {
-			...query,
-			after: cursor
-		};
-	} else if (cursor && previous) {
+	if (cursor && Boolean(previous)) {
 		query = {
 			...query,
 			before: cursor
+		};
+	} else if (cursor) {
+		query = {
+			...query,
+			after: cursor
 		};
 	}
 

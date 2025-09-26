@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
-	import { innerWidth } from "svelte/reactivity/window";
+	import { MediaQuery } from "svelte/reactivity";
 	import Image from "./Image.svelte";
 	import RunningText from "./RunningText.svelte";
 	import Modal from "./Modal.svelte";
@@ -35,12 +35,13 @@
 	let descriptionHeight = $state(0);
 	let summary: HTMLElement | undefined = $state();
 
-	let descriptionTruncate = $state(false);
+	let descriptionTruncate = $derived.by(() => {
+		if (!summary) return false;
 
-	$effect.pre(() => {
-		if (!summary) return;
-		descriptionTruncate = summary.scrollHeight > descriptionHeight;
+		return summary.scrollHeight > descriptionHeight;
 	});
+
+	const smallScreen = new MediaQuery("max-width: 1024px");
 </script>
 
 <div class="info">
@@ -72,11 +73,7 @@
 				{/if}
 			</div>
 			<h1 class="text-xl font-lancip">
-				<RunningText
-					textAlign={typeof innerWidth.current !== "undefined" && innerWidth.current < 1024
-						? "center"
-						: "left"}
-				>
+				<RunningText textAlign={smallScreen.current ? "center" : "left"}>
 					{title}
 				</RunningText>
 			</h1>
@@ -88,7 +85,7 @@
 		{/if}
 	</div>
 	<div class="description" bind:clientHeight={descriptionHeight}>
-		<div class="summary" bind:this={summary}>
+		<div class="summary" bind:this={summary} data-truncate={descriptionTruncate}>
 			{@html description}
 		</div>
 
@@ -219,7 +216,13 @@
 			-webkit-box-orient: vertical;
 			-webkit-line-clamp: 3;
 			line-clamp: 3;
-			inline-size: calc(100% - 2ch);
+			inline-size: calc(100% - 2em);
+
+			&[data-truncate="true"] {
+				mask-image:
+					linear-gradient(0deg, transparent 0, transparent 1lh, black 1lh),
+					linear-gradient(279deg, transparent 0, transparent 5em, black);
+			}
 		}
 
 		.description-modal-button {
