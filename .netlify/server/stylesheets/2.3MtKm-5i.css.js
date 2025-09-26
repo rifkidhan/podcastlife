@@ -1,2 +1,0 @@
-// 2.3MtKm-5i.css
-export default ".author.svelte-a56viq{text-transform:uppercase;color:var(--pl-primary);text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.title.svelte-a56viq{-webkit-line-clamp:2;line-clamp:2;min-height:4ch;margin-bottom:calc(var(--pl-spacing)*2);-webkit-box-orient:vertical;font-weight:700;display:-webkit-box;overflow:hidden}\n";
