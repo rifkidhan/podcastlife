@@ -4,7 +4,7 @@
     "": {
       "name": "podcastlife",
       "dependencies": {
-        "@humanspeak/svelte-virtual-list": "^0.3.3",
+        "@humanspeak/svelte-virtual-list": "^0.3.4",
         "@unpic/placeholder": "^0.1.2",
       },
       "devDependencies": {
@@ -106,7 +106,7 @@
 
     "@humanfs/node": ["@humanfs/node@0.16.7", "", { "dependencies": { "@humanfs/core": "^0.19.1", "@humanwhocodes/retry": "^0.4.0" } }, "sha512-/zUx+yOsIrG4Y43Eh2peDeKCxlRt/gET6aHfaKpuq267qXdYDFViVHfMaLyygZOnl0kGWxFIgsBy8QFuTLUXEQ=="],
 
-    "@humanspeak/svelte-virtual-list": ["@humanspeak/svelte-virtual-list@0.3.3", "", { "dependencies": { "esm-env": "^1.2.2" }, "peerDependencies": { "svelte": "^5.0.0" } }, "sha512-17B+1Hl62IGF/459DMCCwySM1VTszUG/ozSK/sCkoKLUXrkejFfXBDPXvB0Fvt96C42XZpeGmFL65opNqOw/zg=="],
+    "@humanspeak/svelte-virtual-list": ["@humanspeak/svelte-virtual-list@0.3.4", "", { "dependencies": { "esm-env": "^1.2.2" }, "peerDependencies": { "svelte": "^5.0.0" } }, "sha512-imwu96hm11jsI5/qx4FMovuBTvkwt+toouwxkKcnllRyWYouQhPshs8KN+g7ScHHmyzcMluGDKN682oIoxJwAw=="],
 
     "@humanwhocodes/module-importer": ["@humanwhocodes/module-importer@1.0.1", "", {}, "sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA=="],
 

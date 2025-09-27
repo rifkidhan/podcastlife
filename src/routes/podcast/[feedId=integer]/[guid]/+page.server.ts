@@ -10,7 +10,8 @@ export const load: PageServerLoad = async ({ params, setHeaders }) => {
 
 	if (!dev) {
 		setHeaders({
-			"cache-control": "private, max-age=7200"
+			"Netlify-CDN-Cache-Control": "public, max-age=7200, stale-while-revalidate=7200",
+			"Cache-Control": "public, max-age=0, must-revalidate"
 		});
 	}
 

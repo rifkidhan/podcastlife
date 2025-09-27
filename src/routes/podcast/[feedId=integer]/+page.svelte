@@ -45,7 +45,34 @@
 			{/each}
 		{/snippet}
 		{#snippet action()}
-			<Button>Play latest</Button>
+			<Button
+				title={`${audiometadata.track.enclosure === episodes[0].enclosure.url && !audiometadata.paused ? "Pause" : "Play"} ${episodes[0].title ?? "untitled"}`}
+				aria-pressed={audiometadata.track.enclosure === episodes[0].enclosure.url &&
+					!audiometadata.paused}
+				onclick={async () =>
+					await audiometadata.playTrack({
+						feed: feed.title ?? "untitled",
+						feedId: feed.id,
+						title: episodes[0].title ?? "untitled",
+						guid: episodes[0].guid ?? "",
+						enclosure: episodes[0].enclosure.url,
+						image: episodes[0].image ?? feed.image,
+						explicit: episodes[0].explicit
+					})}
+			>
+				{#if audiometadata.track.enclosure === episodes[0].enclosure.url}
+					{#if audiometadata.state === "loading"}
+						<Icon name="spinner" isHidden class="animate-spin" />
+					{:else if audiometadata.state === "play"}
+						<Icon name="pause" isHidden />
+					{:else}
+						<Icon name="play" isHidden />
+					{/if}
+				{:else}
+					<Icon name="play" isHidden />
+				{/if}
+				<span>Play latest</span>
+			</Button>
 		{/snippet}
 	</Info>
 
@@ -149,6 +176,7 @@
 							src={item.image ?? feed.image}
 							alt={item.title ?? feed.title}
 							blurdata={feed.hash}
+							full
 						/>
 					{/snippet}
 					<div class="time text-sm list-with-dot">
