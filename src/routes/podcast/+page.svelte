@@ -2,7 +2,9 @@
 	import { CATEGORIES } from "$lib/utils/constants";
 </script>
 
-<h1 class="text-display font-lancip">Podcast</h1>
+<div class="section">
+	<h1 class="text-display font-lancip">Podcast</h1>
+</div>
 <section>
 	<h2 class="text-lg font-lancip">Categories</h2>
 	<ul class="categories">

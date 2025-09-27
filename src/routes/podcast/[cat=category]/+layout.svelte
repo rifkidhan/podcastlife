@@ -9,7 +9,9 @@
 	let trendings = $derived(data.trending);
 </script>
 
-<h1 class="text-display">{data.meta.title}</h1>
+<div class="section">
+	<h1 class="text-display text-lancip">{data.meta.title}</h1>
+</div>
 
 <section>
 	<h2 class="text-lg">Trending on this week</h2>

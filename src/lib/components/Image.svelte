@@ -53,3 +53,23 @@
 	style:background-repeat="no-repeat"
 	{...attrs}
 />
+
+<style>
+	img {
+		transition-property: transform, filter;
+		transition-timing-function: ease-in-out;
+		transition-duration: 150ms;
+
+		&:where(.blur) {
+			filter: blur(8px);
+		}
+		&:where(.full) {
+			inline-size: 100%;
+			block-size: 100%;
+			object-fit: cover;
+			object-position: center;
+			position: absolute;
+			inset: 0;
+		}
+	}
+</style>

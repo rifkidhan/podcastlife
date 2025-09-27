@@ -46,7 +46,7 @@
 		min-block-size: calc(100dvh - var(--pl-header-height) * 2);
 	}
 
-	:where(section) {
+	:where(section, .section) {
 		display: flex;
 		flex-direction: column;
 		inline-size: 100%;

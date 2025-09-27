@@ -90,7 +90,7 @@ export const getLivePodcast = async () => {
 
 export const getCategory = async (category: string, cursor?: string, previous?: string) => {
 	let query: Record<string, string> = {
-		perPage: String(50)
+		perPage: String(30)
 	};
 
 	if (cursor && Boolean(previous)) {
