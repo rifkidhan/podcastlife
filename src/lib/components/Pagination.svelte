@@ -7,10 +7,8 @@
 		data: T[];
 		limit?: number;
 		page: number;
-		startPage?: number;
 		rootElement?: HTMLElement;
 		children: Snippet<[T]>;
-		onPageChange?: (v: number) => void;
 	}
 
 	let { data, page = $bindable(1), limit = 30, rootElement, children }: PaginationProps = $props();

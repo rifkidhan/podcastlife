@@ -2,6 +2,7 @@
 	import type { PageProps } from "./$types";
 	import { page } from "$app/state";
 	import { goto } from "$app/navigation";
+	import { SvelteURLSearchParams } from "svelte/reactivity";
 	import Card from "$lib/components/Card.svelte";
 	import Image from "$lib/components/Image.svelte";
 	import Button from "$lib/components/Button.svelte";
@@ -9,6 +10,8 @@
 	import { getTime } from "$lib/utils/time";
 
 	let { data, params }: PageProps = $props();
+
+	const searchParam = new SvelteURLSearchParams();
 
 	let paginate = $derived.by(() => {
 		const pageNow = page.url.searchParams.get("page");
@@ -22,7 +25,7 @@
 {#key paginate}
 	<section>
 		{#await data.category}
-			{#each { length: 30 }, _}
+			{#each { length: 30 }}
 				<ul class="categories">
 					<li class="skeleton"></li>
 				</ul>
@@ -57,7 +60,7 @@
 							</a>
 						</h3>
 						<div class="summary text-sm">
-							{@html item.description}
+							{item.description}
 						</div>
 					</Card>
 				{/each}
@@ -68,15 +71,14 @@
 					title="Previous page"
 					onclick={() => {
 						const base = `/podcast/${params.cat}`;
-						const search = new URLSearchParams();
 
 						if (paginate > 1) {
-							search.set("page", `${paginate - 1}`);
-							search.set("c", meta.page.cursor);
-							search.set("back", "true");
+							searchParam.set("page", `${paginate - 1}`);
+							searchParam.set("c", meta.page.cursor);
+							searchParam.set("back", "true");
 						}
 
-						const url = base + `${paginate > 2 ? "?" + search.toString() : ""}`;
+						const url = base + `${paginate > 2 ? "?" + searchParam.toString() : ""}`;
 
 						goto(url);
 					}}
@@ -90,12 +92,11 @@
 					title="Next page"
 					onclick={() => {
 						const base = `/podcast/${params.cat}`;
-						const search = new URLSearchParams();
 						if (meta.page.more) {
-							search.set("page", `${paginate + 1}`);
-							search.set("c", meta.page.cursor);
+							searchParam.set("page", `${paginate + 1}`);
+							searchParam.set("c", meta.page.cursor);
 						}
-						const url = base + `${meta.page.more ? "?" + search.toString() : ""}`;
+						const url = base + `${meta.page.more ? "?" + searchParam.toString() : ""}`;
 						goto(url);
 					}}
 					disabled={!meta.page.more}
@@ -114,6 +115,7 @@
 		flex-direction: column;
 		gap: calc(var(--pl-spacing) * 8);
 	}
+
 	.cat-title {
 		overflow: hidden;
 		display: -webkit-box;

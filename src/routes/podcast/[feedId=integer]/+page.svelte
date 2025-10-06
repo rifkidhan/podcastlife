@@ -49,8 +49,8 @@
 				title={`${audiometadata.track.enclosure === episodes[0].enclosure.url && !audiometadata.paused ? "Pause" : "Play"} ${episodes[0].title ?? "untitled"}`}
 				aria-pressed={audiometadata.track.enclosure === episodes[0].enclosure.url &&
 					!audiometadata.paused}
-				onclick={async () =>
-					await audiometadata.playTrack({
+				onclick={() =>
+					audiometadata.playTrack({
 						feed: feed.title ?? "untitled",
 						feedId: feed.id,
 						title: episodes[0].title ?? "untitled",
@@ -123,7 +123,7 @@
 							</span>
 						</h3>
 						<div class="summary text-sm">
-							{@html item.description}
+							{item.description}
 						</div>
 						{#snippet action()}
 							<Button
@@ -131,8 +131,8 @@
 								title={`${audiometadata.track.enclosure === item.enclosure.url && !audiometadata.paused ? "Pause" : "Play"} ${item.title ?? "untitled"}`}
 								aria-pressed={audiometadata.track.enclosure === item.enclosure.url &&
 									!audiometadata.paused}
-								onclick={async () =>
-									await audiometadata.playTrack({
+								onclick={() =>
+									audiometadata.playTrack({
 										feed: feed.title ?? "untitled",
 										feedId: feed.id,
 										title: item.title ?? "untitled",
@@ -206,7 +206,7 @@
 						</a>
 					</h3>
 					<div class="summary text-sm">
-						{@html item.summary ?? item.description}
+						{item.summary ?? item.description}
 					</div>
 					{#snippet action()}
 						<Button
@@ -214,8 +214,8 @@
 							title={`${audiometadata.track.enclosure === item.enclosure.url && !audiometadata.paused ? "Pause" : "Play"} ${item.title ?? "untitled"}`}
 							aria-pressed={audiometadata.track.enclosure === item.enclosure.url &&
 								!audiometadata.paused}
-							onclick={async () =>
-								await audiometadata.playTrack({
+							onclick={() =>
+								audiometadata.playTrack({
 									feed: feed.title ?? "untitled",
 									feedId: feed.id,
 									title: item.title ?? "untitled",

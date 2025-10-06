@@ -9,7 +9,8 @@
 
 	let { id, children }: TabpanelProps = $props();
 
-	let tab = getTabContext();
+	const tab = getTabContext();
+	let active = $derived(tab.active);
 </script>
 
 <div
@@ -17,7 +18,7 @@
 	role="tabpanel"
 	aria-labelledby={id}
 	tabindex="0"
-	hidden={tab.active !== id}
+	hidden={active !== id}
 	class="tab-panel"
 >
 	{@render children?.()}

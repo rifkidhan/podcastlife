@@ -9,8 +9,7 @@ const config = {
 		adapter: adapter({
 			edge: true,
 			split: false
-		}),
-		inlineStyleThreshold: 1000
+		})
 	}
 };
 

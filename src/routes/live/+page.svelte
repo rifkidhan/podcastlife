@@ -14,7 +14,9 @@
 	let liveEnded = $derived(data.live.filter((v) => v.status === "ended"));
 </script>
 
-<h1 class="text-display">Live</h1>
+<div class="section">
+	<h1 class="text-display">Live</h1>
+</div>
 
 <section>
 	<h2 class="text-xl font-lancip">Live Now</h2>
@@ -55,7 +57,7 @@
 					</span>
 				</h3>
 				<div class="summary text-sm">
-					{@html item.description}
+					{item.description}
 				</div>
 				{#snippet action()}
 					<Button
@@ -63,8 +65,8 @@
 						title={`${audiometadata.track.enclosure === item.enclosureUrl && !audiometadata.paused ? "Pause" : "Play"} ${item.title ?? "untitled"}`}
 						aria-pressed={audiometadata.track.enclosure === item.enclosureUrl &&
 							!audiometadata.paused}
-						onclick={async () =>
-							await audiometadata.playTrack({
+						onclick={() =>
+							audiometadata.playTrack({
 								feed: item.feedTitle ?? "untitled",
 								feedId: String(item.feedId),
 								title: item.title ?? "untitled",
@@ -139,8 +141,8 @@
 						title={`${audiometadata.track.enclosure === item.enclosureUrl && !audiometadata.paused ? "Pause" : "Play"} ${item.title ?? "untitled"}`}
 						aria-pressed={audiometadata.track.enclosure === item.enclosureUrl &&
 							!audiometadata.paused}
-						onclick={async () =>
-							await audiometadata.playTrack({
+						onclick={() =>
+							audiometadata.playTrack({
 								feed: item.feedTitle ?? "untitled",
 								feedId: String(item.feedId),
 								title: item.title ?? "untitled",

@@ -29,8 +29,8 @@
 	{/snippet}
 	{#snippet action()}
 		<Button
-			onclick={async () => {
-				await audiometadata.playTrack({
+			onclick={() => {
+				audiometadata.playTrack({
 					feed: episode.feedTitle ?? "untitled",
 					feedId: episode.feedId,
 					title: episode.title ?? "untitled",

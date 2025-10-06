@@ -5,10 +5,9 @@
 
 	interface ModalProps extends HTMLDialogAttributes {
 		title?: string;
-		description?: string;
 	}
 
-	let { title, description, children, ...attrs }: ModalProps = $props();
+	let { title, children, ...attrs }: ModalProps = $props();
 
 	const uid = $props.id();
 

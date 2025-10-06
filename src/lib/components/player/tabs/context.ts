@@ -12,12 +12,16 @@ export type ListType = {
 }[];
 
 export const setTabContext = (input: () => string) => {
-	const tabs = {
+	// const tabs = {
+	// 	get active() {
+	// 		return input();
+	// 	}
+	// };
+	setContext(key, {
 		get active() {
 			return input();
 		}
-	};
-	setContext(key, tabs);
+	});
 };
 
 export const getTabContext = () => {

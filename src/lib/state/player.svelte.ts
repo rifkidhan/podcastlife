@@ -75,15 +75,16 @@ class AudioMetadata {
 		const parse = JSON.parse(this.#chapters.current);
 		return parse.chapters as Chapter[];
 	}
-	async playTrack(options: Track & { chaptersUrl?: string }) {
+	playTrack(options: Track & { chaptersUrl?: string }) {
 		if (options.enclosure === this.#track.enclosure) {
 			this.#paused = !this.#paused;
 		} else {
 			const { chaptersUrl, ...opts } = options;
 			this.#track = opts;
 
-			const chapters = await getChapters(chaptersUrl);
-			this.#chapters.current = JSON.stringify({ chapters: chapters });
+			getChapters(chaptersUrl).then((res) => {
+				this.#chapters.current = JSON.stringify({ chapters: res });
+			});
 		}
 	}
 }

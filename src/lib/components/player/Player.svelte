@@ -2,6 +2,7 @@
 	import { fly } from "svelte/transition";
 	import { MediaQuery } from "svelte/reactivity";
 	import { pushState } from "$app/navigation";
+	import { page } from "$app/state";
 	import { audiometadata } from "$lib/state/player.svelte";
 	import { useUI } from "$lib/state/ui.svelte";
 	import { formatTime } from "$lib/utils/time";
@@ -11,6 +12,7 @@
 	import Slider from "../Slider.svelte";
 	import Livesign from "../Livesign.svelte";
 	import RunningText from "../RunningText.svelte";
+	import FullPlayer from "$lib/components/player/FullPlayer.svelte";
 
 	let track = $derived(audiometadata.track);
 
@@ -158,6 +160,10 @@
 		</audio>
 	{/key}
 </div>
+
+{#if page.state.fullPlayer}
+	<FullPlayer />
+{/if}
 
 <style>
 	.player {

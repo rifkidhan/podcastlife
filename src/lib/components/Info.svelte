@@ -86,7 +86,7 @@
 	</div>
 	<div class="description" bind:clientHeight={descriptionHeight}>
 		<div class="summary" bind:this={summary} data-truncate={descriptionTruncate}>
-			{@html description}
+			{description}
 		</div>
 
 		{#if descriptionTruncate}

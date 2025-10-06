@@ -8,9 +8,7 @@
 	import { useUI } from "$lib/state/ui.svelte";
 	import Header from "$lib/components/Header.svelte";
 	import Sidenav from "$lib/components/Sidenav.svelte";
-	import Player from "$lib/components/player/Player.svelte";
 	import LoadingIndicator from "$lib/components/LoadingIndicator.svelte";
-	import FullPlayer from "$lib/components/player/FullPlayer.svelte";
 	import "$lib/styles/app.css";
 
 	let { children }: LayoutProps = $props();
@@ -65,8 +63,7 @@
 	<Sidenav />
 {/if}
 {#if useUI.playerShown}
-	<Player />
-{/if}
-{#if page.state.fullPlayer}
-	<FullPlayer />
+	{#await import("$lib/components/player/Player.svelte") then { default: Player }}
+		<Player />
+	{/await}
 {/if}

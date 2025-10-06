@@ -12,7 +12,7 @@ import type {
 const API_URL = env.API_URL;
 const API_TOKEN = env.API_TOKEN;
 
-const api = async <T,>({
+const api = async <T>({
 	endpoint,
 	query
 }: {

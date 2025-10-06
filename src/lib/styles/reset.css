@@ -139,10 +139,8 @@ svg,
 video,
 canvas,
 picture,
-iframe,
 audio {
 	display: block;
-	vertical-align: middle;
 }
 
 img,
